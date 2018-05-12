@@ -7,7 +7,7 @@
 
 <script>
 import axios from 'axios'
-import axiosError from '~/lib/axiosError.js'
+import handleError from '../lib/handleError.js'
 import CrowdhoundMinimalElement from './CrowdhoundMinimalElement.vue'
 
 export default {
@@ -20,7 +20,7 @@ export default {
   },
   data () {
     return {
-      element: { },
+      element: null,
 
       selectError: false
     }
@@ -34,12 +34,19 @@ export default {
 
     // Select the elements from the server
     load () {
-      this.$content.select(this, {
+      if (this.$content.disabled) {
+        console.error('Contentservice disabled')
+        return
+      }
+
+      // Select the elements
+      let params = {
         elementId: this.anchor,
-        //elementId: '$example-text-comments',
         withChildren: true
-      })
-      .then(result => {
+      }
+      this.$content.select(this, params).then(result => {
+
+        // Use the elements
         if (result.elements.length > 0) {
           this.element = result.elements[0]
         } else {
@@ -47,7 +54,8 @@ export default {
         }
       })
       .catch(e => {
-        axiosError(vm, url, params, e)
+        let desc = `Error loading comments`
+        handleError(this, desc, params, e)
         this.selectError = true
       })
     }

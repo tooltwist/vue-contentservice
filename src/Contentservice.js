@@ -41,6 +41,14 @@ class Contentservice {
   // }
 
   constructor (options) {
+
+      if (!options) {
+        console.error(`Contentservice was passed null options, so will be disabled.`)
+        this.disabled = true
+        return
+      }
+      this.disabled = false
+
     console.log('&&& Contentservice constructor', options)
     this.host = options.host ? options.host : 'api.contentservice.io'
     this.port = options.port ? options.port : 80
@@ -170,18 +178,15 @@ class Contentservice {
 select(vm, param1, param2) {
 
   return new Promise((resolve, reject) => {
-    // return this.registerUsername.length > 2 ? null : false
-    // if (this.registerUsername.length > 2) {
-      // return resolve("wombat soup")
-    // } else {
-    //   return reject()
-    // }
-
-
 
     if (this.options.debug) {
       console.log('select()');
     }
+    if (this.disabled) {
+      return reject(new Error('contentservice disabled'));
+    }
+
+    // Work out what combination of parameters we've been passed
     var type1 = typeof(param1);
     var type2 = typeof(param2);
     var type3 = typeof(param3);
@@ -283,44 +288,9 @@ select(vm, param1, param2) {
         return resolve(selection);
       })
       .catch(e => {
+        axiosError(vm, url, params, e)
         reject(e)
-        // axiosError(vm, url, params, e)
-        // this.selectError = true
-        //
-  			// //alert("Error in CrowdHound.select()");
-        // console.log("Error in CrowdHound.select(): ", e);
-        // console.log("Error in CrowdHound.select(): ", e.response);
-        // // return callback(error);
-        //
-        // console.log('this=', this)
-        //
-        // console.log('vm.$toast=', vm.$toast)
-
       })
-
-
-    // $.get(url, params, function selectElementsCB(reply) {
-    //
-    //   console.log('  reply=', reply)
-    //
-    //   // If the first item in the array is the current user, pluck it off the array now.
-    //   if ((reply instanceof Array) && reply.length > 0 && reply[0].__currentUser) {
-    //     _currentUserData = reply[0];
-    //     reply.shift(); // remove from the array
-    //   }
-    //
-    //   let selection = {
-    //     cooked: false,
-    //     params: params,
-    //     elements: reply,
-    //   };
-    //   return callback(null, selection);
-    // }, 'json')
-    //   .fail(function(error) {
-    //   //			alert("Error in CrowdHound.select()");
-    //   //			console.log("Error in CrowdHound.select(): ", error);
-    //   return callback(error);
-    // })
   })// new promise
 
 } //- select()

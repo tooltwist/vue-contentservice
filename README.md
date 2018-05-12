@@ -1,14 +1,10 @@
 # Introduction
 
-Instantly add authentication to a VueJS or Nuxt project.
+Instantly add content management to a VueJS or Nuxt project.
 
-* Login with username, email address, or Social Media credentials
-* User registration, with confirmation email verification
-* Forgotten password handling via email
-* JWT (JSON Web Token) for downstream verifications.
-* User administration
-* Integration with MailChimp, import and export
-* Blacklisted users
+* aa
+* bb
+* cc
 
 
 
@@ -16,11 +12,11 @@ Instantly add authentication to a VueJS or Nuxt project.
 # Quick Start
 
 ```sh
-npm install vue-contentservice debounce vue-awesome --save
+npm install vue-contentservice --save
 
     or
 
-yarn add vue-contentservice debounce vue-awesome
+yarn add vue-contentservice vue-awesome
 ```    
 
 ## Add to a VueJS project
@@ -63,7 +59,7 @@ Note: this is `plugins` under `module.exports`, not to be confused with any of t
   .my-login-page
     my-header
     section
-      contentservice-login
+      contentservice-text
     my-footer
 </template>
 ```
