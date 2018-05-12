@@ -1,0 +1,43 @@
+{
+  "name": "vue-contentservice",
+  "version": "0.0.1",
+  "main": "src/main.js",
+  "zmain": "dist/vue-contentservice.cjs.js",
+  "zmodule": "dist/vue-contentservice.cjs.js",
+  "license": "MIT",
+  "description": "Test junk",
+  "author": "Philip Callender <philip.callender@tooltwist.com",
+  "private": false,
+  "scripts": {
+    "build": "yarn bili src/main.js --plugin vue --plugin pug -plugin flow",
+    "patch-release": "npm version patch && npm publish && git push --follow-tags"
+  },
+  "keywords": [
+    "vue",
+    "tooltwist",
+    "contentservice"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tooltwist/vue-authservice.git"
+  },
+  "files": [
+    "dist/",
+    "src"
+  ],
+  "devDependencies": {
+    "babel-helper-vue-jsx-merge-props": "^2.0.3",
+    "bili": "^3.0.14",
+    "rollup-plugin-flow": "^1.1.1",
+    "rollup-plugin-pug": "^0.1.6",
+    "rollup-plugin-vue": "^3.0.0",
+    "vue-template-compiler": "^2.5.16",
+    "parse5": "^4.0.0",
+    "vue": "^2.5.16"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "jwt-decode": "^2.2.0",
+    "query-string": "^6.0.0"
+  }
+}
