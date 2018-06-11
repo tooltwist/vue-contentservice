@@ -3924,36 +3924,7 @@ console.log('reply is ', reply)
 		});
 	}
 
-
-	/*
-	 *  Update an existing element.
-	 *	If an anchor and a type is provided, the element will be created
-	 *	if it does not already exist.
-	 */
-	function update(element, callback/*(err)*/) {
-
-		var API_URL = '//' + CROWDHOUND_HOST + ':' + CROWDHOUND_PORT + '/api/' + CROWDHOUND_VERSION + '/' + CROWDHOUND_TENANT;
-		var url = API_URL + '/element';
-		var url = Curia.addAuthenticationToken(url);
-
-		console.log('url   =' + url);
-		console.log('element=', element);
-
-		$.ajax({
-			type : 'PUT',
-			url : url,
-			data : element,
-			success : function(response) {
-
-				return callback(null);
-			},
-			error : function(jqxhr, textStatus, errorThrown) {
-				// Failed AJAX call
-				console.log('An error occurred while updating an element.\n  status: ' + jqxhr.status + "\n  responseText: ", qXHR.responseText);
-				return callback(niceError(jqxhr, textStatus, errorThrown));
-			}
-		});
-	}// update()
+  // update was here
 
 
 	/**

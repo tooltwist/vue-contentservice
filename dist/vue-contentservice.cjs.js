@@ -475,11 +475,9 @@ function () {
               resolve(_this2.user.id);
               return;
             } else {
-              console.log('ok 4'); // Bad JWT
 
+              // Bad JWT
               _this2.removeCookie(JWT_COOKIE_NAME);
-
-              console.log('ok 5');
               reject('Invalid credentials');
               return;
             }
@@ -773,8 +771,6 @@ function () {
           default:
             return reject('If provided, options.middleName must be a string');
         }
-
-        console.log('ok 4'); // Maybe check last name is valid
 
         switch (_typeof(options.lastName)) {
           case 'string':

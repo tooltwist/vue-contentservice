@@ -4,11 +4,10 @@
  *  Client API for Contentservice.io
  *  See https://contentservice.io
  */
-// import Vue from 'vue'
+//import Vue from 'vue'
 // import Vuex from 'vuex'
 
 // Vue.use(Vuex)
-console.log('(index.js) 1')
 
 //import { install } from './install'
 import jwtDecode from 'jwt-decode'
@@ -17,10 +16,11 @@ import axiosError from './lib/axiosError2.js'
 import QueryString from 'query-string'
 import { assert, inBrowser } from './misc'
 
+import { safeJson } from './lib/hierarchy.js'
+
 
 
 // const debug = process.env.NODE_ENV !== 'production'
-console.log('(index.js) 2')
 
 //const JWT_COOKIE_NAME = 'contentservice-jwt'
 //const LOGIN_TIMEOUT_DAYS = 3
@@ -54,6 +54,8 @@ class Contentservice {
     this.port = options.port ? options.port : 80
     this.version = options.version ? options.version : '2.0'
     this.apikey = options.apikey
+
+    this.knownElementTypes = [ ]
 
     // // See if we are supporting email login (default to yes)
     // if (options.login && typeof(options.login.email) !== 'undefined' && !options.login.email) {
@@ -156,7 +158,33 @@ class Contentservice {
     return endpoint
   }
 
+  registerLayoutType (vm, layoutType, componentName, component, propertyComponent) {
+    let propertyComponentName = `${componentName}-props`
 
+    // Remember the component names used for this type of layout element.
+    this.knownElementTypes[layoutType] = {
+      layoutType,
+      componentName,
+      propertyComponentName,
+      component,
+      propertyComponent
+    }
+
+    // Define the components
+    console.log(`registering ${componentName}`)
+    vm.component(componentName, component)
+    vm.component(propertyComponentName, propertyComponent)
+  }
+
+  // -> { component, propertyComponent }
+  getLayoutType (layoutType) {
+    //console.error(`getLayoutType(${layoutType})`)
+    return this.knownElementTypes[layoutType]
+  }
+
+  safeJSON (json) {
+    return safeJson(json)
+  }
 
   //----------------------------------------------------------------------------//
   //                          NEW STUFF FROM CROWDHOUND                         //
@@ -175,126 +203,192 @@ class Contentservice {
 	 *		select(vm, rootId) - select a thread. Anchor will NOT be created if it doesn't exist.
 	 *		select(vm, params)
 	 */
-select(vm, param1, param2) {
+  select(vm, param1, param2) {
 
-  return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
 
-    if (this.options.debug) {
-      console.log('select()');
-    }
-    if (this.disabled) {
-      return reject(new Error('contentservice disabled'));
-    }
-
-    // Work out what combination of parameters we've been passed
-    var type1 = typeof(param1);
-    var type2 = typeof(param2);
-    var type3 = typeof(param3);
-
-    if (arguments.length === 3) {
-
-      // Short form:  select(vm, anchor, anchorType)
-      // Check the anchor starts with $
-      var anchor = param1;
-      var anchorType = param2;
-      if (typeof(anchor) != 'string') {
-        console.log('CrowdHound.select: anchor must be a string: ' + anchor + ', ' + typeof(anchor));
-        return reject(new Error('invalid anchor parameter'));
+      if (this.options.debug) {
+        console.log('select()');
       }
-      if (anchor.charAt(0) != '$') {
-        console.log('CrowdHound.select: anchor must start with \'$\': ' + anchor);
-        return reject(new Error('invalid anchor parameter - must start with \'$\''));
+      if (this.disabled) {
+        return reject(new Error('contentservice disabled'));
       }
-      if (typeof(anchorType) != 'string') {
-        console.log('CrowdHound.select: anchorType must be a string: ' + anchorType + ', ' + typeof(anchorType));
-        return reject(new Error('invalid anchor parameter'));
-      }
-      console.log('select anchor')
-      var params = {
-        elementId: anchor,
-        type: anchorType
-      };
-    } else if (arguments.length === 2) {
 
-      if (type1 == 'object') {
+      // Work out what combination of parameters we've been passed
+      var type1 = typeof(param1);
+      var type2 = typeof(param2);
+      var type3 = typeof(param3);
 
-        // select(vm, params)
-        var params = param1
-      } else {
+      if (arguments.length === 3) {
 
-        // select(vm, rootId) - select a thread. Anchor will NOT be created if it doesn't exist.
+        // Short form:  select(vm, anchor, anchorType)
+        // Check the anchor starts with $
+        var anchor = param1;
+        var anchorType = param2;
+        if (typeof(anchor) != 'string') {
+          console.log('CrowdHound.select: anchor must be a string: ' + anchor + ', ' + typeof(anchor));
+          return reject(new Error('invalid anchor parameter'));
+        }
+        if (anchor.charAt(0) != '$') {
+          console.log('CrowdHound.select: anchor must start with \'$\': ' + anchor);
+          return reject(new Error('invalid anchor parameter - must start with \'$\''));
+        }
+        if (typeof(anchorType) != 'string') {
+          console.log('CrowdHound.select: anchorType must be a string: ' + anchorType + ', ' + typeof(anchorType));
+          return reject(new Error('invalid anchor parameter'));
+        }
+        console.log('select anchor')
         var params = {
-          elementId: '' + param1
+          elementId: anchor,
+          type: anchorType
         };
-      }
+      } else if (arguments.length === 2) {
 
-    } else {
-      reject('Unknown parameters to CrowdHound.select');
-      // if (type1 == 'function') {
-      //   var callback = param1;
-      //   return callback(new Error('Invalid parameters'));
-      // }
-      // if (typeof(type4) == 'function') {
-      //   var callback = param4;
-      //   return callback(new Error('Invalid parameters'));
-      // }
-      // if (typeof(type5) == 'function') {
-      //   var callback = param5;
-      //   return callback(new Error('Invalid parameters'));
-      // }
-      return;
-    }
+        if (type1 == 'object') {
 
-    //var elementType = 'file';
-    //		var url = _API_URL + '/elements?type=' + elementType;
-    var url = `${this.endpoint()}/elements`;
-    // url = addAuthenticationToken(url);
-    if (this.options.debug) {
-      console.log('URL= ' + url)
-    }
-    console.log('CrowdHound.select()')
-    console.log('  url=' + url)
-    console.log('  params=', params)
+          // select(vm, params)
+          var params = param1
+        } else {
 
-
-
-    axios({
-      method: 'get',
-      url,
-      headers: {
-        // 'Authorization': 'Bearer ' + this.$authservice.jwt,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      params: params
-    })
-      .then(response => {
-        // JSON responses are automatically parsed.
-        console.log(`RESPONSE IS`, response.data)
-        let reply = response.data
-
-        // If the first item in the array is the current user, pluck it off the array now.
-        let userdata = null
-        if ((reply instanceof Array) && reply.length > 0 && reply[0].__currentUser) {
-          userdata = reply[0];
-          reply.shift(); // remove from the array
+          // select(vm, rootId) - select a thread. Anchor will NOT be created if it doesn't exist.
+          var params = {
+            elementId: '' + param1
+          };
         }
 
-        let selection = {
-          cooked: false,
-          params: params,
-          elements: reply,
-        };
-        return resolve(selection);
-      })
-      .catch(e => {
-        axiosError(vm, url, params, e)
-        reject(e)
-      })
-  })// new promise
+      } else {
+        reject('Unknown parameters to CrowdHound.select');
+        // if (type1 == 'function') {
+        //   var callback = param1;
+        //   return callback(new Error('Invalid parameters'));
+        // }
+        // if (typeof(type4) == 'function') {
+        //   var callback = param4;
+        //   return callback(new Error('Invalid parameters'));
+        // }
+        // if (typeof(type5) == 'function') {
+        //   var callback = param5;
+        //   return callback(new Error('Invalid parameters'));
+        // }
+        return;
+      }
 
-} //- select()
+      //var elementType = 'file';
+      //		var url = _API_URL + '/elements?type=' + elementType;
+      var url = `${this.endpoint()}/elements`;
+      // url = addAuthenticationToken(url);
+      if (this.options.debug) {
+        console.log('URL= ' + url)
+      }
+      console.log('CrowdHound.select()')
+      console.log('  url=' + url)
+      console.log('  params=', params)
 
+
+
+      axios({
+        method: 'get',
+        url,
+        headers: {
+          // 'Authorization': 'Bearer ' + this.$authservice.jwt,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        params: params
+      })
+        .then(response => {
+          // JSON responses are automatically parsed.
+          console.log(`RESPONSE IS`, response.data)
+          let reply = response.data
+
+          // If the first item in the array is the current user, pluck it off the array now.
+          let userdata = null
+          if ((reply instanceof Array) && reply.length > 0 && reply[0].__currentUser) {
+            userdata = reply[0];
+            reply.shift(); // remove from the array
+          }
+
+          let selection = {
+            cooked: false,
+            params: params,
+            elements: reply,
+          };
+          return resolve(selection);
+        })
+        .catch(e => {
+          axiosError(vm, url, params, e)
+          reject(e)
+        })
+    })// new promise
+
+  } //- select()
+
+
+
+  /*
+   *  Update an existing element.
+   *	If an anchor and a type is provided, the element will be created
+   *	if it does not already exist.
+   */
+  update (vm, element) {
+
+    return new Promise((resolve, reject) => {
+
+      if (this.options.debug) {
+        console.log('select()');
+      }
+      if (this.disabled) {
+        return reject(new Error('contentservice disabled'));
+      }
+
+      let url = `${this.endpoint()}/element`;
+      let params = element
+      axios({
+        method: 'put',
+        url,
+        headers: {
+          // 'Authorization': 'Bearer ' + this.$authservice.jwt,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        params
+      })
+        .then(response => {
+          // JSON responses are automatically parsed.
+          console.log(`RESPONSE IS`, response.data)
+          // let reply = response.data
+          return resolve('ok');
+        })
+        .catch(e => {
+          axiosError(vm, url, params, e)
+          reject(e)
+        })
+
+
+    	// var API_URL = '//' + CROWDHOUND_HOST + ':' + CROWDHOUND_PORT + '/api/' + CROWDHOUND_VERSION + '/' + CROWDHOUND_TENANT;
+    	// var url = API_URL + '/element';
+    	// var url = Curia.addAuthenticationToken(url);
+      //
+    	// console.log('url   =' + url);
+    	// console.log('element=', element);
+      //
+    	// $.ajax({
+    	// 	type : 'PUT',
+    	// 	url : url,
+    	// 	data : element,
+    	// 	success : function(response) {
+      //
+    	// 		return callback(null);
+    	// 	},
+    	// 	error : function(jqxhr, textStatus, errorThrown) {
+    	// 		// Failed AJAX call
+    	// 		console.log('An error occurred while updating an element.\n  status: ' + jqxhr.status + "\n  responseText: ", qXHR.responseText);
+    	// 		return callback(niceError(jqxhr, textStatus, errorThrown));
+    	// 	}
+    	// });
+
+    })//- promise
+  }// update()
 
 
 
@@ -433,10 +527,8 @@ select(vm, param1, param2) {
               resolve(this.user.id)
               return
             } else {
-              console.log('ok 4')
               // Bad JWT
               this.removeCookie(JWT_COOKIE_NAME)
-              console.log('ok 5')
               reject('Invalid credentials')
               return
             }
@@ -568,17 +660,8 @@ select(vm, param1, param2) {
 
   register (options) {
     console.log('$content.register()', options);
-    console.log('ok 0')
 
     return new Promise((resolve, reject) => {
-      // let email = options.email
-      // let username = options.username
-      // let password = options.password
-      // let firstName = options.firstName
-      // let middleName = options.middleName
-      // let lastName = options.lastName
-      // let resume = options.resume
-      console.log('ok 0a')
 
       // Check email and password is valid
       switch (typeof (options.email)) {
@@ -643,7 +726,6 @@ select(vm, param1, param2) {
       //   params.username = email
       // }
 
-      console.log('ok 1')
       // Maybe check password is valid
       switch (typeof (options.password)) {
         case 'string':
@@ -658,7 +740,6 @@ select(vm, param1, param2) {
           return reject('If provided, options.password must be a string')
       }
 
-      console.log('ok 2')
       // Maybe check first name is valid
       switch (typeof (options.firstName)) {
         case 'string':
@@ -673,7 +754,6 @@ select(vm, param1, param2) {
           return reject('If provided, options.firstName must be a string')
       }
 
-      console.log('ok 3')
       // Maybe check middle name is valid
       switch (typeof (options.middleName)) {
         case 'string':
@@ -688,7 +768,6 @@ select(vm, param1, param2) {
           return reject('If provided, options.middleName must be a string')
       }
 
-      console.log('ok 4')
       // Maybe check last name is valid
       switch (typeof (options.lastName)) {
         case 'string':
@@ -1028,9 +1107,13 @@ select(vm, param1, param2) {
   isForgottenPasswordSupported () {
     return this.forgottenPasswordSupported
   }
+
 }
 
-//Contentservice.install = install // The imported install()
+// Add the hierarchy manipulation functions
+import * as util from './lib/hierarchy.js'
+Contentservice.prototype.util = util
+
 Contentservice.version = '__VERSION__'
 if (inBrowser && window.Vue) {
   window.Vue.use(Contentservice)

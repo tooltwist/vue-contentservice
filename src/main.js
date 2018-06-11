@@ -1,8 +1,38 @@
-//import Vue from 'vue'
-// export default Vue => Vue.component(Component.name, Component)
-
-import Contentservice from './Contentservice'
+import Contentservice from './Contentservice.js'
 import CrowdhoundMinimal from './components/CrowdhoundMinimal.vue'
+import ContentLayoutPane from './components/ContentLayoutPane.vue'
+import ContentTriplePane from './components/ContentTriplePane.vue'
+import ContentToolbox from './components/ContentToolbox.vue'
+import ContentPane from './components/ContentPane.vue'
+
+
+import ContentElement from './components/ContentElement.vue'
+import ContentElementProps from './components/ContentElementProps.vue'
+import ContentChildren from './components/ContentChildren.vue'
+//import ContentChildrenProps from './components/ContentChildrenProps.vue'
+
+
+import ContentText from './components/ContentText.vue'
+import ContentTextProps from './components/ContentTextProps.vue'
+import ContentFroala from './components/ContentFroala.vue'
+import ContentFroalaProps from './components/ContentFroalaProps.vue'
+import ContentField from './components/ContentField.vue'
+import ContentFieldProps from './components/ContentFieldProps.vue'
+import ContentForm from './components/ContentForm.vue'
+import ContentFormProps from './components/ContentFormProps.vue'
+import ContentSection from './components/ContentSection.vue'
+import ContentSectionProps from './components/ContentSectionProps.vue'
+import ContentContent from './components/ContentContent.vue'
+import ContentContentProps from './components/ContentContentProps.vue'
+import ContentContainer from './components/ContentContainer.vue'
+import ContentContainerProps from './components/ContentContainerProps.vue'
+import ContentColumns from './components/ContentColumns.vue'
+import ContentColumnsProps from './components/ContentColumnsProps.vue'
+
+
+
+import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from './lib/hierarchy'
+import * as _contentLayoutStore from './contentLayoutStore.js'
 
 export let _Vue
 
@@ -92,17 +122,51 @@ function install (Vue, options) {
   // Define the components
   Vue.component('crowdhound-minimal', CrowdhoundMinimal)
 
+  Vue.component('content-triple-pane', ContentTriplePane)
+  Vue.component('content-toolbox', ContentToolbox)
+
+  Vue.component('content-pane', ContentPane)//ZZZZZ ???
+  Vue.component('content-layout-pane', ContentLayoutPane)
+
+  Vue.component('content-content', ContentContent)
+  Vue.component('content-content-props', ContentContentProps)
+  Vue.component('content-children', ContentChildren)
+
+  // Register the layout element types
+  _content.registerLayoutType(Vue, 'element', 'content-element', ContentElement, ContentElementProps)
+  _content.registerLayoutType(Vue, 'text', 'content-text', ContentText, ContentTextProps)
+  _content.registerLayoutType(Vue, 'froala', 'content-froala', ContentFroala, ContentFroalaProps)
+  _content.registerLayoutType(Vue, 'html', 'content-html', ContentFroala, ContentFroalaProps)
+  _content.registerLayoutType(Vue, 'field', 'content-field', ContentField, ContentFieldProps)
+  _content.registerLayoutType(Vue, 'form', 'content-form', ContentForm, ContentFormProps)
+  _content.registerLayoutType(Vue, 'section', 'content-section', ContentSection, ContentSectionProps)
+  _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
+  _content.registerLayoutType(Vue, 'columns', 'content-columns', ContentColumns, ContentColumnsProps)
 
   return _content
-}
+} //- install()
 
 const obj = {
-  install: install
+  install: install,
+//  layoutStore,
+
+  // hierarchy manipulation
+  sanitizeLayout,
+  safeJson,
+  layoutRoot,
+  layoutChanged,
 }
 
 Object.defineProperty(obj, '_content', {
   get: function() {
-      return _content;
+      return _content
+  }
+});
+
+Object.defineProperty(obj, '_contentLayoutStore', {
+  get: function() {
+    console.error('getting _contentLayoutStore')
+    return _contentLayoutStore
   }
 });
 
