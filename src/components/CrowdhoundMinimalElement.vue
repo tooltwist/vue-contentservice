@@ -14,7 +14,7 @@
 
     // Now the children...
     div(v-for="child in element.children")
-      crowdhound-minimal-element(:element="child" :level="level + 1")
+      crowdhound-minimal-element(:element="child", :level="level + 1")
 
 </template>
 
