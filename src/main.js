@@ -29,6 +29,9 @@ import ContentContainerProps from './components/ContentContainerProps.vue'
 import ContentColumns from './components/ContentColumns.vue'
 import ContentColumnsProps from './components/ContentColumnsProps.vue'
 
+import ContentAdminBlogList from './components/ContentAdminBlogList.vue'
+import ContentAdminBlogDetails from './components/ContentAdminBlogDetails.vue'
+
 
 
 import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from './lib/hierarchy'
@@ -131,6 +134,9 @@ function install (Vue, options) {
   Vue.component('content-content', ContentContent)
   Vue.component('content-content-props', ContentContentProps)
   Vue.component('content-children', ContentChildren)
+
+  Vue.component('content-admin-blog-list', ContentAdminBlogList)
+  Vue.component('content-admin-blog-details', ContentAdminBlogDetails)
 
   // Register the layout element types
   _content.registerLayoutType(Vue, 'element', 'content-element', ContentElement, ContentElementProps)
