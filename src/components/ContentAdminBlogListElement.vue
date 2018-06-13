@@ -23,7 +23,7 @@
       table.table.is-fullwidth.is-bordered.is-narrow(:class=" {'is-hoverable': typeof(pathForDetails) === 'string'} ")
         thead
           tr
-            th(v-for="key in ourColumns" @click="sortBy(key)" :class="{ active: sortKey == key }")
+            th(v-for="key in ourColumns", @click="sortBy(key)", :class="{ active: sortKey == key }")
               | {{ key | capitalize }}
               span.arrow(:class="sortOrders[key] > 0 ? 'asc' : 'dsc'")
         tbody
@@ -42,7 +42,7 @@
 
     // Now the children...
     div(v-for="child in element.children")
-      content-admin-blog-list-element(:element="child" :level="level + 1")
+      content-admin-blog-list-element(:element="child", :level="level + 1")
 
 </template>
 
