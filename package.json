@@ -1,6 +1,6 @@
 {
   "name": "vue-contentservice",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "main": "src/main.js",
   "zmain": "dist/vue-contentservice.cjs.js",
   "zmodule": "dist/vue-contentservice.cjs.js",
