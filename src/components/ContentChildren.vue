@@ -76,7 +76,6 @@ export default {
     }
   },
   computed: {
-
     ...ContentFunctions.computed,
   },
 

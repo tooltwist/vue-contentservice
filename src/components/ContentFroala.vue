@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  .tt-froala(v-bind:class="[(cPageEditMode==='edit' || cPageEditMode==='debug') ? 'tt-element-outline' : '']")
+  .tt-froala(v-bind:class="[(pageEditMode==='edit' || pageEditMode==='debug') ? 'tt-element-outline' : '']")
     span(v-if="extraDebug")
       | &lt;content-froala
       span(v-if="element") &nbsp;have element
@@ -8,14 +8,17 @@
       | &gt;
       br
 
-    //| FROALA {{this.cPageEditMode}}
+    //| FROALA {{this.pageEditMode}}
 
     // Preview mode
     .x(v-if="isPageMode('view')")
       froala-view(:tag="'div'", v-model="protectedText")
 
-    .x(v-else-if="isPageMode('debug')")
-      .tt-froala-debug-heading rich text
+    .my-debug-box(v-else-if="isPageMode('debug')")
+      .my-debug-header rich text
+        br
+        | contentId: {{contentId}}
+        br
       froala(:tag="'div'", :config="config", v-model="protectedText", v-on:click="select(element)")
 
     .x(v-else-if="isPageMode('edit')")
@@ -30,7 +33,7 @@
 </template>
 
 <script>
-//import copyStyle from '~/lib/copyStyle.js'
+
 import ContentFunctions from '../lib/ContentFunctions'
 
 
@@ -43,8 +46,6 @@ const SAVE_INTERVAL = 2000
 
 export default {
   name: 'content-froala',
-  components: {
-  },
   props: {
     /*
      *  Must provide either contentId or an element.
@@ -96,14 +97,14 @@ export default {
 
     ...ContentFunctions.computed,
 
-    extraDebug: function () {
-      return true
-      //return this.$store.state.contentLayout.extraDebug
-    },
-
-    cPageEditMode: function () {
-      return this.$store.state.contentLayout.mode
-    },
+    //- extraDebug: function () {
+    //-   return true
+    //-   //return this.$store.state.contentLayout.extraDebug
+    //- },
+    //-
+    //- pageEditMode: function () {
+    //-   return this.$store.state.contentLayout.mode
+    //- },
 
     useCrowdhound () {
       //return true
@@ -142,14 +143,14 @@ export default {
 
     // Compare the page mode to a comma separated list
     isPageMode (modes) {
-      return modes.split(',').includes(this.cPageEditMode)
+      return modes.split(',').includes(this.pageEditMode)
     },
 
     // Select this element
     select (element) {
       console.log('Froala.select()')
 
-      if (this.cPageEditMode != 'view') {
+      if (this.pageEditMode != 'view') {
         this.$store.commit('contentLayout/setPropertyElement', { element })
       }
     },
@@ -176,7 +177,7 @@ export default {
     },
 
     saveToCrowdhound () {
-      console.error(`saveToCrowdhound`)
+      //console.log(`saveToCrowdhound`)
       this.saveMsg = SAVED
 
       this.$content.update(this, this.crowdhoundElement)
@@ -201,9 +202,9 @@ export default {
     console.log(`TooltwistFroala.created`)
 
     // See if we have a license key for Froala
-    // console.error('this.$content.options=', this.$content.options)
+    // console.log('this.$content.options=', this.$content.options)
     if (this.$content && this.$content.options && this.$content.options.froalaActivationKey) {
-      console.log(`Froala activation key: ${this.$content.options.froalaActivationKey}`)
+      // console.log(`Froala activation key: ${this.$content.options.froalaActivationKey}`)
       this.config.key = this.$content.options.froalaActivationKey
     } else {
       console.error(`Froala activation key not provided {options.froalaActivationKey}.`)
@@ -224,7 +225,6 @@ export default {
       // Select the elements
       let anchor1 = `testpage.${this.contentId}`
       let anchor2 = `$testpage.${this.contentId}`
-      //console.error(`Anchor is ${anchor}.`)
       let elementType = 'html'
 
       //- let params = {
@@ -274,16 +274,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tt-floala {
-  background-color: yellow;
-}
-.tt-froala-debug-heading {
-  background-color: #ccc;
-  color: black;
-  font-size: 9px;
-}
-.tt-froala-outline {
-  border: dashed 1px #ccc;
+.my-debug-box {
+  border-left: dashed 1px #ccc;
+  border-bottom: dashed 1px #ccc;
+  border-right: dashed 1px #ccc;
   margin: 1px;
+
+  .my-debug-header {
+    background-color: #ccc;
+    color: black;
+    font-size: 9px;
+  }
 }
 </style>

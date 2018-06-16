@@ -8,18 +8,14 @@ div
   span(v-if="isPageMode('view')")
     | {{protectedContent}}
   // Debug mode - show a surround, click to edit
-  div(v-else-if="isPageMode('debug')")
-    .my-text-debug
-      text
-      | pageEditMode: {{cPageEditMode}}
-      br
-      | editing: {{editing}}
+  .my-debug-box(v-else-if="isPageMode('debug')")
+    .my-debug-header
+      | text
       br
       | contentId: {{contentId}}
-      br
 
     // the click event's propagation will be stopped
-    span.my-text-outline.stop(@click="select(element), itemClick(element)")
+    span.stop(@click="select(element), itemClick(element)")
       | {{protectedContent}}
   // Edit and layout mode - click to edit
   span.stop(v-else @click="select(element), itemClick(element)")
@@ -32,32 +28,11 @@ div
     br
     textarea.textarea.my-input(v-model="protectedContent")
 
-
-
-  //- hr
-  //- div(v-if="this.cPageEditMode==='edit'")
-  //-
-  //-   // Editing the page
-  //-   .my-text(v-bind:class="[(cPageEditMode=='debug') ? 'my-text-outline' : '']", v-on:click="select(element)")
-  //-
-  //-     .my-text-debug(v-if="this.cPageEditMode=='debug'") text
-  //-     .my-text.stop(@click="itemClick(element)", :style="textStyle") {{protectedContent}}
-  //-     div(v-if="cPageEditMode=='edit' && editing")
-  //-       hr
-  //-       | &nbsp;{{saveMsg}}
-  //-       br
-  //-       textarea.textarea.my-input(v-model="protectedContent")
-  //-     //hr
-  //-     //| {{crowdhoundElement.description}}
-  //- span(v-else)
-  //-   // Not editing the page
-  //-   | {{protectedContent}}
-
 </template>
 
 <script>
-//- import copyStyle from '~/lib/copyStyle.js'
-//import ProtectedTooltwistField from '~/lib/ProtectedTooltwistField.js'
+
+import ContentFunctions from '../lib/ContentFunctions'
 
 const CLEAN = ''
 const DIRTY = '- waiting to save -'
@@ -100,36 +75,17 @@ export default {
   },
   computed: {
 
-    cPageEditMode: function () {
-      return this.$store.state.contentLayout.mode
-    },
+    ...ContentFunctions.computed,
 
     useCrowdhound () {
-      //return true
       return typeof(this.contentId) != 'undefined'
     },
-
-    //- displayContent: {
-    //- if (this.useCrowdhound) {
-    //-   console.error('&&&Use crowdhoundElement')
-    //-   return this.crowdhoundElement
-    //- } else {
-    //-   console.error('&&& USE element content')
-    //-   let name = 'text'
-    //-   return this.element[name]
-    //-   //- return this.element.text
-    //- }
-    //- }
-
-    //...ProtectedTooltwistField('text'),
 
     protectedContent: {
       get () {
         if (this.useCrowdhound) {
-          //console.error('&&&Use crowdhoundElement')
           return this.crowdhoundElement.description
         } else {
-          //console.error('&&& USE element content')
           let name = 'text'
           return this.element[name]
           //- return this.element.text
@@ -141,39 +97,23 @@ export default {
           console.log('protectedContent.set: ', value)
           this.rememberToSave()
         } else {
-          // console.log('-->' + protectedName)
           let name = 'text'
           this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: name, value })
-          //this.$store.commit('contentLayout/updateElementProperty', { vm: this, element: this.element, name: name, value })
         }
       }
     },
-
-    /* // Work out the style for the text
-    textStyle: function () {
-      var style = { }
-      //- if (this.cPageEditMode == 'edit') {
-      //-   style['cursor'] = 'pointer'
-      //- }
-      //- if (this.editing) {
-      //-   style['color'] = 'magenta'
-      //- }
-      //- copyStyle(this.element, style, 'color')
-      //- copyStyle(this.element, style, 'font-family')
-      //- copyStyle(this.element, style, 'font-size')
-      return style
-    } */
   },
+
   methods: {
 
     // Compare the page mode to a comma separated list
     isPageMode (modes) {
-      return modes.split(',').includes(this.cPageEditMode)
+      return modes.split(',').includes(this.pageEditMode)
     },
 
     itemClick (element) {
       console.log('clicked !')
-      if (this.cPageEditMode != 'edit') {
+      if (this.pageEditMode != 'edit') {
         this.editing = false
       } else {
         this.editing = !this.editing
@@ -184,7 +124,7 @@ export default {
     select (element) {
       console.log('Text.select()')
 
-      if (this.cPageEditMode != 'view') {
+      if (this.pageEditMode != 'view') {
         this.$store.commit('contentLayout/setPropertyElement', { element })
       }
     },
@@ -289,17 +229,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.my-text-debug {
-  background-color: #ccc;
-  color: black;
-  font-size: 9px;
-}
-.my-text-outline {
-  border: dashed 1px #ccc;
+.my-debug-box {
+  border-left: dashed 1px #ccc;
+  border-bottom: dashed 1px #ccc;
+  border-right: dashed 1px #ccc;
   margin: 1px;
-}
-.my-text {
 
+  .my-debug-header {
+    background-color: #ccc;
+    color: black;
+    font-size: 9px;
+  }
 }
 .my-input {
   width: 100%;

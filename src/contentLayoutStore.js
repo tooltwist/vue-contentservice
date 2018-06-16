@@ -25,7 +25,7 @@ export const state = () => {
     // Edit mode
     mode: 'view', // { view | edit | layout | debug }}
     previousEditMode: 'edit',
-    extraDebug: true,
+    extraDebug: false,
     dragging: false,
 
     // An element from Crowdhound with the layout as JSON in the description field.
