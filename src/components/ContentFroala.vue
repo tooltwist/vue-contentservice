@@ -82,7 +82,13 @@ export default {
           'froalaEditor.initialized': function () {
             console.log('Froala is initialized')
           }
-        }
+        },
+
+        // Froala activation key
+        // Gets set from $content.options.froalaActivationKey
+        // See https://www.froala.com/wysiwyg-editor/pricing
+        key: null
+
       }
     }
   },
@@ -194,7 +200,16 @@ export default {
   created () {
     console.log(`TooltwistFroala.created`)
 
-    // We select the content from crowdhound
+    // See if we have a license key for Froala
+    // console.error('this.$content.options=', this.$content.options)
+    if (this.$content && this.$content.options && this.$content.options.froalaActivationKey) {
+      console.log(`Froala activation key: ${this.$content.options.froalaActivationKey}`)
+      this.config.key = this.$content.options.froalaActivationKey
+    } else {
+      console.error(`Froala activation key not provided {options.froalaActivationKey}.`)
+    }
+
+    // See if we select the content from crowdhound, or if it's already provided.
     if (this.useCrowdhound) {
       console.log(`Selecting text from Crowdhound`)
       if (typeof(this.$content) === 'undefined') {
