@@ -12,9 +12,10 @@
       content-children(:editcontext="editcontext", :element="element")
 
     // Debug mode
-    .container(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
+    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
       .tt-container-debug-heading container
-      content-children(:editcontext="editcontext", :element="element")
+      .container
+        content-children.my-content(:editcontext="editcontext", :element="element")
 
     // Live
     .container(v-else)
@@ -24,8 +25,7 @@
 </template>
 
 <script>
-import copyStyle from '../lib/copyStyle.js'
-import ContentMixins from '../mixins/ContentMixins'
+import ContentMixins from '../../mixins/ContentMixins'
 
 
 export default {
@@ -73,16 +73,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .tt-container {
-  }
+  @import '../../assets/css/content-variables.scss';
+
   .tt-container-outline {
-    border: dashed 1px lightgreen;
+    border-left: dashed 2px lightgreen;
+    border-bottom: dashed 2px lightgreen;
+    border-right: dashed 2px lightgreen;
     margin: 1px;
+    //- background-color: lightgreen;
+    background-color: #f9fdff;
+    background-color: #f6fff3;
   }
   .tt-container-debug-heading {
+    height: $c-heading-height;
+    line-height: $c-heading-height;
     background-color: lightgreen;
-    font-size: 9px;
-    color: green;
+    font-size: $c-heading-font-size;
+    color: darkgreen;
     margin-bottom: 1px;
+  }
+  .my-content {
+    background-color: white;
   }
 </style>

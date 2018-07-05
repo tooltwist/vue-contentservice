@@ -39,9 +39,9 @@ import ContentMixins from '../mixins/ContentMixins'
 
 
 const CLEAN = ''
-const DIRTY = '- waiting to save -'
-const SAVING = '- saving -'
-const SAVED = '- your changes have been saved -'
+const DIRTY = 'waiting to save'
+const SAVING = 'saving'
+const SAVED = 'your changes have been saved'
 const ERROR = 'warning: your changes have not been saved'
 const SAVE_INTERVAL = 2000
 

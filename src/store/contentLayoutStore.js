@@ -9,9 +9,9 @@ import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hier
 
 
 const CLEAN = ''
-const DIRTY = '- waiting to save -'
-const SAVING = '- saving -'
-const SAVED = '- your changes have been saved -'
+const DIRTY = 'waiting to save'
+const SAVING = 'saving'
+const SAVED = 'your changes have been saved'
 const ERROR = 'warning: your changes have not been saved'
 const SAVE_INTERVAL = 2000
 
@@ -234,11 +234,11 @@ export const mutations = {
 
   // Start dragging. This should temporarily switch to layout mode.
   dragStart (state, { }) {
-    console.log(`mutation contentLayout/dragStart()`)
+    // console.log(`mutation contentLayout/dragStart()`)
     state.dragging = true
   },
   dragStop (state, { }) {
-    console.log(`mutation contentLayout/dragStop()`)
+    // console.log(`mutation contentLayout/dragStop()`)
     state.dragging = false
   },
 

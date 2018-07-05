@@ -14,13 +14,28 @@ div
     SplitArea.c-middle-pane(:size="middleSize")
 
       // Edit bar
-      .c-editbar(v-if="pageEditMode !== 'view'" @click.stop="cycleEditMode")
+      .c-editbar(v-if="pageEditMode !== 'view'" @click.stop="switchMode(null)")
+
+        // left end of bar
         .c-editbar-anchor {{anchor}}
-        .c-editbar-mode-label {{pageEditMode}} mode
-        //| &nbsp;{{ $store.state.contentLayout.saveMsg }}
-        .c-editbar-dump-button(zv-if="pageEditMode === 'layout'")
-          | &nbsp;&nbsp;
-          a(@click.stop="dump") dump
+
+        // right end of bar
+        .c-editbar-right
+          | {{ $store.state.contentLayout.saveMsg }}
+
+          //- .c-editbar-dump-button(zv-if="pageEditMode === 'layout'")
+          //-   | &nbsp;&nbsp;
+          //-   a(@click.stop="dump") dump
+
+        // middle of bar
+        .c-editbar-mode-label(v-if="pageEditMode==='edit' || pageEditMode==='layout' || pageEditMode==='debug'")
+          span(:class="pageEditMode==='edit' ? 'c-selected-mode-style': ''", @click.stop="switchMode('edit')") edit
+          | &nbsp;/&nbsp;
+          span(:class="pageEditMode==='layout' ? 'c-selected-mode-style': ''", @click.stop="switchMode('layout')") layout
+          | &nbsp;/&nbsp;
+          span(:class="pageEditMode==='debug' ? 'c-selected-mode-style': ''", @click.stop="switchMode('debug')") debug
+        .c-editbar-mode-label(v-else)
+          | {{pageEditMode}} mode
 
       // Actual content
       .c-middle-pane-content
@@ -42,13 +57,13 @@ div
       Split(v-else, :direction="'vertical'", :style="propertiesSplitStyle", :gutterSize="gutterSize")
 
         // Properties Pane
-        SplitArea.c-properties-pane(:size="10", :minSize="300")
+        SplitArea.c-properties-pane(:size="40", :minSize="300")
           h1.title Properties
           //content-element-props(:element="this.$store.state.contentLayout.propertyElement")
           content-element-props(:element="thePropertyElement")
 
         // Components pane
-        SplitArea.c-components-pane(:size="90", :minSize="150")
+        SplitArea.c-components-pane(:size="60", :minSize="150")
           h1.title Toolbox
           content-toolbox
 
@@ -285,21 +300,27 @@ export default {
       }
     },
 
-    cycleEditMode () {
-      let mode = this.$store.state.contentLayout.mode
-      switch (mode) {
-        case 'edit':
-          this.$store.commit('contentLayout/setEditMode', { mode: 'layout', previousEditMode: 'layout' })
-          break;
+    switchMode (newMode) {
 
-        case 'layout':
-          this.$store.commit('contentLayout/setEditMode', { mode: 'debug', previousEditMode: 'debug' })
-          break;
+      // If the new mode is not specified, cycle through the editing options.
+      if (!newMode) {
+        // Switch based on existing mode
+        let currentMode = this.$store.state.contentLayout.mode
+        switch (currentMode) {
+          case 'edit':
+            newMode = 'layout'
+            break;
 
-        case 'debug':
-          this.$store.commit('contentLayout/setEditMode', { mode: 'edit', previousEditMode: 'edit' })
-          break;
+          case 'layout':
+            newMode = 'debug'
+            break;
+
+          case 'debug':
+            newMode = 'edit'
+            break;
+        }
       }
+      this.$store.commit('contentLayout/setEditMode', { mode: newMode, previousEditMode: newMode })
     },
 
     onDragEnd (size) {
@@ -397,8 +418,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+  @import '../assets/css/content-editor.scss'
+</style>
 
+<style lang="scss" scoped>
   $editbar-height: 16;
   $editbar-color: #dd0038;
 
@@ -445,6 +469,7 @@ export default {
     }
 
     .c-editbar {
+      position: relative;
       height: $editbar-height;
       background-color: $editbar-color;
       padding: 1px;
@@ -455,11 +480,6 @@ export default {
       font-family: arial;
       font-size: 12px;
 
-      &:hover {
-        .c-editbar-mode-label{
-          color: blue;
-        }
-      }
 
       .c-editbar-anchor {
         position: absolute;
@@ -478,6 +498,24 @@ export default {
         border-radius: 2px;
 
         background-color: white;
+      }
+
+      .c-selected-mode-style {
+        color: blue;
+        font-weight: 800;
+      }
+      .c-not-selected-mode-style {
+      }
+      .c-editbar-mode-label:hover {
+        color: green;
+      }
+
+      .c-editbar-right {
+        position: absolute;
+        right: 15px;
+        color: white;
+        font-weight: 800;
+        font-size: 11px;
       }
 
       .c-editbar-dump-button {

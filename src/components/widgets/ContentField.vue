@@ -56,9 +56,8 @@
 </template>
 
 <script>
-import copyStyle from '../lib/copyStyle.js'
-import ProtectedTooltwistField from '../lib/ProtectedTooltwistField.js'
-import ContentMixins from '../mixins/ContentMixins'
+import ProtectedTooltwistField from '../../lib/ProtectedTooltwistField.js'
+import ContentMixins from '../../mixins/ContentMixins'
 
 
 export default {

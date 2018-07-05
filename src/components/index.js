@@ -9,7 +9,7 @@ import VueDragDrop from 'vue-drag-drop';
 // Our main class
 import ContentService from '../lib/ContentService.js'
 
-// Our components
+// Editing-related stuff.
 import CrowdhoundMinimal from './CrowdhoundMinimal.vue'
 import ContentContent from './ContentContent.vue'
 import ContentLayoutEditor from './ContentLayoutEditor.vue'
@@ -21,26 +21,28 @@ import ContentElementProps from './ContentElementProps.vue'
 import ContentChildren from './ContentChildren.vue'
 //import ContentChildrenProps from './ContentChildrenProps.vue'
 
-// Editing-related stuff.
-import ContentText from './ContentText.vue'
-import ContentTextProps from './ContentTextProps.vue'
-import ContentFroala from './ContentFroala.vue'
-import ContentFroalaProps from './ContentFroalaProps.vue'
-import ContentField from './ContentField.vue'
-import ContentFieldProps from './ContentFieldProps.vue'
-import ContentForm from './ContentForm.vue'
-import ContentFormProps from './ContentFormProps.vue'
-import ContentSection from './ContentSection.vue'
-import ContentSectionProps from './ContentSectionProps.vue'
+// Widgets
+import ContentText from './widgets/ContentText.vue'
+import ContentTextProps from './widgets/ContentTextProps.vue'
+import ContentFroala from './widgets/ContentFroala.vue'
+import ContentFroalaProps from './widgets/ContentFroalaProps.vue'
+import ContentField from './widgets/ContentField.vue'
+import ContentFieldProps from './widgets/ContentFieldProps.vue'
+import ContentForm from './widgets/ContentForm.vue'
+import ContentFormProps from './widgets/ContentFormProps.vue'
+import ContentSection from './widgets/ContentSection.vue'
+import ContentSectionProps from './widgets/ContentSectionProps.vue'
 import ContentContentProps from './ContentContentProps.vue'
-import ContentContainer from './ContentContainer.vue'
-import ContentContainerProps from './ContentContainerProps.vue'
-import ContentColumns from './ContentColumns.vue'
-import ContentColumnsProps from './ContentColumnsProps.vue'
+import ContentContainer from './widgets/ContentContainer.vue'
+import ContentContainerProps from './widgets/ContentContainerProps.vue'
+import ContentColumns from './widgets/ContentColumns.vue'
+import ContentColumnsProps from './widgets/ContentColumnsProps.vue'
 
 import ContentAdminBlogList from './ContentAdminBlogList.vue'
 import ContentAdminBlogDetails from './ContentAdminBlogDetails.vue'
 
+// Property Types
+import StringProperty from './propertyTypes/StringProperty.vue'
 
 
 import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
@@ -52,7 +54,6 @@ import ContentLayoutStore from '../store/contentLayoutStore.js'
 
 
 
-export let _Vue
 let _content = null
 let _store = null
 
@@ -71,9 +72,6 @@ function install (Vue, options) {
   console.log('Have our _content', _content)
   //_content.checkInitialLoginStatus(false)
   //console.log('Finished checking status')
-
-
-  _Vue = Vue
 
   const isDef = v => v !== undefined
 
@@ -158,7 +156,7 @@ function install (Vue, options) {
   Vue.component('content-toolbox', ContentToolbox)
 
   Vue.component('content-pane', ContentPane)//ZZZZZ ???
-  
+
   Vue.component('content-content', ContentContent)
   Vue.component('content-content-props', ContentContentProps)
   Vue.component('content-children', ContentChildren)

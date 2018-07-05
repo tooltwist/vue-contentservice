@@ -15,10 +15,10 @@
       froala-view(:tag="'div'", v-model="protectedText")
 
     .my-debug-box(v-else-if="isPageMode('debug')")
-      .my-debug-header rich text
-        br
-        | contentId: {{contentId}}
-        br
+      //- .my-debug-header rich text
+      //-   br
+      //-   | contentId: {{contentId}}
+      //-   br
       froala(:tag="'div'", :config="config", v-model="protectedText", v-on:click="select(element)")
 
     .x(v-else-if="isPageMode('edit')")
@@ -34,13 +34,13 @@
 
 <script>
 
-import ContentMixins from '../mixins/ContentMixins'
+import ContentMixins from '../../mixins/ContentMixins'
 
 
 const CLEAN = ''
-const DIRTY = '- waiting to save -'
-const SAVING = '- saving -'
-const SAVED = '- your changes have been saved -'
+const DIRTY = 'waiting to save'
+const SAVING = 'saving'
+const SAVED = 'your changes have been saved'
 const ERROR = 'warning: your changes have not been saved'
 const SAVE_INTERVAL = 2000
 
@@ -78,6 +78,7 @@ export default {
           // 'insertFile', 'insertVideo',
           'undo', 'redo'
         ],
+        charCounterCount: false,
 
         events: {
           'froalaEditor.initialized': function () {
@@ -191,7 +192,7 @@ export default {
   },
 
   created () {
-    console.log(`TooltwistFroala.created`)
+    //console.log(`TooltwistFroala.created`)
 
     // See if we have a license key for Froala
     // console.log('this.$content.options=', this.$content.options)
@@ -267,15 +268,15 @@ export default {
 
 <style lang="scss" scoped>
 .my-debug-box {
-  border-left: dashed 1px #ccc;
-  border-bottom: dashed 1px #ccc;
-  border-right: dashed 1px #ccc;
-  margin: 1px;
+  //- border-left: dashed 1px #ccc;
+  //- border-bottom: dashed 1px #ccc;
+  //- border-right: dashed 1px #ccc;
+  //- margin: 1px;
 
-  .my-debug-header {
-    background-color: #ccc;
-    color: black;
-    font-size: 9px;
-  }
+  //- .my-debug-header {
+  //-   background-color: #ccc;
+  //-   color: black;
+  //-   font-size: 9px;
+  //- }
 }
 </style>

@@ -30,11 +30,9 @@ export default {
   },
   methods: {
     dragStart () {
-      console.log(`dragStart()`)
       this.$store.commit('contentLayout/dragStart', { })
     },
     dragStop () {
-      console.log(`dragStop()`)
       this.$store.commit('contentLayout/dragStop', { })
     }
   },
