@@ -1,11 +1,11 @@
 <template lang="pug">
 
   // Display the children of this element
-  .ch-children(v-if="element && element.children", :class="debugClass")
+  .ch-children(v-if="element && element.children", :class="showDropAreas ? 'c-show-drop-areas' : ''")
     div(v-if="extraDebug")
       | &lt;content-children&gt;
       br
-    .my-children-debug(v-if="pageEditMode=='debug'") {{element.children && element.children.length}} children
+    //.my-children-debug(v-if="pageEditMode=='debug'") {{element.children && element.children.length}} children
 
     // Display each child
     .loop(v-for="child in element.children" v-bind:key="child.id")
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import ContentFunctions from '../lib/ContentFunctions'
+import ContentMixins from '../mixins/ContentMixins'
 
 export default {
   name: 'content-children',
@@ -46,6 +46,9 @@ export default {
       chickens2: 'kljgasdgy'
     }
   },
+  mixins: [
+    ContentMixins
+  ],
   methods: {
     // The drop event normally provides (data, event) but we've added (element, child, ...) in front.
     handleDrop (element, child, data, event) {
@@ -75,34 +78,39 @@ export default {
       }
     }
   },
-  computed: {
-    ...ContentFunctions.computed,
-  },
 
-  created () {
-    console.error(`ContentFunctions=`, ContentFunctions.computed)
-  }
 }
 </script>
 
 <style lang="scss" scoped>
-.my-children-debug-outline {
-  border: dashed 1px green;
-  margin: 1px;
-}
-.my-children-debug {
-  background-color: green;
-  color: white;
-  font-size: 9px;
-  text-align: center;
-}
-.droparea {
-  display: block;
-  min-height: 15px;
-  border: dashed 1px magenta;
-}
-.dropover {
-  background-color: #ccc;
-  border: dashed 1px cyan;
+.ch-children {
+
+  &.c-show-drop-areas {
+    margin: 2px;
+    border: dotted 1px blue;
+    padding: 1px;
+  }
+
+  .my-children-debug-outline {
+    border: dashed 1px green;
+    margin: 1px;
+  }
+  .my-children-debug {
+    background-color: green;
+    color: white;
+    font-size: 9px;
+    text-align: center;
+  }
+  .droparea {
+    display: block;
+    min-height: 15px;
+    //border: dashed 1px magenta;
+    //background-color: #ccc;
+    background-image: url(../assets/drop-bg-1.png);
+  }
+  .dropover {
+    background-color: #ccc;
+    border: dashed 1px cyan;
+  }
 }
 </style>

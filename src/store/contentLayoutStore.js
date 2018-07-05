@@ -3,7 +3,7 @@
  *  in the properties pane.
  */
 //import { sanitizeLayout, safeJson } from '~/lib/Tooltwist.js'
-import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from './lib/hierarchy'
+import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
 
 //export const namespaced = true
 
@@ -31,6 +31,7 @@ export const state = () => {
     // An element from Crowdhound with the layout as JSON in the description field.
     // This is only set if we were given an anchor.
     // If it is null we don't save here.
+    anchor: null,
     crowdhoundElement: null,
 
     // Currently loaded layout.
@@ -74,12 +75,6 @@ export const actions = {
 
     console.log(`In Action contentLayout/setContent(type=${type}, layout=${layout?'yes':'no'}, anchor=${anchor})`)
 
-//console.error('state=', state)
-    // add links, etc to the hierarchy of elements
-    // let layout = sanitizeLayout(element, null)
-    //let sanitized = this.$content.sanitizeLayout(element)
-//    state.layout = layout
-
     if (layout) {
       //state.layout = element ? sanitizeLayout(element) : null
       commit('setLayout', { layout: layout, crowdhoundElement: null, editable: false })
@@ -88,27 +83,6 @@ export const actions = {
     } else {
       console.error(`Action contentLayout/setContent should be passed either anchor or layout`)
     }
-
-      //state.propertyElement = null
-
-
-    // console.log(`In Action contentLayout/setContent(${type})`)
-    // switch (type) {
-    //   case 'manual':
-    //     console.log(`We've been given a fixed layout:`, layout)
-    //     break;
-    //
-    //   case 'layout':
-    //     console.log(`Need to load ${anchor}`)
-    //     break;
-    //
-    //   case 'individual':
-    //     console.log(`Individual components`)
-    //     break;
-    //
-    //   default:
-    //     console.error(`Action contentLayout/setContent passed unknown type $`)
-    // }
   },
 
   // setPropertyElement ({ commit }, { element }) {
@@ -199,7 +173,7 @@ export const actions = {
 export const mutations = {
 
   // Set the current layout, displayed in the middle panel.
-  setLayout (state, { layout, crowdhoundElement, /*tenant, elementId, */ editable /*, element */ } ) {
+  setLayout (state, { layout, anchor, crowdhoundElement, /*tenant, elementId, */ editable /*, element */ } ) {
     //console.log('In Mutation contentLayout/setLayout()', state)
     console.log('In Mutation contentLayout/setLayout()', layout)
 
@@ -209,6 +183,7 @@ export const mutations = {
     } else {
       console.error(`Mutation contentLayout/setLayout requires 'layout' parameter`)
       state.layout = null
+      state.anchor = null
       state.crowdhoundElement = null
       state.editable = false
 
@@ -221,8 +196,10 @@ export const mutations = {
 
     if (crowdhoundElement) {
       state.crowdhoundElement = crowdhoundElement
+      state.anchor = anchor
     } else {
       state.crowdhoundElement = null
+      state.anchor = null
     }
 
     if (editable) {
@@ -230,44 +207,46 @@ export const mutations = {
     } else {
       state.editable = false
     }
-
-//console.error('state=', state)
-    // add links, etc to the hierarchy of elements
-    // let layout = sanitizeLayout(element, null)
-    //let sanitized = this.$content.sanitizeLayout(element)
-//    state.layout = layout
-
-    //state.propertyElement = null
   },
 
   // Set the element shown in the properties panel.
   // This *should* be an element in the current layout
   setPropertyElement (state, { element } ) {
-    console.log('In Mutation contentLayout/setPropertyElement()', element)
+    // console.log('In Mutation contentLayout/setPropertyElement()', element)
     //return
-    console.log('State is ', state)
+    // console.log('State is ', state)
     // Clone the element
     //let duplicate = JSON.parse(JSON.stringify(data.element));
-    console.log(`Before`)
+    // console.log(`Before`)
     state.propertyElement = element
-    console.log(`After`)
+    //console.log(`After`)
   },
 
   // Set the screen mode [view | edit | layout | debug]
   setEditMode (state, { mode, previousEditMode }) {
     //ZZZZ Check the parameters
-    console.log(`mutation contentLayout/setEditMode(${mode}, ${previousEditMode})`)
+    // console.log(`mutation contentLayout/setEditMode(${mode}, ${previousEditMode})`)
     state.mode = mode
     if (previousEditMode) {
       state.previousEditMode = previousEditMode
     }
   },
 
+  // Start dragging. This should temporarily switch to layout mode.
+  dragStart (state, { }) {
+    console.log(`mutation contentLayout/dragStart()`)
+    state.dragging = true
+  },
+  dragStop (state, { }) {
+    console.log(`mutation contentLayout/dragStop()`)
+    state.dragging = false
+  },
+
   // Set the screen mode [view | edit | layout | debug]
   //ZZZZ deprecate this
   setMode (state, { mode }) {
     //ZZZZ Check the parameters
-    console.log(`mutation contentLayout/setMode(${mode})`)
+    // console.log(`mutation contentLayout/setMode(${mode})`)
     state.mode = mode
   },
 
@@ -479,6 +458,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       // Save the layout in our state store.
       let sanitized = vm.$content.util.sanitizeLayout(layout)
       commit('setLayout', {
+        anchor: fullAnchor,
         layout: sanitized,
         crowdhoundElement: elementContainingLayout,
         // tenant: elementContainingLayout.tenant,
@@ -499,10 +479,10 @@ export const namespaced = true
 
 
 
-// export default {
-//   "namespaced": true,
-//   state,
-//   mutations,
-//   getters,
-//   actions,
-// }
+export default {
+  "namespaced": true,
+  state,
+  mutations,
+  getters,
+  actions,
+}

@@ -1,13 +1,14 @@
 <template lang="pug">
 .my-page.container.is-fluid.is-fullheight(v-hotkey="keymap")
+  .has-text-centered(v-if="extraDebug")
+    | &lt;content-pane&gt;
+    br
+    | pageEditMode={{pageEditMode}}
+    br
 
-  | &lt;content-triple-pane
-  span(v-if="editable") &nbsp;editable
-  | &gt;
-  br
-  .multipane-container
+  .multipane-container(v-if="editcontext.showLeftPane")
     // https://github.com/bajaniyarohit/vue-split-panel
-    split.my-split(:j1="editcontext.showLeftPane", :j2="editcontext.showRightPane", :j3="cPageEditMode")
+    split.my-split(:j1="editcontext.showLeftPane", :j2="editcontext.showRightPane", :j3="pageEditMode")
       // Left
       split-area.pane.leftpane(v-show="leftSize > 0", :size="leftSize", :minSize="200")
         slot(name="left-pane")
@@ -16,10 +17,43 @@
 
       // Middle
       split-area.pane.middlepane(:size="middleSize", :minSize="300")
-        .tt-editable-header(v-if="cPageEditMode !== 'view'" @click.stop="cycleEditMode")
-          .tt-editable-mode mode is {{cPageEditMode}}
+        .tt-editable-header(v-if="pageEditMode !== 'view'" @click.stop="cycleEditMode")
+          .tt-editable-mode mode is {{pageEditMode}}
           | &nbsp;{{ $store.state.contentLayout.saveMsg }}
-          .tt-dump-button(zv-if="cPageEditMode === 'layout'")
+          .tt-dump-button(zv-if="pageEditMode === 'layout'")
+            | &nbsp;&nbsp;
+            a(@click.stop="dump") dump
+
+        slot
+
+
+
+      // Right
+      split-area.rightpane(v-show="rightSize > 0", :size="rightSize", :minSize="200")
+        split.my-split(style="height: 100%; width: 100%;", :direction="'vertical'")
+
+          // Properties Pane
+          split-area.pane.properties-pane(:size="50", :minSize="150")
+            h1.title Properties
+            //content-element-props(:element="this.$store.state.contentLayout.propertyElement")
+            content-element-props(:element="thePropertyElement")
+
+          // Components pane
+          split-area.pane.components-pane(:size="50", :minSize="150")
+            h1.title Toolbox
+            content-toolbox
+
+  .multipane-container(v-else)
+    // https://github.com/bajaniyarohit/vue-split-panel
+    split.my-split(:j1="editcontext.showLeftPane", :j2="editcontext.showRightPane", :j3="pageEditMode")
+
+
+      // Middle
+      split-area.pane.middlepane(:size="middleSize", :minSize="300")
+        .tt-editable-header(v-if="pageEditMode !== 'view'" @click.stop="cycleEditMode")
+          .tt-editable-mode mode is {{pageEditMode}}
+          | &nbsp;{{ $store.state.contentLayout.saveMsg }}
+          .tt-dump-button(zv-if="pageEditMode === 'layout'")
             | &nbsp;&nbsp;
             a(@click.stop="dump") dump
 
@@ -43,12 +77,27 @@
             content-toolbox
 
 
-
 </template>
 
 <script>
+
+
+
+
+/*
+
+
+            THIS IS DEPRECATED.
+            USE ContentLayoutPanes INSTEAD.
+
+
+*/
+
+
+
+
 import Vue from 'vue'
-//import * as contentLayoutStore from '../store.js'
+import ContentMixins from '../mixins/ContentMixins'
 
 let SAVE_MANUAL = 1
 let SAVE_LAYOUT = 2
@@ -60,7 +109,18 @@ let previousTimeStamp = 0
 export default {
   name: 'content-triple-pane',
   props: {
-    editcontext: Object,
+
+    leftPane: {
+      required: true,
+      type: Boolean
+    },
+
+
+
+    editcontext: {
+      required: true,
+      type: Object
+    },
     editable: String,
     contentdata: Object, // to allow dump
     toolbox: Object,
@@ -83,14 +143,10 @@ export default {
 
     }
   },
+  mixins: [
+    ContentMixins
+  ],
   computed: {
-
-    cPageEditMode: function () {
-      if (this.$store && this.$store.state && this.$store.state.contentLayout && this.$store.state.contentLayout.mode) {
-        return this.$store.state.contentLayout.mode
-      }
-      return 'view'
-    },
 
     saveMode: function () {
       if (this.contentdata) {
@@ -141,7 +197,7 @@ export default {
       return this.editcontext.leftPaneSize
     },
     rightSize: function () {
-      if (this.cPageEditMode === 'view' || this.cPageEditMode === 'live') {
+      if (this.pageEditMode === 'view' || this.pageEditMode === 'live') {
         return 0 // Hide the right pane
       }
       if (this.editcontext.rightPaneSize < 0 || !this.editcontext.showRightPane) {
@@ -267,8 +323,8 @@ export default {
       Vue.set(this.editcontext, 'leftPaneSize', 20)
     }
     //- //ZZZ
-    //- if (typeof(this.cPageEditMode) === 'undefined') {
-    //-   //console.log('Setting cPageEditMode')
+    //- if (typeof(this.pageEditMode) === 'undefined') {
+    //-   //console.log('Setting pageEditMode')
     //-   Vue.set(this.editcontext, 'pageEditMode', 'view')
     //- }
 
@@ -330,7 +386,6 @@ export default {
     }
     console.log('+++ GOOD EVENING 9')
     */
-    console.log('+++ GOOD EVENING 1z (end of created())')
 
   }
 }

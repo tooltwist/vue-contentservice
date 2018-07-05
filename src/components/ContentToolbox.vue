@@ -3,7 +3,8 @@
   .toolbox-pane
     .my-components
       .my-widget(v-for="component in theToolbox")
-        drag(:transfer-data="component")
+        drag(:transfer-data="component", @dragstart="dragStart", @dragend="dragStop")
+          //.drag(:transfer-data="component")
           i(v-if="component.iconClass", :class="component.iconClass").fa.fa-2x
           i(v-else).fa.fa-2x.fa-file-word-o
           div(slot="image")
@@ -25,6 +26,16 @@ export default {
   data: function () {
     return {
       theToolbox: { }
+    }
+  },
+  methods: {
+    dragStart () {
+      console.log(`dragStart()`)
+      this.$store.commit('contentLayout/dragStart', { })
+    },
+    dragStop () {
+      console.log(`dragStop()`)
+      this.$store.commit('contentLayout/dragStop', { })
     }
   },
   created: function () {

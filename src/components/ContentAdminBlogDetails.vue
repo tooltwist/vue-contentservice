@@ -35,7 +35,7 @@ div
 </template>
 
 <script>
-import ContentFunctions from '../lib/ContentFunctions'
+import ContentMixins from '../mixins/ContentMixins'
 
 
 const CLEAN = ''
@@ -72,9 +72,10 @@ export default {
       selectError: false
     }
   },
+  mixins: [
+    ContentMixins
+  ],
   computed: {
-
-    ...ContentFunctions.computed,
 
     extraDebug: function () {
       return true

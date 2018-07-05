@@ -1,6 +1,6 @@
 <template lang="pug">
-  .x(v-bind:class="[(cPageEditMode=='debug') ? 'ch-columns-outline' : '']")
-    .zzz(v-if="cPageEditMode=='debug'")
+  .x(v-bind:class="[(pageEditMode=='debug') ? 'ch-columns-outline' : '']")
+    .zzz(v-if="pageEditMode=='debug'")
       .ch-columns-debug {{element.children.length}} columns
     .columns
       // Children are columns (and may not have a type sprecified)
@@ -10,31 +10,17 @@
 </template>
 
 <script>
+import ContentMixins from '../mixins/ContentMixins'
 
 export default {
   name: 'content-columns',
-  components: {
-  },
   props: {
     editcontext: Object,
     element: Object,
   },
-  data: function () {
-    return {
-    }
-  },
-  methods: {
-    /* itemClick (node) {
-      console.log(node.model.text + ' clicked !')
-    } */
-  },
-  computed: {
-
-    cPageEditMode: function () {
-      return this.$store.state.contentLayout.mode
-    }
-  }
-
+  mixins: [
+    ContentMixins
+  ],
 }
 </script>
 

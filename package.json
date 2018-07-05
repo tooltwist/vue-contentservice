@@ -1,45 +1,99 @@
 {
   "name": "vue-contentservice",
-  "version": "0.0.11",
-  "main": "src/main.js",
-  "zmain": "dist/vue-contentservice.cjs.js",
-  "zmodule": "dist/vue-contentservice.cjs.js",
-  "license": "MIT",
-  "description": "Test junk",
-  "author": "Philip Callender <philip.callender@tooltwist.com",
+  "version": "0.1.23",
   "private": false,
   "scripts": {
-    "build": "yarn bili src/main.js --plugin vue --plugin pug -plugin flow",
-    "patch-release": "npm version patch && npm publish && git push --follow-tags"
+    "serve": "vue-cli-service serve --open",
+    "build": "vue-cli-service build",
+    "test": "vue-cli-service build",
+    "e2e": "vue-cli-service e2e",
+    "lint": "vue-cli-service lint",
+    "build-bundle": "vue-cli-service build --target lib --name vue-contentservice ./src/components/index.js",
+    "e2e:open": "vue-cli-service e2e:open",
+    "patch-release": "npm version patch && npm publish --registry=https://registry.npmjs.org/ && git push --follow-tags",
+    "p1": "npm version patch",
+    "p2": "npm publish",
+    "p3": "git push --follow-tags",
+    "test:e2e": "vue-cli-service test:e2e",
+    "test:unit": "vue-cli-service test:unit"
   },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bulma": "^0.7.1",
+    "debounce": "^1.1.0",
+    "jwt-decode": "^2.2.0",
+    "query-string": "^6.0.0",
+    "v-hotkey": "^0.2.0",
+    "vue": "^2.5.16",
+    "vue-awesome": "^3.0.3",
+    "vue-drag-drop": "^1.1.2",
+    "vue-froala-wysiwyg": "^2.8.4",
+    "vue-split-panel": "^1.0.4",
+    "vuex": "^3.0.1"
+  },
+  "peerDependencies": {
+    "vue-split-panel": "^1.0.4"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.0-beta.15",
+    "@vue/cli-plugin-e2e-cypress": "^3.0.0-rc.3",
+    "@vue/cli-plugin-eslint": "^3.0.0-beta.15",
+    "@vue/cli-plugin-unit-mocha": "^3.0.0-beta.15",
+    "@vue/cli-service": "^3.0.0-beta.15",
+    "@vue/test-utils": "^1.0.0-beta.16",
+    "babel-preset-vue-app": "^2.0.0",
+    "chai": "^4.1.2",
+    "eslint": "^5.0.1",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-vue": "^4.5.0",
+    "node-sass": "^4.9.0",
+    "pug": "^2.0.3",
+    "pug-plain-loader": "^1.0.0",
+    "sass-loader": "^7.0.3",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tooltwist/vue-contentservice.git"
+  },
+  "files": [
+    "dist/*",
+    "src/*",
+    "public/*",
+    "*.json",
+    "*.js"
+  ],
+  "author": "Philip Callender <philip.callender@tooltwist.com",
+  "description": "VueJS plugin for contentservice.io",
+  "license": "MIT",
+  "main": "./dist/vue-contentservice.common.js",
   "keywords": [
     "vue",
     "tooltwist",
     "contentservice"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tooltwist/vue-authservice.git"
-  },
-  "files": [
-    "dist/",
-    "src"
-  ],
-  "dependencies": {
-    "axios": "^0.18.0",
-    "jwt-decode": "^2.2.0",
-    "query-string": "^6.0.0",
-    "v-hotkey": "^0.2.0"
-  },
-  "devDependencies": {
-    "babel-helper-vue-jsx-merge-props": "^2.0.3",
-    "bili": "^3.0.14",
-    "vue-froala-wysiwyg": "^2.7.6",
-    "rollup-plugin-flow": "^1.1.1",
-    "rollup-plugin-pug": "^0.1.6",
-    "rollup-plugin-vue": "^3.0.0",
-    "vue-template-compiler": "^2.5.16",
-    "parse5": "^4.0.0",
-    "vue": "^2.5.16"
-  }
+  ]
 }

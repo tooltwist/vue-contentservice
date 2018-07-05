@@ -15,7 +15,7 @@
 
 <script>
 import Vue from 'vue'
-import ContentFunctions from '../lib/ContentFunctions'
+import ContentMixins from '../mixins/ContentMixins'
 
 // Prevent double keypresses
 let previousTimeStamp = 0
@@ -25,10 +25,10 @@ export default {
   props: {
     editable: String,
   },
+  mixins: [
+    ContentMixins
+  ],
   computed: {
-
-    ...ContentFunctions.computed,
-
     keymap () {
       let self = this
       return {

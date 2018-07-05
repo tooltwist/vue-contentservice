@@ -27,7 +27,7 @@
 
 <script>
   import axios from 'axios'
-  import axiosError from '~/lib/axiosError.js'
+  import axiosError from '../lib/axiosError.js'
   import ContentAdminBlogListElement from './ContentAdminBlogListElement.vue'
 
   export default {

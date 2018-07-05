@@ -1,20 +1,20 @@
 <template lang="pug">
 
-  //.tt-form.tt-form-outline(v-bind:class="[(cPageEditMode=='debug') ? 'tt-element-outline' : '']")
+  //.tt-form.tt-form-outline(v-bind:class="[(pageEditMode=='debug') ? 'tt-element-outline' : '']")
   .x
     //| FORM
     //br
 
     // Preview mode
-    .tt-form(v-if="cPageEditMode==='view'")
+    .tt-form(v-if="pageEditMode==='view'")
       content-children(:editcontext="editcontext", :element="element")
 
     // Edit mode
-    .tt-form(v-else-if="cPageEditMode==='edit'", v-on:click.stop="select(element)")
+    .tt-form(v-else-if="pageEditMode==='edit'", v-on:click.stop="select(element)")
       content-children(:editcontext="editcontext", :element="element")
 
     // Debug mode
-    .x(v-else-if="cPageEditMode==='debug'", v-on:click.stop="select(element)")
+    .x(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
       .tt-form-debug-heading form
       .tt-form
         content-children(:editcontext="editcontext", :element="element")
@@ -27,6 +27,8 @@
 
 <script>
 import copyStyle from '../lib/copyStyle.js'
+import ContentMixins from '../mixins/ContentMixins'
+
 
 export default {
   name: 'content-form',
@@ -34,6 +36,9 @@ export default {
     editcontext: Object,
     element: Object,
   },
+  mixins: [
+    ContentMixins
+  ],
   data: function () {
     return {
       'editing': false
@@ -42,7 +47,7 @@ export default {
   methods: {
     itemClick (node) {
       // console.log('clicked !')
-      if (this.cPageEditMode != 'edit') {
+      if (this.pageEditMode != 'edit') {
         this.editing = false
       } else {
         this.editing = !this.editing
@@ -53,20 +58,16 @@ export default {
     select (element) {
       console.log('Form.select()')
 
-      if (this.cPageEditMode != 'view') {
+      if (this.pageEditMode != 'view') {
         this.$store.commit('contentLayout/setPropertyElement', { element })
       }
     }
   },
   computed: {
 
-    cPageEditMode: function () {
-      return this.$store.state.contentLayout.mode
-    },
-
     textStyle: function () {
       var style = { }
-      if (this.cPageEditMode == 'edit') {
+      if (this.pageEditMode == 'edit') {
         style['cursor'] = 'pointer'
       }
       if (this.editing) {

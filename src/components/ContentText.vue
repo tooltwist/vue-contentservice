@@ -32,7 +32,7 @@ div
 
 <script>
 
-import ContentFunctions from '../lib/ContentFunctions'
+import ContentMixins from '../mixins/ContentMixins'
 
 const CLEAN = ''
 const DIRTY = '- waiting to save -'
@@ -73,9 +73,10 @@ export default {
       saveTimeout: null,
     }
   },
+  mixins: [
+    ContentMixins
+  ],
   computed: {
-
-    ...ContentFunctions.computed,
 
     useCrowdhound () {
       return typeof(this.contentId) != 'undefined'

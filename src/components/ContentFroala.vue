@@ -34,7 +34,7 @@
 
 <script>
 
-import ContentFunctions from '../lib/ContentFunctions'
+import ContentMixins from '../mixins/ContentMixins'
 
 
 const CLEAN = ''
@@ -93,18 +93,10 @@ export default {
       }
     }
   },
+  mixins: [
+    ContentMixins
+  ],
   computed: {
-
-    ...ContentFunctions.computed,
-
-    //- extraDebug: function () {
-    //-   return true
-    //-   //return this.$store.state.contentLayout.extraDebug
-    //- },
-    //-
-    //- pageEditMode: function () {
-    //-   return this.$store.state.contentLayout.mode
-    //- },
 
     useCrowdhound () {
       //return true

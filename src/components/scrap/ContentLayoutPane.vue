@@ -14,9 +14,9 @@
 .my-page.container.is-fluid.is-fullheight(zv-hotkey="keymap")
   | content-layout-pane
 
-  .tt-editable-header(v-if="cPageEditMode !== 'view'" @click.stop="switchMode")
-    .tt-editable-mode mode is {{cPageEditMode}}
-    .tt-dump-button(zv-if="cPageEditMode === 'layout'")
+  .tt-editable-header(v-if="pageEditMode !== 'view'" @click.stop="switchMode")
+    .tt-editable-mode mode is {{pageEditMode}}
+    .tt-dump-button(zv-if="pageEditMode === 'layout'")
       | &nbsp;&nbsp;
       a(@click.stop="dump") dump
 
@@ -55,38 +55,6 @@ export default {
   },
   computed: {
 
-    cPageEditMode: function () {
-      return this.$store.state.contentLayout.mode
-    },
-
-    //- leftSize: function () {
-    //-   //console.log(`leftPaneSize=${this.editcontext.leftPaneSize}, showLeftPane=${this.editcontext.showLeftPane}`)
-    //-   if (this.editcontext.leftPaneSize < 0 || !this.editcontext.showLeftPane) {
-    //-     return 0
-    //-   } else if (this.editcontext.leftPaneSize > 100) {
-    //-     return 100
-    //-   }
-    //-   return this.editcontext.leftPaneSize
-    //- },
-    //- rightSize: function () {
-    //-   if (this.cPageEditMode === 'view' || this.cPageEditMode === 'live') {
-    //-     return 0 // Hide the right pane
-    //-   }
-    //-   if (this.editcontext.rightPaneSize < 0 || !this.editcontext.showRightPane) {
-    //-     return 0
-    //-   }
-    //-   if (this.editcontext.rightPaneSize + this.editcontext.leftSize > 100) {
-    //-     return 100 - this.leftSize
-    //-   }
-    //-   return this.editcontext.rightPaneSize
-    //- },
-    //- middleSize: function () {
-    //-   let size = 100 - (this.leftSize + this.rightSize)
-    //-   if (size < 0) {
-    //-     return 0
-    //-   }
-    //-   return size
-    //- },
     keymap () {
       let self = this
       return {
@@ -94,15 +62,15 @@ export default {
         'alt+esc': {
 
           keydown: function () {
-            // console.log(`DOWN ${self.cPageEditMode}`)
+            // console.log(`DOWN ${self.pageEditMode}`)
             //console.log(`=>`, self.editcontext)
-            if (self.cPageEditMode === 'view') {
+            if (self.pageEditMode === 'view') {
               // Switch to one of the edit modes
               self.editcontext.setMode(self.previousEditMode)
 
             } else {
               // Switch back to view mode
-              self.previousEditMode = self.cPageEditMode
+              self.previousEditMode = self.pageEditMode
               self.editcontext.setMode('view')
             }
           },
@@ -115,8 +83,8 @@ export default {
   },
   methods: {
     switchMode () {
-      //console.log(`switchMode, from ${this.cPageEditMode}`)
-      switch (this.cPageEditMode) {
+      //console.log(`switchMode, from ${this.pageEditMode}`)
+      switch (this.pageEditMode) {
         case 'edit':
           this.editcontext.setMode('layout');
           break;
@@ -135,7 +103,7 @@ export default {
           break;
         */
       }
-      this.mode = this.cPageEditMode;
+      this.mode = this.pageEditMode;
     },
     dump () {
       console.log('dump', this.editcontext)
@@ -261,7 +229,7 @@ export default {
     // let self = this
     // this.editcontext.setMode = function (mode) {
     //   console.log(`this.editcontext.setMode(${mode})`)
-    //   console.log(`was ${self.cPageEditMode} -- ${this.pageEditMode}`)
+    //   console.log(`was ${self.pageEditMode} -- ${this.pageEditMode}`)
     //     self.editcontext.pageEditMode = mode;
     //     this.pageEditMode = mode;
     // }

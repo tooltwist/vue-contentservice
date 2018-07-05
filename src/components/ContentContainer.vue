@@ -1,18 +1,18 @@
 <template lang="pug">
 
 
-  .tt-container(v-bind:class="[(cPageEditMode=='debug') ? 'tt-container-outline' : '']")
+  .tt-container(v-bind:class="[(pageEditMode=='debug') ? 'tt-container-outline' : '']")
 
     // Preview mode
-    .container(v-if="cPageEditMode==='view'", v-on:click.stop="select(element)")
+    .container(v-if="pageEditMode==='view'", v-on:click.stop="select(element)")
       content-children(:editcontext="editcontext", :element="element")
 
     // Edit mode
-    .container(v-else-if="cPageEditMode==='edit'", v-on:click.stop="select(element)")
+    .container(v-else-if="pageEditMode==='edit'", v-on:click.stop="select(element)")
       content-children(:editcontext="editcontext", :element="element")
 
     // Debug mode
-    .container(v-else-if="cPageEditMode==='debug'", v-on:click.stop="select(element)")
+    .container(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
       .tt-container-debug-heading container
       content-children(:editcontext="editcontext", :element="element")
 
@@ -25,6 +25,8 @@
 
 <script>
 import copyStyle from '../lib/copyStyle.js'
+import ContentMixins from '../mixins/ContentMixins'
+
 
 export default {
   name: 'content-container',
@@ -34,15 +36,14 @@ export default {
     editcontext: Object,
     element: Object,
   },
+  mixins: [
+    ContentMixins
+  ],
   data: function () {
     return {
     }
   },
   computed: {
-
-    cPageEditMode: function () {
-      return this.$store.state.contentLayout.mode
-    },
 
     sectionStyle: function () {
       let style = { }
@@ -57,7 +58,7 @@ export default {
   },
   methods: {
     select (element) {
-      if (this.cPageEditMode != 'view') {
+      if (this.pageEditMode != 'view') {
         this.$store.commit('contentLayout/setPropertyElement', { element })
       }
     },

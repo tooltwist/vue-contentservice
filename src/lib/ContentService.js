@@ -12,11 +12,12 @@
 //import { install } from './install'
 import jwtDecode from 'jwt-decode'
 import axios from 'axios'
-import axiosError from './lib/axiosError2.js'
+import axiosError from './axiosError.js'
 import QueryString from 'query-string'
-import { assert, inBrowser } from './misc'
+import { assert, inBrowser } from '../components/misc'
 
-import { safeJson } from './lib/hierarchy.js'
+// import { safeJson } from './hierarchy.js'
+import * as util from './hierarchy.js'
 
 
 
@@ -182,9 +183,9 @@ class Contentservice {
     return this.knownElementTypes[layoutType]
   }
 
-  safeJSON (json) {
-    return safeJson(json)
-  }
+  // safeJSON (json) {
+  //   return util.safeJson(json)
+  // }
 
   //----------------------------------------------------------------------------//
   //                          NEW STUFF FROM CROWDHOUND                         //
@@ -290,7 +291,7 @@ class Contentservice {
         method: 'get',
         url,
         headers: {
-          // 'Authorization': 'Bearer ' + this.$authservice.jwt,
+          // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -347,7 +348,7 @@ class Contentservice {
         method: 'put',
         url,
         headers: {
-          // 'Authorization': 'Bearer ' + this.$authservice.jwt,
+          // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -1111,7 +1112,6 @@ class Contentservice {
 }
 
 // Add the hierarchy manipulation functions
-import * as util from './lib/hierarchy.js'
 Contentservice.prototype.util = util
 
 Contentservice.version = '__VERSION__'

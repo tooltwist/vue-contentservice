@@ -1,46 +1,46 @@
 <template lang="pug">
 
-  .x(v-bind:class="[(cPageEditMode=='debug') ? 'tt-field-outline' : '']")
+  .x(v-bind:class="[(pageEditMode=='debug') ? 'tt-field-outline' : '']")
 
     // Preview mode
-    .tt-field(v-if="cPageEditMode==='view'")
+    .tt-field(v-if="pageEditMode==='view'")
       .field
         // Label
         .label(@click="clickEditLabel") {{protectedLabel}}
         // Input field
         .control
-          input.input(@click="clickEditPlaceholder" type="text", :placeholder="protectedPlaceholder", :readonly="((cPageEditMode=='view') ? '' : 'readonly')")
+          input.input(@click="clickEditPlaceholder" type="text", :placeholder="protectedPlaceholder", :readonly="((pageEditMode=='view') ? '' : 'readonly')")
         // Help
         p.help(@click="clickEditHelp") {{protectedHelp}}
 
     // Edit mode
-    .tt-field(v-else-if="cPageEditMode==='edit'", v-on:click.stop="select(element)")
+    .tt-field(v-else-if="pageEditMode==='edit'", v-on:click.stop="select(element)")
       .field(v-on:click="select(element)")
         // Label
         .label(@click="clickEditLabel") {{protectedLabel}}
-        input.input.tt-field-edit(v-if="cPageEditMode=='edit' && editingLabel", v-model="protectedLabel")
+        input.input.tt-field-edit(v-if="pageEditMode=='edit' && editingLabel", v-model="protectedLabel")
         // Input field
         .control
-          input.input(@click="clickEditPlaceholder" type="text", :placeholder="protectedPlaceholder", :readonly="((cPageEditMode=='view') ? '' : 'readonly')")
-          //input.input.tt-field-edit(v-if="cPageEditMode=='edit' && editingPlaceholder", v-model="protectedPlaceholder")
+          input.input(@click="clickEditPlaceholder" type="text", :placeholder="protectedPlaceholder", :readonly="((pageEditMode=='view') ? '' : 'readonly')")
+          //input.input.tt-field-edit(v-if="pageEditMode=='edit' && editingPlaceholder", v-model="protectedPlaceholder")
         // Help
         p.help(@click="clickEditHelp") {{protectedHelp}}
-        //input.input.tt-field-edit(v-if="cPageEditMode=='edit' && editingHelp", v-model="protectedHelp")
+        //input.input.tt-field-edit(v-if="pageEditMode=='edit' && editingHelp", v-model="protectedHelp")
 
     // Debug mode
-    .tt-field(v-else-if="cPageEditMode==='debug'", v-on:click.stop="select(element)")
+    .tt-field(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
       .tt-field-debug-heading field
       .field(v-on:click="select(element)")
         // Label
         .label(@click="clickEditLabel") {{protectedLabel}}
-        input.input.tt-field-edit(v-if="cPageEditMode=='edit' && editingLabel", v-model="protectedLabel")
+        input.input.tt-field-edit(v-if="pageEditMode=='edit' && editingLabel", v-model="protectedLabel")
         // Input field
         .control
-          input.input(@click="clickEditPlaceholder" type="text", :placeholder="protectedPlaceholder", :readonly="((cPageEditMode=='view') ? '' : 'readonly')")
-          input.input.tt-field-edit(v-if="cPageEditMode=='edit' && editingPlaceholder", v-model="protectedPlaceholder")
+          input.input(@click="clickEditPlaceholder" type="text", :placeholder="protectedPlaceholder", :readonly="((pageEditMode=='view') ? '' : 'readonly')")
+          input.input.tt-field-edit(v-if="pageEditMode=='edit' && editingPlaceholder", v-model="protectedPlaceholder")
         // Help
         p.help(@click="clickEditHelp") {{protectedHelp}}
-        input.input.tt-field-edit(v-if="cPageEditMode=='edit' && editingHelp", v-model="protectedHelp")
+        input.input.tt-field-edit(v-if="pageEditMode=='edit' && editingHelp", v-model="protectedHelp")
 
     // Live
     .tt-field(v-else)
@@ -49,7 +49,7 @@
         .label(@click="clickEditLabel") {{protectedLabel}}
         // Input field
         .control
-          input.input(@click="clickEditPlaceholder" type="text", :placeholder="protectedPlaceholder", :readonly="((cPageEditMode=='view') ? '' : 'readonly')")
+          input.input(@click="clickEditPlaceholder" type="text", :placeholder="protectedPlaceholder", :readonly="((pageEditMode=='view') ? '' : 'readonly')")
         // Help
         p.help(@click="clickEditHelp") {{protectedHelp}}
 
@@ -58,6 +58,8 @@
 <script>
 import copyStyle from '../lib/copyStyle.js'
 import ProtectedTooltwistField from '../lib/ProtectedTooltwistField.js'
+import ContentMixins from '../mixins/ContentMixins'
+
 
 export default {
   name: 'content-field',
@@ -67,6 +69,9 @@ export default {
     editcontext: Object,
     element: Object,
   },
+  mixins: [
+    ContentMixins
+  ],
   data: function () {
     return {
       'editingLabel': false,
@@ -76,21 +81,21 @@ export default {
   },
   methods: {
     clickEditLabel (node) {
-      if (this.cPageEditMode != 'edit') {
+      if (this.pageEditMode != 'edit') {
         this.editingLabel = false
       } else {
         this.editingLabel = !this.editingLabel
       }
     },
     clickEditPlaceholder (node) {
-      if (this.cPageEditMode != 'edit') {
+      if (this.pageEditMode != 'edit') {
         this.editingPlaceholder = false
       } else {
         this.editingPlaceholder = !this.editingPlaceholder
       }
     },
     clickEditHelp (node) {
-      if (this.cPageEditMode != 'edit') {
+      if (this.pageEditMode != 'edit') {
         this.editingHelp = false
       } else {
         this.editingHelp = !this.editingHelp
@@ -100,16 +105,12 @@ export default {
     select (element) {
       console.log('Field.select()')
 
-      if (this.cPageEditMode != 'view') {
+      if (this.pageEditMode != 'view') {
         this.$store.commit('contentLayout/setPropertyElement', { element })
       }
     },
   },
   computed: {
-
-    cPageEditMode: function () {
-      return this.$store.state.contentLayout.mode
-    },
 
     ...ProtectedTooltwistField('label'),
     ...ProtectedTooltwistField('placeholder'),
