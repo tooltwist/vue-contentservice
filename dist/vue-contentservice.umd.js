@@ -5272,7 +5272,9 @@ function components_install(Vue, options) {
   Vue.use(vue_split_panel_default.a); // Froala. Unfortunately requires jQuery.
   // https://github.com/froala/vue-froala-wysiwyg
 
-  window.$ = __webpack_require__("EVdn");
+  if (window) {
+    window.$ = __webpack_require__("EVdn");
+  }
 
   __webpack_require__("eyPD");
 

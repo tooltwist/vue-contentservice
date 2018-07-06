@@ -186,7 +186,9 @@ function install (Vue, options) {
 
   // Froala. Unfortunately requires jQuery.
   // https://github.com/froala/vue-froala-wysiwyg
-  window.$ = require('jquery');
+  if (window) {
+    window.$ = require('jquery');
+  }
   require('froala-editor/js/froala_editor.pkgd.min.js')
   require('froala-editor/css/froala_editor.pkgd.min.css')
   require('font-awesome/css/font-awesome.css')

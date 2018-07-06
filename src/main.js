@@ -33,7 +33,7 @@ Vue.use(ContentService, options);
 // Now run the site
 new Vue({
   render (h) {
-    let currentRoute = window.location.pathname
+    let currentRoute = window ? window.location.pathname : '/'
     console.log(`Route is ${currentRoute}.`)
     switch (currentRoute) {
       case '/layout-long': return h(TestLayoutLong)
