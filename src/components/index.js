@@ -53,7 +53,7 @@ import ContentLayoutStore from '../store/contentLayoutStore.js'
 
 
 
-
+let _Vue = null
 let _content = null
 let _store = null
 
@@ -65,6 +65,7 @@ function install (Vue, options) {
     console.error("Vue.use(ContentService) has already been called.")
     return
   }
+  _Vue = Vue
 
   // Create ourselves a ContentService Object
   console.log('Getting our _content')
@@ -135,16 +136,6 @@ function install (Vue, options) {
     get () { return this._contentRoot._content }
   })
 
-
-  /*
-   *  Set up the Vuex store for ContentService.
-   */
-  Vue.use(Vuex)
-  _store = new Vuex.Store({
-    modules: {
-      contentLayout: ContentLayoutStore
-    }
-  });
 
   /*
    *  Define the components
@@ -218,10 +209,30 @@ Object.defineProperty(obj, '_content', {
   }
 });
 
+Object.defineProperty(obj, 'storeDefinition', {
+  get: function() {
+    console.error('storeDefinition getter')
+    return ContentLayoutStore
+  }
+});
+
 Object.defineProperty(obj, 'store', {
   get: function() {
-    // console.error('store getter')
-    return _store
+    console.error('store getter')
+    if (_store) {
+      console.error('already have store')
+      return _store
+    }
+
+    // Create a new store object
+    console.error('creating new store')
+    _Vue.use(Vuex)
+    _store = new Vuex.Store({
+      modules: {
+        contentLayout: ContentLayoutStore
+      }
+    });
+    return _store;
   }
 });
 

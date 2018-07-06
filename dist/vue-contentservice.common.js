@@ -5135,6 +5135,7 @@ var namespaced = true;
  // Our store
 
 
+var _Vue = null;
 var _content = null;
 var _store = null;
 
@@ -5144,8 +5145,9 @@ function components_install(Vue, options) {
   if (_content) {
     console.error("Vue.use(ContentService) has already been called.");
     return;
-  } // Create ourselves a ContentService Object
+  }
 
+  _Vue = Vue; // Create ourselves a ContentService Object
 
   console.log('Getting our _content');
   _content = new ContentService(options);
@@ -5210,16 +5212,6 @@ function components_install(Vue, options) {
   Object.defineProperty(Vue.prototype, '$content', {
     get: function get() {
       return this._contentRoot._content;
-    }
-  });
-  /*
-   *  Set up the Vuex store for ContentService.
-   */
-
-  Vue.use(vuex_esm);
-  _store = new vuex_esm.Store({
-    modules: {
-      contentLayout: contentLayoutStore
     }
   });
   /*
@@ -5296,9 +5288,31 @@ Object.defineProperty(components_obj, '_content', {
     return _content;
   }
 });
+Object.defineProperty(components_obj, 'storeDefinition', {
+  get: function get() {
+    console.error('storeDefinition getter');
+    return contentLayoutStore;
+  }
+});
 Object.defineProperty(components_obj, 'store', {
   get: function get() {
-    // console.error('store getter')
+    console.error('store getter');
+
+    if (_store) {
+      console.error('already have store');
+      return _store;
+    } // Create a new store object
+
+
+    console.error('creating new store');
+
+    _Vue.use(vuex_esm);
+
+    _store = new vuex_esm.Store({
+      modules: {
+        contentLayout: contentLayoutStore
+      }
+    });
     return _store;
   }
 });

@@ -29,6 +29,8 @@ const options = {
 }
 Vue.use(ContentService, options);
 
+ContentService.store
+
 
 // Now run the site
 new Vue({
