@@ -36,6 +36,7 @@ module.exports = [
     name: 'columns',
     //iconClass: [ 'fa-bars', 'fa-rotate-90' ],
     iconClass: 'fa-columns',
+    iconClass5: 'fa-columns',
     element: {
       type: 'columns',
       children: [
@@ -56,6 +57,7 @@ module.exports = [
     dragtype:'component',
     name: 'text',
     iconClass: 'fa-font',
+    iconClass5: 'fa-font',
     element: {
       // type: 'text',
       type: 'froala',
@@ -72,6 +74,7 @@ module.exports = [
     dragtype: 'component',
     name: 'form',
     iconClass: 'fa-list-ul',
+    iconClass5: 'fa-list-ul',
     element: {
       type: 'form',
       children: [ ],
@@ -93,6 +96,7 @@ module.exports = [
     dragtype:'component',
     name: 'form field',
     iconClass: 'fa-ellipsis-h',
+    iconClass5: 'fa-ellipsis-h',
     element: {
       type: 'field',
       label: 'Label',
@@ -130,6 +134,7 @@ module.exports = [
     name: 'documents',
     // iconClass: 'fa-wpforms',
     iconClass: 'fa-copy',
+    iconClass5: 'fa-copy',
     element: {
       type: 'documents',
       documents: [

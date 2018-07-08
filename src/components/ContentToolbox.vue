@@ -82,7 +82,7 @@ export default {
             console.log(`------------------------------`)
             console.log(`def is ${typeof(tool.iconClass)}`)
             console.log(`def is ${tool.iconClass}`)
-            let arr = tool.iconClass.split(' ')
+            let arr = tool.iconClass5.split(' ')
             console.log(`initial arr is ${arr}`)
             let set = this.$content.defaultIconPack
             let i
