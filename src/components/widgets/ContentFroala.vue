@@ -36,6 +36,9 @@
 
 import ContentMixins from '../../mixins/ContentMixins'
 
+// Don't display a license error every time (intentionally global)
+let missingLicenseCounter = 0
+
 
 const CLEAN = ''
 const DIRTY = 'waiting to save'
@@ -82,7 +85,7 @@ export default {
 
         events: {
           'froalaEditor.initialized': function () {
-            console.log('Froala is initialized')
+            //console.log('Froala is initialized')
           }
         },
 
@@ -91,7 +94,7 @@ export default {
         // See https://www.froala.com/wysiwyg-editor/pricing
         key: null
 
-      }
+      },
     }
   },
   mixins: [
@@ -200,7 +203,9 @@ export default {
       // console.log(`Froala activation key: ${this.$content.options.froalaActivationKey}`)
       this.config.key = this.$content.options.froalaActivationKey
     } else {
-      console.error(`Froala activation key not provided {options.froalaActivationKey}.`)
+      if ((missingLicenseCounter++ % 20) === 0) {
+        console.error(`Froala activation key not provided to ContentService {options.froalaActivationKey}. Froala text areas may not function correctly.`)
+      }
     }
 
     // See if we select the content from crowdhound, or if it's already provided.
@@ -260,7 +265,7 @@ export default {
 
     } else {//- !useCrowdhound
       // Edit the text in the provided element
-      console.log('Using description from element in layout')
+      //console.log('Using description from element in layout')
     }
   }
 }

@@ -3,3 +3,4 @@
 .DS_Store
 yarn-error.log
 /j1
+src/protected-config/froalaKey.js

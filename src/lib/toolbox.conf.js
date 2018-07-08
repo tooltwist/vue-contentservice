@@ -162,4 +162,16 @@ module.exports = [
     }
   },
 
+  // Google slides
+  {
+    dragtype:'component',
+    name: 'G. Slides',
+    iconClass: 'fa-arrows-h',
+    iconClass5: 'fas fa-arrows-alt-h',
+    element: {
+      type: 'google-slides',
+      docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+    }
+  },
+
 ]

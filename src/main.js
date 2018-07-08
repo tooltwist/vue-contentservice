@@ -14,6 +14,8 @@ import TestLayoutLongLeft from './testapp/TestLayoutLongLeft.vue'
 import TestCrowdhoundLong from './testapp/TestCrowdhoundLong.vue'
 // import TestCrowdhoundLongLeft from './testapp/TestCrowdhoundLongLeft.vue'
 
+import FroalaKey from './protected-config/froalaKey.js'
+console.error(`FroalaKey is ${FroalaKey}`)
 
 Vue.config.productionTip = false
 
@@ -25,7 +27,7 @@ const options = {
   port: 80,
   version: '2.0',
   apikey: 'API10O0X1NS8FWUTO3FXKN15ZOR09',
-  //froalaActivationKey: Config.contentservice.froalaActivationKey
+  froalaActivationKey: FroalaKey
 }
 Vue.use(ContentService, options);
 

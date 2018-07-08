@@ -38,6 +38,10 @@ import ContentContainerProps from './widgets/ContentContainerProps.vue'
 import ContentColumns from './widgets/ContentColumns.vue'
 import ContentColumnsProps from './widgets/ContentColumnsProps.vue'
 
+import ContentGoogleSlides from './widgets/ContentGoogleSlides.vue'
+import ContentGoogleSlidesProps from './widgets/ContentGoogleSlidesProps.vue'
+
+
 import ContentAdminBlogList from './ContentAdminBlogList.vue'
 import ContentAdminBlogDetails from './ContentAdminBlogDetails.vue'
 
@@ -166,6 +170,7 @@ function install (Vue, options) {
   _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
   _content.registerLayoutType(Vue, 'columns', 'content-columns', ContentColumns, ContentColumnsProps)
 
+  _content.registerLayoutType(Vue, 'google-slides', 'content-google-slides', ContentGoogleSlides, ContentGoogleSlidesProps)
 
 
   // Set up external libraries

@@ -272,7 +272,7 @@ export const mutations = {
     console.log('In Mutation contentLayout/insertChild()', element)
     console.log('In Mutation insertChild()', child)
 
-    console.log(`insertChild, parent before:`, safeJson(element));
+    //console.log(`insertChild, parent before:`, safeJson(element));
     console.log(`insertChild, child:`, safeJson(child));
 
     // Clone the hierarchy (this is the cheat's way)
@@ -292,7 +292,7 @@ export const mutations = {
     } else {
       element.children.push(newchild)
     }
-    console.log(`insertChild, parent after:`, safeJson(element));
+    //console.log(`insertChild, parent after:`, safeJson(element));
   },
 
   // Set the element shown in the properties panel.
