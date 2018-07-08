@@ -78,6 +78,12 @@ class Contentservice {
     this.defaultIconPack = options.defaultIconPack ? options.defaultIconPack : 'fa'
     this.icons = (pack) => { return this.defaultIconPack === pack }
 
+    if (options.defaultIconPack) {
+      console.log(`Will use icon pack ${options.defaultIconPack}`);
+    }
+    console.log(`---> icons ---> ${this.defaultIconPack}`);
+
+
 
 
     // // See if registration is allowed

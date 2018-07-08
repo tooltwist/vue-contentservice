@@ -39,21 +39,81 @@ export default {
 
         if (this.$content.icons('fa')) {
           // Use FontAwesome version 4
-          if (tool.iconClass) {
-            return [ 'fa', 'fa-2x', tool.iconClass ]
+          if (typeof(tool.iconClass) === 'string') {
+
+            console.log(`Checking icon class, version 4`)
+            console.log(`------------------------------`)
+            console.log(`def is ${typeof(tool.iconClass)}`)
+            console.log(`def is ${tool.iconClass}`)
+            let arr = tool.iconClass.split(' ')
+            console.log(`initial arr is ${arr}`)
+            let set = 'fa'
+            let i
+            if ((i = arr.indexOf('fa')) > -1) {
+              console.log(`set found in position ${i}`)
+              set = arr[i]
+              arr.splice(i, 1);
+              console.log(`Found set is ${set}`)
+            }
+            let size = 'fa-2x'
+            if (
+              (i=arr.indexOf('fa-2x')) > -1 ||
+              (i=arr.indexOf('fa-3x')) > -1 ||
+              (i=arr.indexOf('fa-4x')) > -1 ||
+              (i=arr.indexOf('fa-5x')) > -1) {
+              console.log(`size found in position ${i}`)
+              size = arr[i]
+              arr.splice(i, 1);
+              console.log(`Found size is ${size}`)
+            }
+            arr.push(set)
+            arr.push(size)
+            console.log(`final arr is ${arr}`)
+            return arr
           }
           return [ 'fa', 'fa-2x', 'fa-word-file-o' ]
-        } else if (this.$content.icons('fas')) {
-          // Use FontAwesome version 5
-          if (tool.iconClass) {
-            let arr = tool.iconClass5.split(' ')
-            if (indexOf("fas")<0 && indexOf("far")<0 && indexOf("fal")<0 && indexOf("fab")<0) {
-              arr.push("fas")
+        } else {
+          // Probably use FontAwesome version 5
+          if (typeof(tool.iconClass5) === 'string') {
+            //- if (arr.indexOf("fas")<0 && arr.indexOf("far")<0 && arr.indexOf("fal")<0 && arr.indexOf("fab")<0) {
+            //-   arr.push("fas")
+            //- }
+            console.log(`Checking icon class, version 5`)
+            console.log(`------------------------------`)
+            console.log(`def is ${typeof(tool.iconClass)}`)
+            console.log(`def is ${tool.iconClass}`)
+            let arr = tool.iconClass.split(' ')
+            console.log(`initial arr is ${arr}`)
+            let set = this.$content.defaultIconPack
+            let i
+            if (
+              (i = arr.indexOf('fas')) > -1 ||
+              (i = arr.indexOf('far')) > -1 ||
+              (i = arr.indexOf('fal')) > -1 ||
+              (i = arr.indexOf('fab')) > -1
+            ) {
+              console.log(`set found in position ${i}`)
+              set = arr[i]
+              arr.splice(i, 1);
+              console.log(`Found set is ${set}`)
             }
+            let size = 'fa-2x'
+            if (
+              (i=arr.indexOf('fa-2x')) > -1 ||
+              (i=arr.indexOf('fa-3x')) > -1 ||
+              (i=arr.indexOf('fa-4x')) > -1 ||
+              (i=arr.indexOf('fa-5x')) > -1) {
+              console.log(`size found in position ${i}`)
+              size = arr[i]
+              arr.splice(i, 1);
+              console.log(`Found size is ${size}`)
+            }
+            arr.push(set)
+            arr.push(size)
+            console.log(`final arr is ${arr}`)
             return arr
           }
         }
-
       }
       return [ 'fas', 'fa-2x', 'fa-word-file-o' ]
     },

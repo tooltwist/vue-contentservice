@@ -11,7 +11,7 @@ module.exports = [
   {
     dragtype:'component',
     name: 'section',
-    iconClass: 'fa-arrows-h',
+    iconClass: 'fa-arrows-h fa',
     iconClass5: 'fas fa-arrows-alt-h',
 
     element: {
@@ -71,7 +71,7 @@ module.exports = [
   {
     dragtype: 'component',
     name: 'form',
-    iconClass: [ 'fa-list-ul' ],
+    iconClass: 'fa-list-ul',
     element: {
       type: 'form',
       children: [ ],
