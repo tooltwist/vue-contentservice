@@ -2,14 +2,15 @@
 
   .toolbox-pane
     .my-components
-      .my-widget(v-for="component in theToolbox")
-        drag(:transfer-data="component", @dragstart="dragStart", @dragend="dragStop")
-          //.drag(:transfer-data="component")
-          i(v-if="component.iconClass", :class="component.iconClass").fa.fa-2x
-          i(v-else).fa.fa-2x.fa-file-word-o
-          div(slot="image")
-            i.fa.fa-2x.fa-file-word-o
-        .my-component-label {{component.name}}
+
+      // Using font awesome version 5
+      .my-widget(v-for="tool in theToolbox")
+        drag(:transfer-data="tool", @dragstart="dragStart", @dragend="dragStop")
+          i(:class="iconClass(tool)")
+          //- i(v-else).fas.fa-2x.fa-file-word-o
+          //- div(slot="image")
+          //-   i.fas.fa-2x.fa-file-word-o
+        .my-component-label {{tool.name}}
 
 </template>
 
@@ -29,6 +30,33 @@ export default {
     }
   },
   methods: {
+    iconClass: function (tool) {
+      console.log(`iconClass. tool=`, tool)
+      console.log(`iconClass. this.$content=`, this.$content)
+      console.log(`iconClass. this.$content=`, this.$content)
+      console.log(`iconClass. this.$loginservice=`, this.$loginservice)
+      if (this.$content) {
+
+        if (this.$content.icons('fa')) {
+          // Use FontAwesome version 4
+          if (tool.iconClass) {
+            return [ 'fa', 'fa-2x', tool.iconClass ]
+          }
+          return [ 'fa', 'fa-2x', 'fa-word-file-o' ]
+        } else if (this.$content.icons('fas')) {
+          // Use FontAwesome version 5
+          if (tool.iconClass) {
+            let arr = tool.iconClass.split(' ')
+            if (indexOf("fas")<0 && indexOf("far")<0 && indexOf("fal")<0 && indexOf("fab")<0) {
+              arr.push("fas")
+            }
+            return arr
+          }
+        }
+
+      }
+      return [ 'fas', 'fa-2x', 'fa-word-file-o' ]
+    },
     dragStart () {
       this.$store.commit('contentLayout/dragStart', { })
     },
@@ -65,7 +93,7 @@ export default {
 
 
 .my-components {
-
+  padding: 20px;
 }
 
 .my-widget {

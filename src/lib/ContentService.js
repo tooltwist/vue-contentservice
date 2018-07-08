@@ -68,6 +68,17 @@ class Contentservice {
     // }
 
 
+    // Decide which icon set to use with a defaultIconPack option.
+    // Loosely based on:
+    //    https://buefy.github.io/#/documentation/constructor-options
+    //
+    // Currently recognise:
+    //    fa (font-awsome 4)
+    //    fas (font-awsome 5)
+    this.defaultIconPack = options.defaultIconPack ? options.defaultIconPack : 'fa'
+    this.icons = (pack) => { return this.defaultIconPack === pack }
+
+
 
     // // See if registration is allowed
     // if (!this.emailSupported) {
