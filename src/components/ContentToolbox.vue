@@ -46,7 +46,7 @@ export default {
         } else if (this.$content.icons('fas')) {
           // Use FontAwesome version 5
           if (tool.iconClass) {
-            let arr = tool.iconClass.split(' ')
+            let arr = tool.iconClass5.split(' ')
             if (indexOf("fas")<0 && indexOf("far")<0 && indexOf("fal")<0 && indexOf("fab")<0) {
               arr.push("fas")
             }

@@ -12,6 +12,8 @@ module.exports = [
     dragtype:'component',
     name: 'section',
     iconClass: 'fa-arrows-h',
+    iconClass5: 'fas fa-arrows-alt-h',
+
     element: {
       type: 'section',
     }
@@ -22,6 +24,7 @@ module.exports = [
     dragtype:'component',
     name: 'container',
     iconClass: 'fa-arrows-h',
+    iconClass5: 'fas fa-arrows-alt-h',
     element: {
       type: 'container',
     }
@@ -113,6 +116,7 @@ module.exports = [
     dragtype:'component',
     name: 'intellidox',
     iconClass: 'fa-wpforms',
+    iconClass5: 'fab fa-wpforms',
     element: {
       type: 'ix',
       label: 'First Name',
