@@ -4,7 +4,8 @@ div
   // See https://www.npmjs.com/package/vue-split-panel
   //
 
-  Split.c-triple-pane(:style="splitStyle", :gutterSize="gutterSize", @onDragEnd="onDragEnd", :class="isEditing ? 'c-editing-layout' : 'c-not-editing-layout' ", v-hotkey="keymap")
+  //Split.c-triple-pane(:style="splitStyle", :gutterSize="gutterSize", @onDragEnd="onDragEnd", :class="isEditing ? 'c-editing-layout' : 'c-not-editing-layout' ", v-hotkey="keymap")
+  Split.c-triple-pane(:style="splitStyle", :gutterSize="gutterSize", @onDragEnd="onDragEnd", :class="[ { 'c-editing-layout': isEditing }, {'c-not-editing-layout': !isEditing}, {'c-has-left-pane': hasLeftSlot}, {'c-no-left-pane': !hasLeftSlot} ]", v-hotkey="keymap")
 
     // Left pane
     SplitArea.c-left-pane(v-if="hasLeftSlot", :size="leftSize")
@@ -31,7 +32,7 @@ div
         .c-editbar-mode-label(v-if="pageEditMode==='edit' || pageEditMode==='layout' || pageEditMode==='debug'")
           span(:class="pageEditMode==='edit' ? 'c-selected-mode-style': ''", @click.stop="switchMode('edit')") edit
           | &nbsp;/&nbsp;
-          span(:class="pageEditMode==='layout' ? 'c-selected-mode-style': ''", @click.stop="switchMode('layout')") layout
+          span(:class="pageEditMode==='layout' ? 'c-selected-mode-style': ''", @click.stop="switchMode('layout')") design
           | &nbsp;/&nbsp;
           span(:class="pageEditMode==='debug' ? 'c-selected-mode-style': ''", @click.stop="switchMode('debug')") debug
         .c-editbar-mode-label(v-else)
@@ -39,12 +40,7 @@ div
 
       // Actual content
       .c-middle-pane-content
-        div(v-if="haveLayout")
-          //- | WE GOT A LAYOUT
-          //- br
-          //- | {{layoutAsJson}}
-          //- br
-          content-children(:editcontext="{}", :element="$store.state.contentLayout.layout")
+        content-children(v-if="haveLayout", :editcontext="{}", :element="$store.state.contentLayout.layout")
 
         div(v-else)
           slot(name="middle-pane")
@@ -428,18 +424,22 @@ export default {
 
   .c-triple-pane {
 
-    // When we are not editing, the left and middle panes take up the entire
-    // width, which pushed the gutter before the right pane onto the next line.
-    // In this case make that gutter zero height so it doesn't create empty
+    // When we are not editing, the middle pane and/or left pane take up the entire
+    // width, which pushes the gutter before the right pane onto the next line.
+    // In this case we need to make that gutter zero height so it doesn't create empty
     // space below our content.
+    //
     // This takes a bit of black magic:
-    //  1. The /deep/ is equivalent to >>> for scss, and with Vue's scoping
+    //  1. When we have a left pane, this will be the second gutter. When there is
+    //    no left pane it will be the first gutter.
+    //
+    //  2. The /deep/ is the sccs equivalent of >>>, so with Vue's scoping
     //    resolves to something like
     //
     //        #my-triple-pane.c-not-editing-layout[0x277261] .gutter
     //        See https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors
     //
-    //  2. There is no CSS selector to find the second element that matches a
+    //  3. There is no CSS selector to find the second element that matches a
     //    class selector, but you can select the siblings of the first element
     //    using ~. So we set a rule for all .gutter elements, and then override
     //    the rule for all but the first. This works fine because there are only
@@ -447,88 +447,132 @@ export default {
     //
     //        https://stackoverflow.com/questions/2717480/css-selector-for-first-element-with-class
     //
-    &.c-triple-pane.c-not-editing-layout /deep/ .gutter-horizontal {
-      min-height: 50px;
-    }
-    &.c-triple-pane.c-not-editing-layout /deep/ .gutter-horizontal ~ .gutter-horizontal {
-      display: none;
+    &.c-not-editing-layout {
+
+      // Not editing, have a left pane
+      &.c-has-left-pane {
+
+
+        & /deep/ .gutter-horizontal {
+          height: 100%;
+        }
+
+        // Siblings of first
+        & /deep/ .gutter-horizontal ~ .gutter-horizontal {
+          height: 0px;
+        }
+      }
+
+      // Not editing, no a left pane
+      &.c-no-left-pane {
+        & /deep/ .gutter-horizontal {
+          height: 0px;
+        }
+      }
     }
 
+
+    //
+    //  Look after the left pane, if there is one.
+    //
     .c-left-pane {
       padding: 0px !important;
     }
 
-    /*
-     *  The middle pane
-     */
-    .c-middle-pane {
-      padding: 0px !important;
-    }
-    .c-middle-pane-content {
-      padding: 3px;
-    }
-
-    .c-editbar {
-      position: relative;
-      height: $editbar-height;
-      background-color: $editbar-color;
-      padding: 1px;
-      margin: 0px;
-
-      border: none;
-      cursor: pointer;
-      font-family: arial;
-      font-size: 12px;
 
 
-      .c-editbar-anchor {
-        position: absolute;
-        left: 15px;
-        color: white;
-        font-weight: 800;
-        font-size: 11px;
+    //
+    //  Look after the middle pane.
+    //
+    &.c-editing-layout {
+
+      .c-middle-pane {
+        position: relative;
+        padding: 0px !important;
+        //overflow-y: hidden;
       }
 
-      .c-editbar-mode-label {
+      .c-editbar {
+        position: sticky;
+        position: -webkit-sticky;
+        top: 0;
+        z-index: 100;
+
+
         display: inline-block;
-        color: $editbar-color;
-        height: $editbar-height;
-        padding-left: 10px;
-        padding-right: 10px;
-        border-radius: 2px;
-
-        background-color: white;
-      }
-
-      .c-selected-mode-style {
-        color: blue;
-        font-weight: 800;
-      }
-      .c-not-selected-mode-style {
-      }
-      .c-editbar-mode-label:hover {
-        color: green;
-      }
-
-      .c-editbar-right {
-        position: absolute;
-        right: 15px;
-        color: white;
-        font-weight: 800;
-        font-size: 11px;
-      }
-
-      .c-editbar-dump-button {
-        display: inline-block;
-        position: absolute;
-        right: 10px;
+        width: 100%;
+        //- position: absolute;
         top: 0px;
-        a, a:visited, a:hover {
+        left: 0px;
+        height: $editbar-height;
+        background-color: $editbar-color;
+        padding: 1px;
+        margin: 0px;
+
+        border: none;
+        border-bottom: solid 2px white;
+        cursor: pointer;
+        font-family: arial;
+        font-size: 12px;
+
+        text-align: center;
+
+
+        .c-editbar-anchor {
+          position: absolute;
+          left: 15px;
           color: white;
-          font-size: 9px;
+          font-weight: 800;
+          font-size: 11px;
         }
+
+        .c-editbar-mode-label {
+          display: table;
+          color: $editbar-color;
+          height: $editbar-height;
+          padding-left: 10px;
+          padding-right: 10px;
+          border-radius: 2px;
+          margin: 0 auto;
+          background-color: white;
+        }
+
+        .c-selected-mode-style {
+          color: blue;
+          font-weight: 800;
+        }
+        .c-not-selected-mode-style {
+        }
+        .c-editbar-mode-label:hover {
+          color: green;
+        }
+
+        .c-editbar-right {
+          position: absolute;
+          right: 15px;
+          color: white;
+          font-weight: 800;
+          font-size: 11px;
+        }
+
+        .c-editbar-dump-button {
+          display: inline-block;
+          position: absolute;
+          right: 10px;
+          top: 0px;
+          a, a:visited, a:hover {
+            color: white;
+            font-size: 9px;
+          }
+        }
+      }//- c-editbar
+
+
+      .c-middle-pane-content {
+        margin-top: calc(#{$editbar-height} + 2px);
+        padding: 0px;
       }
-    }
+    }//- .c-editing-layout
 
 
     /*
