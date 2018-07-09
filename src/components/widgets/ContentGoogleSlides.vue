@@ -6,7 +6,7 @@
     // View mode
     .container(v-if="pageEditMode==='view'")
       .embed-container
-        iframe.my-iframe(v-bind:src="src" frameborder="0" width="640" height="389" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true")
+        iframe.my-iframe(v-bind:src="src" frameborder="0" zwidth="640" zheight="389" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true")
 
     // Debug mode
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")

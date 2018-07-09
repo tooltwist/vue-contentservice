@@ -1,3 +1,39 @@
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          WE DO NOT USE THIS ANY ANY MORE.
+          We use Vuex and contentLayoutState instead.
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+
+
+
 import Vue from 'vue'
 
 // Prepare a hierarchy of elements that will be used to lay out a page.
