@@ -3,25 +3,21 @@
 
   .tt-container(v-bind:class="[(pageEditMode=='debug') ? 'tt-container-outline' : '']")
 
-    // Preview mode
-    .container(v-if="pageEditMode==='view'", v-on:click.stop="select(element)")
+    // View mode
+    .container(v-if="pageEditMode==='view'")
       .embed-container
         iframe.my-iframe(v-bind:src="src" frameborder="0" width="640" height="389" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true")
-
-    // Edit mode
-    .container(v-else-if="pageEditMode==='edit'", v-on:click.stop="select(element)")
-      .embed-container
-        .my-dummy-iframe
 
     // Debug mode
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
       .tt-container-debug-heading google slides
       .container
+        //| {{element.docID}}
         .embed-container
           .my-dummy-iframe
 
-    // Live
-    .container(v-else)
+    // Edit, layout modes
+    .container(v-else, v-on:click.stop="select(element)")
       .embed-container
         .my-dummy-iframe
 
@@ -39,24 +35,16 @@ export default {
   props: {
     element: Object,
   },
-  mixins: [
-    ContentMixins
-  ],
+  mixins: [ ContentMixins ],
   data: function () {
     return {
-      docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl',
+      //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl',
     }
   },
   computed: {
 
-    editUrl: function ( ) {
-      let url = `https://docs.google.com/presentation/d/${this.docId}/edit`
-      console.log(`url=${url}`)
-      return url
-    },
-
     src: function ( ) {
-      let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.docId}/embed?start=false&loop=false&delayms=3000`
+      let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.element.docID}/embed?start=false&loop=false&delayms=3000`
       console.log(`url=${src}`)
       return src
     },
@@ -74,6 +62,7 @@ export default {
   },
   methods: {
     select (element) {
+      console.log(`select()`, element)
       if (this.pageEditMode != 'view') {
         this.$store.commit('contentLayout/setPropertyElement', { element })
       }

@@ -117,7 +117,8 @@ export default {
           return this.crowdhoundElement ? this.crowdhoundElement.description : ''
         } else {
           // Use text from the element
-          return this.element.text
+          let t = this.element.text
+          return t
         }
       },
       set (value) {
@@ -130,7 +131,7 @@ export default {
           // Use text from the element
           let name = 'text'
           this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: name, value })
-          //this.$store.commit('contentLayout/updateElementProperty', { vm: this, element: this.element, name: name, value })
+          //this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: name, value })
         }
       }
     },

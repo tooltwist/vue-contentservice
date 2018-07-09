@@ -17,7 +17,7 @@ import QueryString from 'query-string'
 import { assert, inBrowser } from '../components/misc'
 
 // import { safeJson } from './hierarchy.js'
-import * as util from './hierarchy.js'
+// import * as util from './hierarchy.js'
 
 
 
@@ -316,7 +316,7 @@ class Contentservice {
       })
         .then(response => {
           // JSON responses are automatically parsed.
-          console.log(`RESPONSE IS`, response.data)
+          //console.log(`RESPONSE IS`, response.data)
           let reply = response.data
 
           // If the first item in the array is the current user, pluck it off the array now.
@@ -373,7 +373,7 @@ class Contentservice {
       })
         .then(response => {
           // JSON responses are automatically parsed.
-          console.log(`RESPONSE IS`, response.data)
+          //console.log(`RESPONSE IS`, response.data)
           // let reply = response.data
           return resolve('ok');
         })
@@ -411,7 +411,7 @@ class Contentservice {
 }
 
 // Add the hierarchy manipulation functions
-Contentservice.prototype.util = util
+// Contentservice.prototype.util = util
 
 Contentservice.version = '__VERSION__'
 if (inBrowser && window.Vue) {

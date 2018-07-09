@@ -47,6 +47,22 @@ export default {
       if (from[name]) {
         to[name] = from[name]
       }
+    },
+
+    safeJSON: function (element) {
+
+      // Custom replacer function - gets around "TypeError: Converting circular structure to JSON"
+      // Modified from http://www.johnantony.com/pretty-printing-javascript-objects-as-json/
+      var replacer = function(key, value) {
+        // ignore parent links (they are circular)
+        if (key === '_parent') {
+          return
+        }
+        return value
+      }
+      let json = JSON.stringify(element, replacer, 4);
+
+      return json;
     }
 
   }

@@ -1,26 +1,12 @@
 <template lang="pug">
   div
-    .tt-property-header Container
+    .tt-property-header Slides
     // {{element.id}}
     .tt-properties
       .tt-property
-        .tt-property-label Type
+        .tt-property-label doc ID
         .tt-property-value
-          select(v-model="protectedIsFluid")
-            option() navbar
-            option() hero
-            option() section
-            option() footer
-      .tt-property
-        .tt-property-label
-        .tt-property-value
-          label.checkbox
-            input(type="checkbox" v-model="protectedIsFluid")
-            | &nbsp;full width
-      .tt-property
-        .tt-property-label Background
-        .tt-property-value
-          input.input(v-model="protectedBgColor")
+          input.input(v-model="docID")
 
 </template>
 
@@ -35,33 +21,15 @@ export default {
     // We cannot update the element directly - it is stored
     // in this.$store and must be updated with a 'commit'.
     // See https://vuex.vuejs.org/en/forms.html
-    protectedMode: {
+    docID: {
       get () {
-        let value = this.element['mode']
+        let value = this.element['docID']
         return value ? value : '-'
       },
       set (value) {
-        this.$store.commit('contentLayout/updateElementProperty', { vm: this, element: this.element, name: 'mode', value })
+        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: 'docID', value })
       }
     },
-    protectedIsFluid: {
-      get () {
-        let value = this.element['is-fluid']
-        return value ? value : '-'
-      },
-      set (value) {
-        this.$store.commit('contentLayout/updateElementProperty', { vm: this, element: this.element, name: 'is-fluid', value })
-      }
-    },
-    protectedBgColor: {
-      get () {
-        let value = this.element['background-color']
-        return value ? value : '-'
-      },
-      set (value) {
-        this.$store.commit('contentLayout/updateElementProperty', { vm: this, element: this.element, name: 'background-color', value })
-      }
-    }
   }
 }
 </script>

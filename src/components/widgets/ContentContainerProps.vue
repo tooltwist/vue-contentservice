@@ -41,7 +41,7 @@ export default {
         return value ? value : '-'
       },
       set (value) {
-        this.$store.commit('contentLayout/updateElementProperty', { vm: this, element: this.element, name: 'mode', value })
+        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: 'mode', value })
       }
     },
     protectedIsFluid: {
@@ -50,7 +50,7 @@ export default {
         return value ? value : '-'
       },
       set (value) {
-        this.$store.commit('contentLayout/updateElementProperty', { vm: this, element: this.element, name: 'is-fluid', value })
+        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: 'is-fluid', value })
       }
     },
     protectedBgColor: {
@@ -59,7 +59,7 @@ export default {
         return value ? value : '-'
       },
       set (value) {
-        this.$store.commit('contentLayout/updateElementProperty', { vm: this, element: this.element, name: 'background-color', value })
+        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: 'background-color', value })
       }
     }
   }

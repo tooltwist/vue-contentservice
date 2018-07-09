@@ -23,7 +23,8 @@ export default {
       },
       set (value) {
         //console.log('-->' + this.property + ' <<< ' + value)
-        this.$store.commit('contentLayout/updateElementProperty', { element: this.element, name: this.property, value })
+        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: this.property, value })
+
       }
     }
   }

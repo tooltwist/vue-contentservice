@@ -49,7 +49,7 @@ import ContentAdminBlogDetails from './ContentAdminBlogDetails.vue'
 import StringProperty from './propertyTypes/StringProperty.vue'
 
 
-import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
+// import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
 
 // Our store
 import ContentLayoutStore from '../store/contentLayoutStore.js'
@@ -202,10 +202,10 @@ const obj = {
 //  layoutStore,
 
   // hierarchy manipulation
-  sanitizeLayout,
-  safeJson,
-  layoutRoot,
-  layoutChanged,
+  // sanitizeLayout,
+  // safeJson,
+  // layoutRoot,
+  // layoutChanged,
 }
 
 Object.defineProperty(obj, '_content', {

@@ -3,7 +3,7 @@
  *  in the properties pane.
  */
 //import { sanitizeLayout, safeJson } from '~/lib/Tooltwist.js'
-import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
+// import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
 
 //export const namespaced = true
 
@@ -43,6 +43,7 @@ export const state = () => {
     propertyElement: null,
 
     // Message shown at top of screen
+    selectError: '',
     saveMsg: CLEAN,
 
     // Triple pane stuff
@@ -52,13 +53,21 @@ export const state = () => {
 }
 //})
 
-//export const getters = {
 export const getters = {
 
   layoutAsJson: (state) => {
-    return ZsafeJson(state.layout)
+    // Custom replacer function - gets around "TypeError: Converting circular structure to JSON"
+    // Modified from http://www.johnantony.com/pretty-printing-javascript-objects-as-json/
+    var replacer = function(key, value) {
+      // ignore any circular links
+      // if (key === '_parent') {
+      //   return
+      // }
+      return value
+    }
+    let json = JSON.stringify(state.layout, replacer, 4);
+    return json;
   }
-
 }
 
 // getters
@@ -90,7 +99,7 @@ export const actions = {
   //   commit(types.SET_PROPERTY_ELEMENT, { element })
   // },
   setProperty ({ commit, state }, { vm, element, name, value }) {
-    console.log(`action setProperty(${element.id})`)
+    console.log(`action setProperty(${element.id}, ${name}, ${value})`)
 
     /*
      *  Two possibilities here:
@@ -178,7 +187,9 @@ export const mutations = {
     console.log('In Mutation contentLayout/setLayout()', layout)
 
     if (layout) {
-      state.layout = sanitizeLayout(layout)
+      // state.layout = sanitizeLayout(layout)
+      state.layout = layout
+      console.log(`sanitized layout:`, state.layout)
       state.crowdhoundElement = crowdhoundElement
     } else {
       console.error(`Mutation contentLayout/setLayout requires 'layout' parameter`)
@@ -262,8 +273,12 @@ export const mutations = {
   // it *should* be an element in the current layout.
   updateElementProperty (state, { vm, element, name, value }) {
     //ZZZZ Check the parameters
-    console.log(`mutation contentLayout/updateElementProperty(${name})`, element)
-    element[name] = value
+    console.log(`mutation contentLayout/updateElementProperty(${element.id}, ${name}, ${value})`, element)
+
+    // Do this such that a new reactive property is created.
+    // https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats
+    // NOT: element[name] = value
+    vm.$set(element, name, value)
   },
 
   // Clone an element hierarchy and insert it as a child
@@ -283,10 +298,12 @@ export const mutations = {
     overwriteElementIDs(newchild)
 
     // Check it is sane
-    newchild._parent = element
-    sanitizeLayout(newchild, element)
+    // newchild._parent = element //ZZKOP
+    //sanitizeLayout(newchild, element)
 
     // Plug it in as a child of the element
+    // The inserted item will become reactive, because the layout is already reactive.
+    // See https://vuejs.org/v2/guide/list.html#Array-Change-Detection
     if (position >= 0) {
       element.children.splice(position, 0, newchild)
     } else {
@@ -317,61 +334,67 @@ function overwriteElementIDs(element) {
 
 
 // Prepare a hierarchy of elements that will be used to lay out a page.
-function ZsanitizeLayout (element, parent) {
+// function ZsanitizeLayout (element, parent) {
+//
+//   // Work out this new level
+//   // let level = parent ? parent.level + 1 : 0;
+//   //console.log(`sanitizeLayout(element, ${parent?parent.id:'-'}, ${level})`, element)
+//
+//   // Create a new element ID, but do not modify an existing ID.
+//   if (!element.id) {
+//     Vue.set(element, 'id', Math.floor(Math.random() * 10000000000))
+//     // console.log('New Id is ', element.id)
+//   }
+//
+//   // Check we have a parent
+//   //element._parent = parent //ZZKOP
+//
+//   // Make sure we have a 'children' element
+//   if (!element.children) {
+//     //Vue.$set(element, 'children', [ ])
+//     Vue.set(element, 'children', [ ])
+//   }
+//
+//   // Now sanitize any children
+//   element.children.forEach(child => {
+//     sanitizeLayout(child, element)
+//   })
+//   return element
+// }
 
-  // Work out this new level
-  // let level = parent ? parent.level + 1 : 0;
-  //console.log(`sanitizeLayout(element, ${parent?parent.id:'-'}, ${level})`, element)
 
-  // Create a new element ID, but do not modify an existing ID.
-  if (!element.id) {
-    Vue.set(element, 'id', Math.floor(Math.random() * 10000000000))
-    // console.log('New Id is ', element.id)
-  }
 
-  // Check we have a parent
-  element._parent = parent
-
-  // Make sure we have a 'children' element
-  if (!element.children) {
-    //Vue.$set(element, 'children', [ ])
-    Vue.set(element, 'children', [ ])
-  }
-
-  // Now sanitize any children
-  element.children.forEach(child => {
-    sanitizeLayout(child, element)
-  })
-  return element
-}
-
-function ZsafeJson (element) {
+function safeJson (element, compressed/*boolean,optional*/) {
+  let spaces = (compressed ? 0 : 4)
 
   // Custom replacer function - gets around "TypeError: Converting circular structure to JSON"
   // Modified from http://www.johnantony.com/pretty-printing-javascript-objects-as-json/
   var replacer = function(key, value) {
-    // ignore parent links (they are circular)
-    if (key === '_parent') {
-      return
-    }
+    // ignore any circular links (they are circular)
+    // if (key === '_parent') {
+    //   return
+    // }
     return value
   }
-  let json = JSON.stringify(element, replacer, 4);
+  // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+  let json = JSON.stringify(element, replacer, spaces);
 
   return json;
 }
 
-function ZlayoutRoot (element) {
-  while (element._parent) {
-    element = element._parent
-  }
-  return element
-}
 
-function ZlayoutChanged (element) {
-  let root = layoutRoot(element)
-  root.tt_counter++
-}
+//ZZKOP
+// function ZlayoutRoot (element) {
+//   while (element._parent) {
+//     element = element._parent
+//   }
+//   return element
+// }
+
+// function ZlayoutChanged (element) {
+//   let root = layoutRoot(element)
+//   root.tt_counter++
+// }
 
 function loadLayoutFromAnchor (commit, vm, anchor, editable) {
   console.log(`store.loadlayout(${anchor})`)
@@ -409,7 +432,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
     //- this.$content.select(this, params)
     .then(result => {
       // Use the elements
-      console.log(`>>> result=`, result)
+      // console.log(`>>> result=`, result)
       if (result.elements.length < 1) {
         // Should not be possible
         console.error(`Selecting layout returned no element. How is this possible?`)
@@ -417,18 +440,18 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       }
 
       // See if the description contains a valid layout
-      console.log(`result=`, result)
+      // console.log(`result=`, result)
       let elementContainingLayout = result.elements[0]
       let json = elementContainingLayout.description
-      console.log('json=', json)
+      // console.log('json=', json)
       let layout = null
       if (json === shortAnchor) {
         console.error(`>>> NOT parsing json (it's the anchor)`)
         // New element/layout
       } else {
-        console.error(`>>> parsing JSON`)
+        // console.error(`>>> parsing JSON`)
         layout = JSON.parse(json)
-        console.log('parsed JSON layout=', layout)
+        //console.log('parsed JSON layout=', layout)
         // Check for errors
       }
       console.log(`>>> layout=`, layout)
@@ -456,10 +479,10 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       }
 
       // Save the layout in our state store.
-      let sanitized = vm.$content.util.sanitizeLayout(layout)
+      // let sanitized = vm.$content.util.sanitizeLayout(layout)
       commit('setLayout', {
         anchor: fullAnchor,
-        layout: sanitized,
+        layout: layout,
         crowdhoundElement: elementContainingLayout,
         // tenant: elementContainingLayout.tenant,
         // elementId: elementContainingLayout.id,
@@ -470,7 +493,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       let desc = `Error loading comments`
       console.log(`Dirty rotten error: `, e)
       /* handleError(this, desc, params, e) */
-      this.selectError = true
+      state.selectError = true
     })//- axios
 }
 
