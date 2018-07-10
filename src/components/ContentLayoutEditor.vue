@@ -55,8 +55,7 @@ div
         // Properties Pane
         SplitArea.c-properties-pane(:size="40", :minSize="300")
           h1.title Properties
-          //content-element-props(:element="this.$store.state.contentLayout.propertyElement")
-          content-element-props(:element="thePropertyElement")
+          content-element-props(:level="0")
 
         // Components pane
         SplitArea.c-components-pane(:size="60", :minSize="150")
@@ -393,23 +392,6 @@ export default {
       // Incorrect props
       console.error(`content-content must be provided prop 'layout' or prop 'anchor'`)
     }
-
-    /*
-
-    if (!process.server && this.contentdata && this.contentdata.data && this.contentdata.data.layout) {
-      console.log('ContentLayoutEditor.created - setting layout')
-      //this.$store.state.contentLayout.layout
-      let sanitized = this.$content.util.sanitizeLayout(this.contentdata.data.layout)
-      console.log(`sanitized=`, this.$content.util.safeJson(sanitized))
-
-      //Sat-May-19
-      // Convert and remember the content we are editing
-      this.$store.commit('contentLayout/setLayout', { element: sanitized })
-    } else {
-      // We don't have a layout, maybe create one? ZZZZZ
-      this.$store.commit('contentLayout/setLayout', { element: null })
-    }
-    */
   }
 }
 </script>

@@ -68,13 +68,13 @@ export default {
         for (var i = 0; i < element.children.length; i++) {
           if (element.children[i] === child) {
             console.log(`Insert at position ${i}`)
-            this.$store.commit('contentLayout/insertChild', { element, child: newchild, position: i })
+            this.$store.commit('contentLayout/insertChild', { vm: this, element, child: newchild, position: i })
             break
           }
         }
       } else {
         // No child specified - add at the end
-        this.$store.commit('contentLayout/insertChild', { element, child: newchild, position: -1 })
+        this.$store.commit('contentLayout/insertChild', { vm: this, element, child: newchild, position: -1 })
       }
     }
   },

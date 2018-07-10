@@ -40,7 +40,8 @@ export const state = () => {
 
     // Element currently being edited
     // = element Object
-    propertyElement: null,
+    //propertyElement: null,
+    pathToSelectedElement: [ ], // elements, from root to currently selected element
 
     // Message shown at top of screen
     selectError: '',
@@ -54,6 +55,16 @@ export const state = () => {
 //})
 
 export const getters = {
+
+  propertyElement: (state) => {
+    if (state.pathToSelectedElement) {
+      let len = state.pathToSelectedElement.length
+      let element = (len > 0) ? state.pathToSelectedElement[len - 1] : null
+      console.log(`propertyElement=`, element)
+      return element
+    }
+    return null
+  },
 
   layoutAsJson: (state) => {
     // Custom replacer function - gets around "TypeError: Converting circular structure to JSON"
@@ -81,18 +92,25 @@ export const getters = {
 export const actions = {
 
   setContent ({ commit, state }, { vm, type, layout, anchor}) {
-
     console.log(`In Action contentLayout/setContent(type=${type}, layout=${layout?'yes':'no'}, anchor=${anchor})`)
-
     if (layout) {
-      //state.layout = element ? sanitizeLayout(element) : null
-      commit('setLayout', { layout: layout, crowdhoundElement: null, editable: false })
+      commit('setLayout', { vm, layout: layout, crowdhoundElement: null, editable: false })
     } else if (anchor) {
       loadLayoutFromAnchor(commit, vm, anchor)
     } else {
       console.error(`Action contentLayout/setContent should be passed either anchor or layout`)
     }
   },
+
+
+  // Delete an element from the current layout.
+  aDeleteElement(state, { vm, element}) {
+    console.log('Action contentLayout/aDeleteElement()', element)
+
+    // Find the element
+    return
+  },
+
 
   // setPropertyElement ({ commit }, { element }) {
   //   console.log(`setPropertyElement(${element.id})`)
@@ -182,13 +200,12 @@ export const actions = {
 export const mutations = {
 
   // Set the current layout, displayed in the middle panel.
-  setLayout (state, { layout, anchor, crowdhoundElement, /*tenant, elementId, */ editable /*, element */ } ) {
+  setLayout (state, { vm, layout, anchor, crowdhoundElement, /*tenant, elementId, */ editable /*, element */ } ) {
     //console.log('In Mutation contentLayout/setLayout()', state)
     console.log('In Mutation contentLayout/setLayout()', layout)
 
     if (layout) {
-      // state.layout = sanitizeLayout(layout)
-      state.layout = layout
+      state.layout = addAnyMissingValues(vm, layout)
       console.log(`sanitized layout:`, state.layout)
       state.crowdhoundElement = crowdhoundElement
     } else {
@@ -223,7 +240,7 @@ export const mutations = {
   // Set the element shown in the properties panel.
   // This *should* be an element in the current layout
   setPropertyElement (state, { element } ) {
-    // console.log('In Mutation contentLayout/setPropertyElement()', element)
+    console.log('In Mutation contentLayout/setPropertyElement()', element)
     //return
     // console.log('State is ', state)
     // Clone the element
@@ -231,6 +248,16 @@ export const mutations = {
     // console.log(`Before`)
     state.propertyElement = element
     //console.log(`After`)
+
+    // console.log(`LOOKING FOR ${element.id}`)
+    let path = trackDownElement(state.layout, element.id)
+    //console.log(`path to selected element=`, path)
+    state.pathToSelectedElement = path ? path : [ ]
+
+    console.log(`Path to selected element=`, path)
+    path.forEach((element) => {
+      console.log(`  ${element.type}: ${element.id}`)
+    })
   },
 
   // Set the screen mode [view | edit | layout | debug]
@@ -283,7 +310,7 @@ export const mutations = {
 
   // Clone an element hierarchy and insert it as a child
   // into an element in the current layout.
-  insertChild(state, { element, child, position}) {
+  insertChild(state, { vm, element, child, position}) {
     console.log('In Mutation contentLayout/insertChild()', element)
     console.log('In Mutation insertChild()', child)
 
@@ -299,7 +326,37 @@ export const mutations = {
 
     // Check it is sane
     // newchild._parent = element //ZZKOP
-    //sanitizeLayout(newchild, element)
+    addAnyMissingValues(vm, newchild)
+
+    // Plug it in as a child of the element
+    // The inserted item will become reactive, because the layout is already reactive.
+    // See https://vuejs.org/v2/guide/list.html#Array-Change-Detection
+    if (position >= 0) {
+      element.children.splice(position, 0, newchild)
+    } else {
+      element.children.push(newchild)
+    }
+    //console.log(`insertChild, parent after:`, safeJson(element));
+  },
+
+  // Delete an element from the current layout.
+  mDeleteElement(state, { vm, element}) {
+    console.log('In Mutation contentLayout/mDeleteElement()', element)
+    return
+
+    //console.log(`insertChild, parent before:`, safeJson(element));
+    console.log(`insertChild, child:`, safeJson(child));
+
+    // Clone the hierarchy (this is the cheat's way)
+    //let newchild = JSON.parse(JSON.stringify(child));
+    let newchild = JSON.parse(safeJson(child));
+
+    // Overwrite any element IDs
+    overwriteElementIDs(newchild)
+
+    // Check it is sane
+    // newchild._parent = element //ZZKOP
+    addAnyMissingValues(vm, newchild)
 
     // Plug it in as a child of the element
     // The inserted item will become reactive, because the layout is already reactive.
@@ -334,33 +391,25 @@ function overwriteElementIDs(element) {
 
 
 // Prepare a hierarchy of elements that will be used to lay out a page.
-// function ZsanitizeLayout (element, parent) {
-//
-//   // Work out this new level
-//   // let level = parent ? parent.level + 1 : 0;
-//   //console.log(`sanitizeLayout(element, ${parent?parent.id:'-'}, ${level})`, element)
-//
-//   // Create a new element ID, but do not modify an existing ID.
-//   if (!element.id) {
-//     Vue.set(element, 'id', Math.floor(Math.random() * 10000000000))
-//     // console.log('New Id is ', element.id)
-//   }
-//
-//   // Check we have a parent
-//   //element._parent = parent //ZZKOP
-//
-//   // Make sure we have a 'children' element
-//   if (!element.children) {
-//     //Vue.$set(element, 'children', [ ])
-//     Vue.set(element, 'children', [ ])
-//   }
-//
-//   // Now sanitize any children
-//   element.children.forEach(child => {
-//     sanitizeLayout(child, element)
-//   })
-//   return element
-// }
+function addAnyMissingValues (vm, element) {
+
+  // Create a new element ID, but do not modify an existing ID.
+  if (!element.id) {
+    vm.$set(element, 'id', Math.floor(Math.random() * 10000000000))
+    // console.log('New Id is ', element.id)
+  }
+
+  // Make sure we have a 'children' element
+  if (!element.children) {
+    vm.$set(element, 'children', [ ])
+  }
+
+  // Now sanitize any children
+  element.children.forEach(child => {
+    addAnyMissingValues(vm, child)
+  })
+  return element
+}
 
 
 
@@ -479,11 +528,12 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       }
 
       // Save the layout in our state store.
-      // let sanitized = vm.$content.util.sanitizeLayout(layout)
+      let sanitized = addAnyMissingValues(vm, layout)
       commit('setLayout', {
+        vm,
         anchor: fullAnchor,
         layout: layout,
-        crowdhoundElement: elementContainingLayout,
+        crowdhoundElement: elementContainingLayout, // NOT an element in the layout
         // tenant: elementContainingLayout.tenant,
         // elementId: elementContainingLayout.id,
         editable: canEdit })
@@ -495,6 +545,26 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       /* handleError(this, desc, params, e) */
       state.selectError = true
     })//- axios
+}
+
+// Recursively find this element within the current layout.
+// (We don't use parent links, because it's simpler
+// if we avoid cyclic links in the hierarchy)
+function trackDownElement (element, requiredID) {
+  // console.log(`  trackDownElement(${element.id}, ${requiredID})`)
+  if (element.id === requiredID) {
+    // console.log(`found leaf`, element)
+    return [ element ]
+  }
+  for (let i = 0; i < element.children.length; i++) {
+    let child = element.children[i]
+    let path = trackDownElement(child, requiredID)
+    if (path) {
+      // console.log(`found child path`, path)
+      return [ element, ...path]
+    }
+  }
+  return null
 }
 
 export const namespaced = true

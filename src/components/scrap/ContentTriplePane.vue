@@ -36,7 +36,7 @@
           split-area.pane.properties-pane(:size="50", :minSize="150")
             h1.title Properties
             //content-element-props(:element="this.$store.state.contentLayout.propertyElement")
-            content-element-props(:element="thePropertyElement")
+            content-element-props(:element="thePropertyElement", :level="0")
 
           // Components pane
           split-area.pane.components-pane(:size="50", :minSize="150")
@@ -322,70 +322,9 @@ export default {
       //console.log('Setting leftPaneSize')
       Vue.set(this.editcontext, 'leftPaneSize', 20)
     }
-    //- //ZZZ
-    //- if (typeof(this.pageEditMode) === 'undefined') {
-    //-   //console.log('Setting pageEditMode')
-    //-   Vue.set(this.editcontext, 'pageEditMode', 'view')
-    //- }
 
     // Add a few functions
     let self = this
-
-
-
-
-
-
-
-
-
-    //- // Now let's look at the mode of operation.
-    //- switch (this.saveMode) {
-    //-
-    //-   case SAVE_MANUAL:
-    //-     // Manual mode. Don't load, and don't save.
-    //-     if (!process.server && this.contentdata.data && this.contentdata.data.layout) {
-    //-       console.log('+++ SAVE_MANUAL 1', this.contentdata.data)
-    //-       let sanitized = this.$content.util.sanitizeLayout(this.contentdata.data.layout)
-    //-       this.$store.commit('contentLayout/setLayout', { element: sanitized })
-    //-     } else {
-    //-       // We don't have a layout, maybe create one? ZZZZZ
-    //-       console.error('+++ SAVE_MANUAL 9 - MISSING contentdata.data')
-    //-       this.$store.commit('contentLayout/setLayout', { element: null })
-    //-     }
-    //-     break;
-    //-
-    //-   case SAVE_LAYOUT:
-    //-     // Load the layout from Crowdhound, and save as an entire page.
-    //-     console.log('+++ SAVE_LAYOUT')
-    //-     this.loadLayout()
-    //-     break;
-    //-
-    //-   case SAVE_INDIVIDUAL:
-    //-   console.log('+++ SAVE_INDIVIDUAL')
-    //-     // Individual mode. Each component will load and save itself.
-    //-     break;
-    //- }
-
-    /*
-    console.log('+++ GOOD EVENING 2', this.contentdata)
-
-    if (!process.server && this.contentdata && this.contentdata.data && this.contentdata.data.layout) {
-      console.log('+++ GOOD EVENING 3', this.contentdata.data)
-      console.log('ContentTriplePane.created - setting layout')
-      //this.$store.state.contentLayout.layout
-      let sanitized = this.$content.util.sanitizeLayout(this.contentdata.data.layout)
-      console.log(`sanitized=`, this.$content.util.safeJson(sanitized))
-
-      //Sat-May-19
-      // Convert and remember the content we are editing
-      this.$store.commit('contentLayout/setLayout', { element: sanitized })
-    } else {
-      // We don't have a layout, maybe create one? ZZZZZ
-      this.$store.commit('contentLayout/setLayout', { element: null })
-    }
-    console.log('+++ GOOD EVENING 9')
-    */
 
   }
 }

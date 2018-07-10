@@ -2,7 +2,7 @@
 
   .ch-elem
     div(v-if="element")
-      | {{element.type}} {{element.id}}
+      //| {{element.type}} {{element.id}}
       // | [type:{{element.type}} children:{{element.children && element.children.length}}]
       content-section-props(v-if="element.type=='section'", :element="element")
       content-container-props(v-else-if="element.type=='container'", :element="element")
@@ -19,15 +19,9 @@
 
       content-google-slides-props(v-else-if="element.type=='google-slides'", :element="element")
 
-      //- br
-      //- || {{safeJSON(element)}}
-      //- br
-      .zzz(v-if="element._parent")
-        | HAVE parent
-        br
 
-      // Now show the parent's properties
-      content-element-props(v-if="element._parent", :element="element._parent")
+      // Now show the next level
+      content-element-props(v-if="haveMore" :level="level+1")
 
 </template>
 
@@ -38,7 +32,22 @@ export default {
   name: 'content-element-props',
   mixins: [ ContentMixins ],
   props: {
-    element: Object
+    // Index into 'pathToSelectedElement' in our store.
+    // 0 = layout
+    // Last element in array = our currently selected element
+    level: Number,
+  },
+  computed: {
+    element: function ( ) {
+      let path = this.$store.state.contentLayout.pathToSelectedElement
+      return (path.length > this.level) ? path[this.level] : null
+    },
+
+    // Is there another property below this one?
+    haveMore: function ( ) {
+      let path = this.$store.state.contentLayout.pathToSelectedElement
+      return path.length > (this.level + 1)
+    },
   }
 }
 </script>

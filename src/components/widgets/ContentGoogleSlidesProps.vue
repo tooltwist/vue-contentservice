@@ -1,6 +1,8 @@
 <template lang="pug">
   div
-    .tt-property-header Slides
+    .tt-property-header
+      .my-button(@click="deleteElement") D
+      | Google Slides
     // {{element.id}}
     .tt-properties
       .tt-property
@@ -30,15 +32,28 @@ export default {
         this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: 'docID', value })
       }
     },
+  },
+  methods: {
+    deleteElement ( ) {
+      console.log(`Delete element ${this.element.id}`)
+      this.$store.dispatch('contentLayout/deleteElement', { vm: this, element: this.element })
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.tt-property-value {
-  input.input {
-    margin-top: 2px;
-    font-size: 9px;
+  .tt-property-value {
+    input.input {
+      margin-top: 2px;
+      font-size: 9px;
+    }
   }
-}
+
+  .my-button {
+    position: absolute;
+    right: 5px;
+    cursor: pointer;
+  }
+
 </style>

@@ -208,7 +208,7 @@ export default {
 
           // Save the layout in our state store.
           let sanitized = this.$content.util.sanitizeLayout(layout)
-          this.$store.commit('contentLayout/setLayout', { element: sanitized })
+          this.$store.commit('contentLayout/setLayout', { vm: this, element: sanitized })
 
         })
         .catch(e => {

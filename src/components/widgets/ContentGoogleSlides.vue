@@ -5,20 +5,21 @@
 
     // View mode
     .container(v-if="pageEditMode==='view'")
-      .embed-container
+      .content-google-slides-embed-container
         iframe.my-iframe(v-bind:src="src" frameborder="0" zwidth="640" zheight="389" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true")
 
     // Debug mode
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
-      .tt-container-debug-heading google slides
+      .tt-container-debug-heading
+        | google slides
       .container
         //| {{element.docID}}
-        .embed-container
+        .content-google-slides-embed-container
           .my-dummy-iframe
 
     // Edit, layout modes
     .container(v-else, v-on:click.stop="select(element)")
-      .embed-container
+      .content-google-slides-embed-container
         .my-dummy-iframe
 
 
@@ -79,27 +80,6 @@ export default {
 
 <style lang="scss" scoped>
   @import '../../assets/css/content-variables.scss';
-
-  // Make the slides responsive
-  // From https://productforums.google.com/forum/#!topic/docs/tuufSoBoxKc
-  .embed-container {
-    position: relative;
-    padding-bottom: 48.25%; /* 16/9 ratio */
-    padding-top: 30px; /* IE6 workaround*/
-    height: 0;
-    overflow: hidden;
-
-  }
-  .embed-container iframe,
-  .embed-container object,
-  .embed-container embed {
-    position: absolute;
-    top: 3%;
-    left: 2%;
-    right: 2%;
-    width: 96%;
-    height: 96%;
-  }
   //- #gbx4{
   //-   background-color: #000;
   //- }
@@ -130,6 +110,7 @@ export default {
     background-color: #f6fff3;
   }
   .tt-container-debug-heading {
+    display: relative;
     height: $c-heading-height;
     line-height: $c-heading-height;
     background-color: lightgreen;
