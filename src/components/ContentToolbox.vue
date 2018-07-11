@@ -87,8 +87,11 @@ export default {
             return arr
           }
         }
+        return [ 'fas', 'fa-2x', 'fa-word-file-o' ]
       }
-      return [ 'fas', 'fa-2x', 'fa-word-file-o' ]
+
+      // Default to font-awesome 4
+      return [ 'fa', 'fa-2x', 'fa-word-file-o' ]
     },
     dragStart () {
       this.$store.commit('contentLayout/dragStart', { })
@@ -104,6 +107,10 @@ export default {
       this.theToolbox = Toolbox
     }
   }
+}
+
+function chooseIcon(rules) {
+
 }
 </script>
 

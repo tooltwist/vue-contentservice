@@ -32,9 +32,9 @@ div
         .c-editbar-mode-label(v-if="pageEditMode==='edit' || pageEditMode==='layout' || pageEditMode==='debug'")
           span(:class="pageEditMode==='edit' ? 'c-selected-mode-style': ''", @click.stop="switchMode('edit')") edit
           | &nbsp;/&nbsp;
-          span(:class="pageEditMode==='layout' ? 'c-selected-mode-style': ''", @click.stop="switchMode('layout')") design
-          | &nbsp;/&nbsp;
-          span(:class="pageEditMode==='debug' ? 'c-selected-mode-style': ''", @click.stop="switchMode('debug')") debug
+          //span(:class="pageEditMode==='layout' ? 'c-selected-mode-style': ''", @click.stop="switchMode('layout')") layout
+          //| &nbsp;/&nbsp;
+          span(:class="pageEditMode==='debug' ? 'c-selected-mode-style': ''", @click.stop="switchMode('debug')") design
         .c-editbar-mode-label(v-else)
           | {{pageEditMode}} mode
 
@@ -480,8 +480,7 @@ export default {
         top: 0;
         z-index: 100;
 
-
-        display: inline-block;
+        display: block;
         width: 100%;
         //- position: absolute;
         top: 0px;

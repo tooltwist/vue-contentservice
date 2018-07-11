@@ -8,26 +8,31 @@
     //.my-children-debug(v-if="pageEditMode=='debug'") {{element.children && element.children.length}} children
 
     // Display each child
-    .loop(v-for="child in element.children" v-bind:key="child.id")
+    //- div(v-for="(child, index) in element.children" v-bind:key="child.id")
+    template(v-for="(child, index) in element.children")
 
-      // Drop area for adding before this child
-      // https://www.npmjs.com/package/vue-drag-drop#events
-      drop(v-if="showDropAreas" @drop="handleDrop(element, child, ...arguments)")
-        template(slot-scope="props")
-          .droparea(v-bind:class="[props.transferData ? 'dropover' : '']")
+      // children is an array, so it is possible for a child to be null
+      template(v-if="child")
+        // Drop area for adding before this child
+        // https://www.npmjs.com/package/vue-drag-drop#events
+        drop(v-if="showDropAreas" @drop="handleDrop(element, child, ...arguments)")
+          template(slot-scope="props")
+            .droparea(v-bind:class="[props.transferData ? 'dropover' : '']", contenteditable="true", @paste="onPaste($event, index)", @input="onInput")
 
-      // Hack - does not display children without this.
-      // | {{''}}
+        // Hack - does not display children without this.
+        // | {{''}}
 
-      // Display this child
-      content-element(:editcontext="editcontext", :element="child")
+        // Display this child
+        content-element(:editcontext="editcontext", :element="child")
+      template(v-else)
+        | Missing child {{index}}
+        br
 
     // Drop area for adding after last child
     // https://www.npmjs.com/package/vue-drag-drop#events
     drop(v-if="showDropAreas" @drop="handleDrop(element, null, ...arguments)")
       template(slot-scope="props")
-        .droparea(v-bind:class="[props.transferData ? 'dropover' : '']")
-
+        .droparea(v-bind:class="[props.transferData ? 'dropover' : '']", contenteditable="true", @paste="onPaste($event,'last')", @input="onInput")
 </template>
 
 <script>
@@ -41,15 +46,83 @@ export default {
     editcontext: Object,
     element: Object
   },
-  data: function () {
-    return {
-      chickens2: 'kljgasdgy'
-    }
-  },
   mixins: [
     ContentMixins
   ],
   methods: {
+    onPaste (e, position) {
+      console.log(`onPaste(${position})`, e)
+
+      let clipboardData, pastedData;
+
+      // See https://stackoverflow.com/a/6804718/96100, solution #1
+
+      // Stop data actually being pasted into div
+      e.stopPropagation();
+      e.preventDefault();
+
+      // Get pasted data via clipboard API
+      clipboardData = e.clipboardData || window.clipboardData;
+      pastedData = clipboardData.getData('Text');
+
+
+      let parent = this.element
+      console.log(`parent is ${parent.id} (${parent.type}) [${parent.children.length}]`)
+      if (position === 'last') {
+        position = parent.children.length
+      }
+      console.log(`insert at: ${position}`)
+      //this.$store.state.contentLayout.anchor
+
+      // Check that the data makes sense
+      console.log('data:', pastedData);
+      console.log('data:', typeof(pastedData));
+      if (typeof(pastedData) !== 'string') {
+        return this.reportError(`Invalid paste object (not text).`)
+      }
+      this.$store.dispatch('contentLayout/insertLayoutAction', { vm: this, parent: parent, position: position, layout: pastedData })
+
+      // let data
+      // try {
+      //   data = JSON.parse(pastedData);
+      // } catch(e) {
+      //   console.error('Error while pasting:', e);
+      //   return this.reportError(`Invalid paste object (not JSON).`)
+      // }
+      // console.log(`data=`, data)
+      //
+      // if (data.type !== 'contentservice.io') {
+      //   return this.reportError(`Invalid paste object (not from contentservice.io).`)
+      // }
+      // if (data.version === '2.0') {
+      //   return this.reportError(`Invalid paste object (unknown version ${data.version}).`)
+      // } else {
+      //   // Assume version 1.0
+      //   if (typeof(data.layout) === 'undefined') {
+      //     return this.reportError(`Invalid paste object (missing layout).`)
+      //   }
+      //   console.log(`Will insert `, data.layout)
+      //   this.$store.dispatch('contentLayout/insertLayoutAction', { vm: this, parent: parent, position: position, layout: data.layout })
+      // }
+
+      return false
+    },
+
+    onInput (event) {
+      //console.log(`onInput()`, event)
+      // console.log(`$el=`, this.$el)
+      // console.log(`$el.text=`, this.$el.text)
+      // event.preventDefault()
+      event.target.textContent = ''
+      //console.log(`  after:`, event)
+      return false
+    },
+
+    reportError (msg) {
+      alert(msg)
+      return false
+    },
+
     // The drop event normally provides (data, event) but we've added (element, child, ...) in front.
     handleDrop (element, child, data, event) {
       console.log(`Children.handleDrop(element=${element.id}, child=${child?child.id:'\"null\"'}), data=`, data)

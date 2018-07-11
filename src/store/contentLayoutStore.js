@@ -54,6 +54,11 @@ export const state = () => {
 }
 //})
 
+/********************************************
+ *
+ *                 GETTERS
+ *
+ ********************************************/
 export const getters = {
 
   propertyElement: (state) => {
@@ -67,27 +72,28 @@ export const getters = {
   },
 
   layoutAsJson: (state) => {
-    // Custom replacer function - gets around "TypeError: Converting circular structure to JSON"
-    // Modified from http://www.johnantony.com/pretty-printing-javascript-objects-as-json/
-    var replacer = function(key, value) {
-      // ignore any circular links
-      // if (key === '_parent') {
-      //   return
-      // }
-      return value
+    return safeJson(state.layout, false/*not compressed*/)
+    // let json = JSON.stringify(state.layout, jsonReplacerCallback, 4);
+    // return json;
+  },
+
+
+  propertyElementAsJson: (state) => {
+    if (state.pathToSelectedElement && state.pathToSelectedElement.length > 0) {
+      let element = state.pathToSelectedElement[state.pathToSelectedElement - 1]
+      return safeJson(element, false/*not compressed*/)
     }
-    let json = JSON.stringify(state.layout, replacer, 4);
-    return json;
-  }
+    return null
+  },
+
 }
 
-// getters
-// export const getters = {
-//   propertyElement: state => state.propertyElement,
-//   p: state => state.propertyElement
-// }
 
-// Actions
+/********************************************
+ *
+ *                 ACTIONS
+ *
+ ********************************************/
 // see https://vuex.vuejs.org/guide/actions.html
 export const actions = {
 
@@ -104,11 +110,80 @@ export const actions = {
 
 
   // Delete an element from the current layout.
-  aDeleteElement(state, { vm, element}) {
-    console.log('Action contentLayout/aDeleteElement()', element)
+  deleteElementAction({ commit, state }, { vm, element}) {
+    console.log('Action contentLayout/deleteElementAction()', element)
 
-    // Find the element
-    return
+    // Ok, let's do it
+    commit('deleteElementMutation', { vm, element })
+
+    // Start the timer, to save after a short delay
+    rememberToSave(commit, state, vm)
+  },
+
+  insertLayoutAction({ commit, state }, { vm, parent, position, layout}) {
+    console.log('Action contentLayout/insertLayoutAction()', parent, position, layout)
+    console.log(`state=`, state)
+
+console.log(`ok 1`)
+    let data
+    switch (typeof(layout)) {
+      case 'string':
+
+        // Parse the layout
+        console.log(`ok 1a`)
+        try {
+          data = JSON.parse(layout);
+          console.log(`ok 1b`)
+        } catch(e) {
+          console.log(`ok 1c`)
+          console.error('Error while pasting:', e);
+          console.log(`ok 1d`)
+          return handleError(vm, `Invalid paste object (not JSON).`)
+        }
+        break;
+
+      case 'object':
+      console.log(`ok 1e`)
+        data = layout
+        break;
+
+      default:
+        return handleError(`Invalid paste object`)
+    }
+    console.log(`ok 2`)
+    console.log(`data=`, data)
+
+    // Do basic checks, to ensure something unrelated isn't being pasted
+    if (data.type !== 'contentservice.io') {
+      return handleError(`Invalid paste object (not from contentservice.io).`)
+    }
+    console.log(`ok 3`)
+
+    // Check the data, according to the version
+    let toInsert
+    if (data.version === '1.0') {
+
+      // Check it complies to version 1.0
+      if (typeof(data.layout) === 'undefined') {
+        return handleError(`Invalid paste object (missing layout).`)
+      }
+      toInsert = data.layout
+    } else {
+      return handleError(`Invalid paste object (unknown version ${data.version}).`)
+    }
+    console.log(`ok 4`)
+
+    // Check we have all the required dependencies
+    //ZZZZ
+
+    console.log(`Will insert `, toInsert)
+    console.log(`Position is`, position)
+
+    // Ok, let's do it
+    commit('insertLayoutMutation', { vm, parent, position, layout: toInsert })
+
+    // Start the timer, to save after a short delay
+    rememberToSave(commit, state, vm)
   },
 
 
@@ -131,72 +206,26 @@ export const actions = {
 
     commit('updateElementProperty', { vm, element, name, value })
 
-    commit('setSaveMsg', { msg: DIRTY })
-
-
     //ZZZZ Timer should probably be set in the mutation?
     // There is a potential timing problem.
     // - the commit might not be instantaneous (is that correct), so
     // a timeout created here might run before the commit occurs.
+    commit('setSaveMsg', { msg: DIRTY })
 
-
-    // We'll need to save changes to Crowdhound. Don't save every
-    // change, but rather wait a few seconds to batch up changes.
-    console.log( `save to Crowdhound (not yet)`)
-    //this.crowdhoundElement.description = value
-    if (saveTimer) {
-      // Already set the timeout to save
-    } else {
-      // Save after five seconds
-      commit('setSaveMsg', { msg: DIRTY })
-      //state.saveMsg = DIRTY
-      saveTimer = setTimeout(() => {
-        // Save the changes
-        saveTimer = null
-        //state.saveMsg = SAVING
-        commit('setSaveMsg', { msg: SAVING })
-        //saveToCrowdhound(vm)
-
-        // Squeeze the layout into a single Crowdhound element
-        let crowdhoundElement = {
-          tenant: state.crowdhoundElement.tenant,
-          rootId: state.crowdhoundElement.rootId,
-          parentId: state.crowdhoundElement.parentId,
-          id: state.crowdhoundElement.id,
-          description: safeJson(state.layout, true/*compressed*/)
-        }
-        console.error(`saveToCrowdhound() in Store`, crowdhoundElement)
-
-        // Update the element (should already exist)
-        commit('setSaveMsg', { msg: SAVED })
-
-        vm.$content.update(this, crowdhoundElement)
-          .then(result => {
-            setTimeout(() => {
-              if (state.saveMsg === DIRTY) {
-                commit('setSaveMsg', { msg: CLEAN })
-              }
-            }, 1700)
-            console.log(`result of save:`, result)
-            console.log(`result of save:`, result.data)
-          })
-          .catch(e => {
-            let desc = `Error saving html content`
-            console.log(desc, e)
-            //state.saveMsg = ERROR
-            commit('setSaveMsg', { msg: ERROR })
-            /* handleError(this, desc, params, e) */
-            //this.selectError = true
-          })//- axios
-      }, SAVE_INTERVAL)
-    }
-
+    // Start the timer, to save after a short delay
+    rememberToSave(commit, state, vm)
   },
 
 }
 
-// mutations
-//export const mutations = {
+
+
+
+/********************************************
+ *
+ *                 MUTATIONS
+ *
+ ********************************************/
 export const mutations = {
 
   // Set the current layout, displayed in the middle panel.
@@ -250,7 +279,7 @@ export const mutations = {
     //console.log(`After`)
 
     // console.log(`LOOKING FOR ${element.id}`)
-    let path = trackDownElement(state.layout, element.id)
+    let path = trackDownElementInLayout(state, element.id)
     //console.log(`path to selected element=`, path)
     state.pathToSelectedElement = path ? path : [ ]
 
@@ -339,34 +368,59 @@ export const mutations = {
     //console.log(`insertChild, parent after:`, safeJson(element));
   },
 
-  // Delete an element from the current layout.
-  mDeleteElement(state, { vm, element}) {
-    console.log('In Mutation contentLayout/mDeleteElement()', element)
-    return
+  insertLayoutMutation (state, { vm, parent, position, layout }) {
+    console.log('In Mutation contentLayout/insertLayoutMutation()', parent, position, layout)
+    let toInsert = layout
 
-    //console.log(`insertChild, parent before:`, safeJson(element));
-    console.log(`insertChild, child:`, safeJson(child));
-
-    // Clone the hierarchy (this is the cheat's way)
-    //let newchild = JSON.parse(JSON.stringify(child));
-    let newchild = JSON.parse(safeJson(child));
-
-    // Overwrite any element IDs
-    overwriteElementIDs(newchild)
-
-    // Check it is sane
-    // newchild._parent = element //ZZKOP
-    addAnyMissingValues(vm, newchild)
-
-    // Plug it in as a child of the element
-    // The inserted item will become reactive, because the layout is already reactive.
-    // See https://vuejs.org/v2/guide/list.html#Array-Change-Detection
-    if (position >= 0) {
-      element.children.splice(position, 0, newchild)
-    } else {
-      element.children.push(newchild)
+    if (position === 'last') {
+      position = parent.children.length
     }
-    //console.log(`insertChild, parent after:`, safeJson(element));
+
+    // Before inserting, check we have unique IDs for all elements in the
+    // layout. By preference we will retain the IDs, so when a user cuts and
+    // pastes any existing references will be retained. However if they copy
+    // and paste, we don't want duplicate IDs in our layout.
+    replaceIdsAlreadyInLayout(state, toInsert)
+
+    console.log(`ok 5`)
+
+    // For other element types, we insert the actual element.
+    if (toInsert.type === 'layout') {
+      // If an entire 'layout' is being inserted, we insert the children one by one.
+      console.log(`Inserting layout element. ${toInsert.children.length} items.`)
+
+    } else {
+      // For non-layout elements, we insert the actual element
+      console.log(`Inserting non-layout element: ${toInsert.type} at position ${position}`)
+      if (position < 0 || position > parent.children.length) {
+        alert('insertLayoutMutation: Internal error #2963')
+        return
+      }
+      parent.children.splice(position, 0, toInsert);
+      console.log(`ok 6`)
+    }
+  },
+
+  // Delete an element from the current layout.
+  deleteElementMutation(state, { vm, element}) {
+    console.log(`In Mutation contentLayout/deleteElementMutation(${element.id} (${element.type}))`)
+
+    // Find the path down to this element, so we know the parent.
+    let path = trackDownElementInLayout(state, element.id)
+    if (path && path.length >= 2) {
+      let parent = path[path.length - 2]
+      console.log(`Parent is ${parent.id} (${parent.type})`)
+
+      for (let index = 0; index < parent.children.length; index++) {
+        if (parent.children[index].id == element.id) {
+          // We've found it, so remove it
+          console.log(`Found item to delete in position ${index}`)
+          parent.children.splice(index, 1)
+          return
+        }
+      }
+    }
+
   },
 
   // Set the element shown in the properties panel.
@@ -405,9 +459,36 @@ function addAnyMissingValues (vm, element) {
   }
 
   // Now sanitize any children
-  element.children.forEach(child => {
-    addAnyMissingValues(vm, child)
-  })
+  for (let i = 0; i < element.children.length; ) {
+    let child = element.children[i]
+    if (child) {
+      addAnyMissingValues(vm, child)
+      i++
+    } else {
+      // null child?
+      // This should not happen, but it does on delete
+      // console.error(`Child ${i} of element ${element.id} is null.`)
+      // let a1 = element.children[i-1]
+      // let a2 = element.children[i]
+      // let a3 = element.children[i+1]
+      // let l1 = element.children.length
+      // console.log(`a1:`, a1)
+      // console.log(`a2:`, a2)
+      // console.log(`a3:`, a3)
+      // console.log(`l1:`, l1)
+      element.children.splice(i, 1)
+      // let b1 = element.children[i-1]
+      // let b2 = element.children[i]
+      // let b3 = element.children[i+1]
+      // let l2 = element.children.length
+      // console.log(`b1:`, b1)
+      // console.log(`b2:`, b2)
+      // console.log(`b3:`, b3)
+      // console.log(`l2:`, l2)
+      // i++
+    }
+  }
+
   return element
 }
 
@@ -426,7 +507,7 @@ function safeJson (element, compressed/*boolean,optional*/) {
     return value
   }
   // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-  let json = JSON.stringify(element, replacer, spaces);
+  let json = JSON.stringify(element, jsonReplacerCallback, spaces);
 
   return json;
 }
@@ -481,7 +562,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
     //- this.$content.select(this, params)
     .then(result => {
       // Use the elements
-      // console.log(`>>> result=`, result)
+      console.log(`>>> result=`, result)
       if (result.elements.length < 1) {
         // Should not be possible
         console.error(`Selecting layout returned no element. How is this possible?`)
@@ -498,9 +579,14 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
         console.error(`>>> NOT parsing json (it's the anchor)`)
         // New element/layout
       } else {
-        // console.error(`>>> parsing JSON`)
-        layout = JSON.parse(json)
-        //console.log('parsed JSON layout=', layout)
+        console.error(`>>> parsing JSON`)
+        try {
+          layout = JSON.parse(json)
+        } catch (e) {
+          console.error(`Broken JSON: `, e)
+          console.log(`json=${json}`)
+        }
+        console.log('parsed JSON layout=', layout)
         // Check for errors
       }
       console.log(`>>> layout=`, layout)
@@ -517,7 +603,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
                 {
                     "type": "froala",
                     "text": `<h1><span style=\"font-size: 48px;\">Example elemente for ${anchor}!</span></h1>`,
-                    "id": 1664717185,
+                    "id": 2,
                     "children": []
                 }
               ]
@@ -547,25 +633,176 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
     })//- axios
 }
 
-// Recursively find this element within the current layout.
-// (We don't use parent links, because it's simpler
-// if we avoid cyclic links in the hierarchy)
-function trackDownElement (element, requiredID) {
-  // console.log(`  trackDownElement(${element.id}, ${requiredID})`)
-  if (element.id === requiredID) {
-    // console.log(`found leaf`, element)
-    return [ element ]
-  }
-  for (let i = 0; i < element.children.length; i++) {
-    let child = element.children[i]
-    let path = trackDownElement(child, requiredID)
-    if (path) {
-      // console.log(`found child path`, path)
-      return [ element, ...path]
+// If any of the IDs in the specified element or it's descendants exist
+// in our currently-being-edited layout, replace them. This is
+// typically used before pasting stuff into the current layout.
+function replaceIdsAlreadyInLayout(state, layoutToInsert) {
+  console.log(`replaceIdsAlreadyInLayout(element: ${layoutToInsert.id}, elementType: ${layoutToInsert.type})`)
+
+  // Create a hash of all the element IDs already in use
+  let ids = getCurrentlyUsedIds(state)
+  // console.log(`ids=`, ids)
+
+  // Recursively look at every element and it's children,
+  // replacing element Ids that are already used.
+  let recurse = (element) => {
+    // console.log(`  - check element ${element.id}`)
+    let initialId = element.id
+    while (ids[element.id]) {
+      element.id = Math.floor(Math.random() * 10000000000)
+      console.log(`  replacing id of element ${initialId} (${element.type}) -> ${element.id}`)
+    }
+    if (element.children) {
+      element.children.forEach(child => recurse(child))
     }
   }
-  return null
+
+  // Check, from the top down.
+  recurse(layoutToInsert)
 }
+
+/*
+ *  Create a has of all the element IDs in the current layout.
+ *  returns [] of Id -> true
+ */
+function getCurrentlyUsedIds(state) {
+  // console.log(`getCurrentlyUsedIds()`)
+  // Recursive through the layout hierarchy, remembering the ids
+  let hash = [ ] // id -> true
+  let recurse = (element) => {
+    // console.log(` - ${element.id}`)
+    hash[element.id] = true
+    element.children.forEach(child => recurse(child))
+  }
+  recurse(state.layout)
+  return hash
+}
+
+/*
+ *  We have changes, but we don't want to save every little keystroke.
+ *  Delay a few seconds and then save.
+ */
+function rememberToSave (commit, state, vm) {
+
+  // We'll need to save changes to Crowdhound. Don't save every
+  // change, but rather wait a few seconds to batch up changes.
+  console.log( `save to Crowdhound (not yet)`)
+  //this.crowdhoundElement.description = value
+  if (saveTimer) {
+    // Already set the timeout to save
+  } else {
+    // Save after five seconds
+    commit('setSaveMsg', { msg: DIRTY })
+    //state.saveMsg = DIRTY
+    saveTimer = setTimeout(() => {
+      // Save the changes
+      saveTimer = null
+      //state.saveMsg = SAVING
+      commit('setSaveMsg', { msg: SAVING })
+      //saveToCrowdhound(vm)
+
+      // Squeeze the layout into a single Crowdhound element
+      let crowdhoundElement = {
+        tenant: state.crowdhoundElement.tenant,
+        rootId: state.crowdhoundElement.rootId,
+        parentId: state.crowdhoundElement.parentId,
+        id: state.crowdhoundElement.id,
+        description: safeJson(state.layout, true/*compressed*/)
+      }
+      console.log(`saveToCrowdhound() in Store`, crowdhoundElement)
+
+      // Update the element (should already exist)
+      commit('setSaveMsg', { msg: SAVED })
+
+      vm.$content.update(vm, crowdhoundElement)
+        .then(result => {
+          setTimeout(() => {
+            if (state.saveMsg === DIRTY) {
+              commit('setSaveMsg', { msg: CLEAN })
+            }
+          }, 1700)
+          console.log(`result of save:`, result)
+          console.log(`result of save:`, result.data)
+        })
+        .catch(e => {
+          let desc = `Error saving html content`
+          console.log(desc, e)
+          //state.saveMsg = ERROR
+          commit('setSaveMsg', { msg: ERROR })
+          /* handleError(this, desc, params, e) */
+          //this.selectError = true
+        })//- axios
+    }, SAVE_INTERVAL)
+  }
+}
+
+/*
+ *  Display an error message, by whatever means is possible.
+ */
+function handleError(vm, msg) {
+  if (vm && vm.$toast) {
+    vm.$toast.open({ message: `${msg}`, type: 'is-danger' })
+  } else {
+    alert(msg)
+  }
+  return false
+}
+
+/*
+ *  Recursively find this element within the current layout.
+ *  (We don't use parent links, because it's simpler
+ *  if we avoid cyclic links in the hierarchy)
+ */
+function trackDownElementInLayout(state, requiredID) {
+  console.log(`trackDownElementInLayout(state, requiredID:${requiredID})`)
+  console.log(`state=`, state)
+  console.log(`state.layout=`, state.layout)
+
+  let recurse = (elementInLayout) => {
+    console.log(`  - ${elementInLayout.id} (${elementInLayout.type})`)
+    if (elementInLayout.id === requiredID) {
+      return [ elementInLayout ]
+    }
+    for (let i = 0; i < elementInLayout.children.length; i++) {
+      let child = elementInLayout.children[i]
+      let path = recurse(child)
+      if (path) {
+        return [ elementInLayout, ...path]
+      }
+    }
+    return null
+  }
+  return recurse(state.layout)
+}
+
+// function trackDownElement_recursive(elementInLayout, requiredID) {
+//   console.log(`  trackDownElement_recursive(${elementInLayout.id}, ${requiredID})`)
+//   if (elementInLayout.id === requiredID) {
+//     // console.log(`found leaf`, element)
+//     return [ elementInLayout ]
+//   }
+//   for (let i = 0; i < elementInLayout.children.length; i++) {
+//     let child = elementInLayout.children[i]
+//     let path = trackDownElement_recursive(child, requiredID)
+//     if (path) {
+//       // console.log(`found child path`, path)
+//       return [ elementInLayout, ...path]
+//     }
+//   }
+//   return null
+// }
+
+// Function to avoid circular dependencies while "stringify"ing objects to JSON.
+// Gets around "TypeError: Converting circular structure to JSON"
+// See http://www.johnantony.com/pretty-printing-javascript-objects-as-json/
+function jsonReplacerCallback (key, value) {
+  // ignore any circular links
+  // if (key === '_parent') {
+  //   return
+  // }
+  return value
+}
+
 
 export const namespaced = true
 

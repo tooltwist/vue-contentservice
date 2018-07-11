@@ -13,14 +13,7 @@
 
     // Debug mode
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
-      .c-layout-mode-heading
-        .c-heading-icons
-          i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
-          | &nbsp;
-          i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-          | &nbsp;
-          i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
-        | container
+      .c-layout-mode-heading layout
       .container
         content-children.my-content(:editcontext="editcontext", :element="element")
 
@@ -33,7 +26,7 @@
 
 <script>
 import ContentMixins from '../../mixins/ContentMixins'
-import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
+
 
 export default {
   name: 'content-container',
@@ -43,7 +36,13 @@ export default {
     editcontext: Object,
     element: Object,
   },
-  mixins: [ ContentMixins, CutAndPasteMixins ],
+  mixins: [
+    ContentMixins
+  ],
+  data: function () {
+    return {
+    }
+  },
   computed: {
 
     sectionStyle: function () {

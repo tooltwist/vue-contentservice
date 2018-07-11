@@ -1,26 +1,17 @@
 <template lang="pug">
   div
-    .tt-property-header Container
-    // {{element.id}}
-    .tt-properties
-      .tt-property
-        .tt-property-label Type
-        .tt-property-value
-          select(v-model="protectedIsFluid")
-            option() navbar
-            option() hero
-            option() section
-            option() footer
-      .tt-property
-        .tt-property-label
-        .tt-property-value
-          label.checkbox
-            input(type="checkbox" v-model="protectedIsFluid")
-            | &nbsp;full width
-      .tt-property
-        .tt-property-label Background
-        .tt-property-value
-          input.input(v-model="protectedBgColor")
+    .tt-property-header
+      .my-button
+        // handle font-awesome 4 and 5
+        // Clipboard. See https://www.npmjs.com/package/v-clipboard
+        i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
+        | &nbsp;
+        i.fa.fa-files-o.fas.fa-copy(v-clipboard="elementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+        | &nbsp;
+        i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
+      | Layout
+    //- .my-restore
+    //-   | drop here to restore layout
 
 </template>
 
@@ -28,11 +19,8 @@
 import PropertyMixins from '../../mixins/PropertyMixins'
 
 export default {
-  name: 'content-container-props',
+  name: 'content-layout-props',
   mixins: [ PropertyMixins ],
-  props: {
-    element: Object
-  },
   computed: {
 
     // We cannot update the element directly - it is stored
@@ -70,10 +58,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tt-property-value {
-  input.input {
-    margin-top: 2px;
-    font-size: 9px;
+  .tt-property-value {
+    input.input {
+      margin-top: 2px;
+      font-size: 9px;
+    }
   }
-}
+
+  .my-button {
+    position: absolute;
+    right: 5px;
+    cursor: pointer;
+  }
+
+  .my-restore {
+    display: block;
+    min-height: 15px;
+    //height:
+    font-size: 10px;
+  }
 </style>

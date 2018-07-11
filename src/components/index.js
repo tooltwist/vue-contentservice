@@ -5,6 +5,7 @@ import VueHotkey from 'v-hotkey'
 import VueSplit from 'vue-split-panel'
 import VueFroala from 'vue-froala-wysiwyg'
 import VueDragDrop from 'vue-drag-drop';
+import Clipboard from 'v-clipboard'
 
 // Our main class
 import ContentService from '../lib/ContentService.js'
@@ -22,6 +23,8 @@ import ContentChildren from './ContentChildren.vue'
 //import ContentChildrenProps from './ContentChildrenProps.vue'
 
 // Widgets
+import ContentLayout from './widgets/ContentLayout.vue'
+import ContentLayoutProps from './widgets/ContentLayoutProps.vue'
 import ContentText from './widgets/ContentText.vue'
 import ContentTextProps from './widgets/ContentTextProps.vue'
 import ContentFroala from './widgets/ContentFroala.vue'
@@ -169,6 +172,7 @@ function install (Vue, options) {
   _content.registerLayoutType(Vue, 'section', 'content-section', ContentSection, ContentSectionProps)
   _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
   _content.registerLayoutType(Vue, 'columns', 'content-columns', ContentColumns, ContentColumnsProps)
+  _content.registerLayoutType(Vue, 'layout', 'content-layout', ContentLayout, ContentLayoutProps)
 
   _content.registerLayoutType(Vue, 'google-slides', 'content-google-slides', ContentGoogleSlides, ContentGoogleSlidesProps)
 
@@ -193,6 +197,10 @@ function install (Vue, options) {
 
   // vue-drag-drop
   Vue.use(VueDragDrop);
+
+  // v-clipboard
+  Vue.use(Clipboard)
+
 
   return _content
 } //- install()

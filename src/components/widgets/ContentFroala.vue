@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  .tt-froala(v-bind:class="[(pageEditMode==='edit' || pageEditMode==='debug') ? 'tt-element-outline' : '']")
+  .tt-froala(v-bind:class="[ editModeClass, (pageEditMode==='edit' || pageEditMode==='debug') ? 'tt-element-outline' : '']")
     span(v-if="extraDebug")
       | &lt;content-froala
       span(v-if="element") &nbsp;have element
@@ -8,33 +8,40 @@
       | &gt;
       br
 
-    //| FROALA {{this.pageEditMode}}
-
-    // Preview mode
+    // Live mode
     .x(v-if="isPageMode('view')")
       froala-view(:tag="'div'", v-model="protectedText")
 
+    // Debug mode
     .my-debug-box(v-else-if="isPageMode('debug')")
-      //- .my-debug-header rich text
-      //-   br
-      //-   | contentId: {{contentId}}
-      //-   br
-      froala(:tag="'div'", :config="config", v-model="protectedText", v-on:click="select(element)")
+      .c-layout-mode-heading
+        .c-heading-icons
+          i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
+          | &nbsp;
+          i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+          | &nbsp;
+          i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
+        | text
+      // In debug mode we don't allow editing, because it prevents selecting the element
+      froala-view(:tag="'div'", v-model="element.text", v-on:click="selectThisElement")
 
+    // Editing
     .x(v-else-if="isPageMode('edit')")
       | &nbsp;{{saveMsg}}
       br
-      froala(:tag="'div'", :config="config", v-model="protectedText", zv-on:click="select(element)")
+      froala(:tag="'div'", :config="config", v-model="protectedText", v-on:click="selectThisElement")
 
     // layout
-    .x(v-else @click="select(element)")
-      froala-view(:tag="'div'", v-model="element.text")
+    .x(v-else @click="selectThisElement")
+      | LAYOUT? {{pageEditMode}}
+      br
+      froala-view(:tag="'div'", v-model="element.text", v-on:click="selectThisElement")
 
 </template>
 
 <script>
-
 import ContentMixins from '../../mixins/ContentMixins'
+import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
 
 // Don't display a license error every time (intentionally global)
 let missingLicenseCounter = 0
@@ -59,6 +66,7 @@ export default {
     contentId: String,
     element: Object,
   },
+  mixins: [ ContentMixins, CutAndPasteMixins ],
   data: function () {
     return {
 
@@ -97,9 +105,7 @@ export default {
       },
     }
   },
-  mixins: [
-    ContentMixins
-  ],
+
   computed: {
 
     useCrowdhound () {
@@ -144,13 +150,13 @@ export default {
     },
 
     // Select this element
-    select (element) {
-      console.log('Froala.select()')
-
-      if (this.pageEditMode != 'view') {
-        this.$store.commit('contentLayout/setPropertyElement', { element })
-      }
-    },
+    //- select (element) {
+    //-   console.log('Froala.select()')
+    //-
+    //-   if (this.pageEditMode != 'view') {
+    //-     this.$store.commit('contentLayout/setPropertyElement', { element })
+    //-   }
+    //- },
 
     rememberToSave () {
 
@@ -285,4 +291,23 @@ export default {
   //-   font-size: 9px;
   //- }
 }
+
+.c-layout-mode-heading {
+  // This adds to the defintion in content-editor.scss
+  background-color: lightblue;
+  color: darkblue;
+}
+
+.c-edit-mode-debug  {
+  border-left: dashed 2px lightblue;
+  border-bottom: dashed 2px lightblue;
+  border-right: dashed 2px lightblue;
+  margin: 1px;
+  //- background-color: lightgreen;
+  background-color: #f9fdff;
+  background-color: #f6fff3;
+}
+
+
+
 </style>

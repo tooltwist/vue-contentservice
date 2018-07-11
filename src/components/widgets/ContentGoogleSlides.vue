@@ -10,7 +10,13 @@
 
     // Debug mode
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
-      .tt-container-debug-heading
+      .c-layout-mode-heading
+        .c-heading-icons
+          i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
+          | &nbsp;
+          i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+          | &nbsp;
+          i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
         | google slides
       .container
         //| {{element.docID}}
@@ -27,6 +33,7 @@
 
 <script>
 import ContentMixins from '../../mixins/ContentMixins'
+import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
 
 
 export default {
@@ -36,7 +43,7 @@ export default {
   props: {
     element: Object,
   },
-  mixins: [ ContentMixins ],
+  mixins: [ ContentMixins, CutAndPasteMixins ],
   data: function () {
     return {
       //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl',
@@ -108,15 +115,6 @@ export default {
     //- background-color: lightgreen;
     background-color: #f9fdff;
     background-color: #f6fff3;
-  }
-  .tt-container-debug-heading {
-    display: relative;
-    height: $c-heading-height;
-    line-height: $c-heading-height;
-    background-color: lightgreen;
-    font-size: $c-heading-font-size;
-    color: darkgreen;
-    margin-bottom: 1px;
   }
   .my-content {
     background-color: white;

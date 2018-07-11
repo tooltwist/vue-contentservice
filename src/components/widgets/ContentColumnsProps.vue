@@ -8,8 +8,11 @@
 </template>
 
 <script>
+import PropertyMixins from '../../mixins/PropertyMixins'
+
 export default {
   name: 'content-columns-props',
+  mixins: [ PropertyMixins ],
   props: {
     element: Object
   }

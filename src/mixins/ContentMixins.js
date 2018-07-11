@@ -1,3 +1,5 @@
+import FileSaver from 'file-saver'
+
 export default {
   computed: {
 
@@ -22,7 +24,14 @@ export default {
       if (this.$store && this.$store.state && this.$store.state.contentLayout && this.$store.state.contentLayout.mode) {
         return this.$store.state.contentLayout.mode
       }
-      return mode
+      return 'view'
+    },
+
+    editModeClass: function () {
+      if (this.$store && this.$store.state && this.$store.state.contentLayout && this.$store.state.contentLayout.mode) {
+        return `c-edit-mode-${this.$store.state.contentLayout.mode}`
+      }
+      return 'c-edit-mode-view'
     },
 
     debugClass () {
@@ -43,6 +52,14 @@ export default {
   },
 
   methods: {
+    selectThisElement () {
+      console.log(`selectThisElement()`)
+      if (this.pageEditMode != 'view') {
+        let element = this.element
+        this.$store.commit('contentLayout/setPropertyElement', { element })
+      }
+    },
+
     copyStyle (from, to, name) {
       if (from[name]) {
         to[name] = from[name]
@@ -63,7 +80,6 @@ export default {
       let json = JSON.stringify(element, replacer, 4);
 
       return json;
-    }
-
+    },
   }
 }

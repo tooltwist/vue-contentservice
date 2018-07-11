@@ -10,8 +10,11 @@
 </template>
 
 <script>
+import PropertyMixins from '../../mixins/PropertyMixins'
+
 export default {
   name: 'content-form-props',
+  mixins: [ PropertyMixins ],
   props: {
     element: Object
   }

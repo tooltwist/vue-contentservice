@@ -1,5 +1,6 @@
 /* Global styles */
 
+@import './content-variables.scss';
 
 
 // $tt-property-header-outline: #f7f7f7;
@@ -85,4 +86,27 @@ $tt-property-value-color: #88a;
   right: 2%;
   width: 96%;
   height: 96%;
+}
+
+
+.c-layout-mode-heading {
+  display: relative;
+  height: $c-heading-height;
+  line-height: $c-heading-height;
+  background-color: lightgreen;
+  font-size: $c-heading-font-size;
+  color: darkgreen;
+  margin-bottom: 1px;
+  position: relative;
+
+  .c-heading-icons {
+    position: absolute;
+    right: 5px;
+    padding-top: 1px;
+
+    i {
+      margin-left: 4px;
+      cursor: pointer;
+    }
+  }
 }

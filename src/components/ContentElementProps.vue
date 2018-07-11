@@ -18,6 +18,7 @@
       //  | skipping '{{element.type}}'
 
       content-google-slides-props(v-else-if="element.type=='google-slides'", :element="element")
+      content-layout-props(v-if="element.type=='layout'", :element="element")
 
 
       // Now show the next level

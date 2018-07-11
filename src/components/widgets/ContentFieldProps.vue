@@ -10,10 +10,12 @@
 </template>
 
 <script>
+import PropertyMixins from '../../mixins/PropertyMixins'
 import StringProperty from '../propertyTypes/StringProperty'
 
 export default {
   name: 'content-field-props',
+  mixins: [ PropertyMixins ],
   components: {
     StringProperty
   },

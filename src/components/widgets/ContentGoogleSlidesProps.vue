@@ -1,7 +1,14 @@
 <template lang="pug">
   div
     .tt-property-header
-      .my-button(@click="deleteElement") D
+      .my-button
+        // handle font-awesome 4 and 5
+        // Clipboard. See https://www.npmjs.com/package/v-clipboard
+        i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
+        | &nbsp;
+        i.fa.fa-files-o.fas.fa-copy(v-clipboard="elementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+        | &nbsp;
+        i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
       | Google Slides
     // {{element.id}}
     .tt-properties
@@ -13,11 +20,11 @@
 </template>
 
 <script>
+import PropertyMixins from '../../mixins/PropertyMixins'
+
 export default {
-  name: 'content-container-props',
-  props: {
-    element: Object
-  },
+  name: 'content-google-slides-props',
+  mixins: [ PropertyMixins ],
   computed: {
 
     // We cannot update the element directly - it is stored
@@ -33,12 +40,6 @@ export default {
       }
     },
   },
-  methods: {
-    deleteElement ( ) {
-      console.log(`Delete element ${this.element.id}`)
-      this.$store.dispatch('contentLayout/deleteElement', { vm: this, element: this.element })
-    }
-  }
 }
 </script>
 

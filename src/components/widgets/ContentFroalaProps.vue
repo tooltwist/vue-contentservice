@@ -9,8 +9,11 @@
 </template>
 
 <script>
+import PropertyMixins from '../../mixins/PropertyMixins'
+
 export default {
   name: 'content-froala-props',
+  mixins: [ PropertyMixins ],
   props: {
     element: Object
   }
