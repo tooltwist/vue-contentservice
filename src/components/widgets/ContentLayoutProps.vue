@@ -4,11 +4,18 @@
       .my-button
         // handle font-awesome 4 and 5
         // Clipboard. See https://www.npmjs.com/package/v-clipboard
-        i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
-        | &nbsp;
-        i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-        | &nbsp;
-        i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
+        span(@click="downloadMyElement")
+          | &nbsp;
+          i.fa.fa-download.fas.fa-download
+          | &nbsp;
+        span(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+          | &nbsp;
+          i.fa.fa-files-o.fas.fa-copy
+          | &nbsp;
+        span(@click="deleteMyElement")
+          | &nbsp;
+          i.fa.fa-trash-o.fas.fa-trash-alt
+          | &nbsp;
       | Layout
     //- .my-restore
     //-   | drop here to restore layout
