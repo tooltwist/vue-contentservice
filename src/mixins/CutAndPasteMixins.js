@@ -105,7 +105,7 @@ export default {
     // Save the current element to file and download it.
     // See https://github.com/eligrey/FileSaver.js
     downloadMyElement ( ) {
-      console.log(`downloadElement()`)
+      console.log(`downloadMyElement()`)
       let json = this.bundleMyElement()
       var blob = new Blob([json], {type: "text/plain;charset=utf-8"});
 

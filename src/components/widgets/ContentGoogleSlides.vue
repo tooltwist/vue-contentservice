@@ -12,7 +12,7 @@
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
       .c-layout-mode-heading
         .c-heading-icons
-          i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
+          i.fa.fa-download.fas.fa-download(@click="downloadMyElementJunk")
           | &nbsp;
           i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
           | &nbsp;
@@ -75,6 +75,10 @@ export default {
         this.$store.commit('contentLayout/setPropertyElement', { element })
       }
     },
+    downloadMyElementJunk () {
+      console.log(`downloadMyElementJunk`)
+      console.log(`downloadMyElementJunk`, this.downloadMyElement)
+    }
   }
 }
 
