@@ -12,7 +12,7 @@
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
       .c-layout-mode-heading
         .c-heading-icons
-          a(href="", @click="downloadMyElementJunk")
+          a(href="", @click.stop="downloadMyElement")
             | &nbsp;
             i.fa.fa-download.fas.fa-download
             | &nbsp;
@@ -20,12 +20,11 @@
             | &nbsp;
             i.fa.fa-files-o.fas.fa-copy
             | &nbsp;
-          a(href="", @click="deleteMyElement")
+          a(href="", @click.stop="deleteMyElement")
             | &nbsp;
             i.fa.fa-trash-o.fas.fa-trash-alt
             | &nbsp;
-        | google slidesZ
-        a(@click="downloadMyElementJunk") BLURB
+        | google slides
       .container
         //| {{element.docID}}
         .content-google-slides-embed-container
