@@ -13,9 +13,9 @@
       .c-layout-mode-heading
         .c-heading-icons
           i.fa.fa-download.fas.fa-download(@click="downloadMyElementJunk")
-          | &nbsp;
+          | AZX &nbsp;
           i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-          | &nbsp;
+          | BZX &nbsp;
           i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
         | google slides
       .container
