@@ -1,8 +1,8 @@
 <template lang="pug">
   .tt-property
-    .tt-property-label
+    .c-property-label
       | {{label}}
-    .tt-property-value
+    .c-property-value
       input.input.tt-string-input(v-model="value")
 </template>
 

@@ -43,6 +43,10 @@ export const state = () => {
     //propertyElement: null,
     pathToSelectedElement: [ ], // elements, from root to currently selected element
 
+    // Element with properties being shown.
+    // This will be within 'pathToSelectedElement'
+    expandedElement: null,
+
     // Message shown at top of screen
     selectError: '',
     saveMsg: CLEAN,
@@ -275,18 +279,40 @@ export const mutations = {
     // Clone the element
     //let duplicate = JSON.parse(JSON.stringify(data.element));
     // console.log(`Before`)
-    state.propertyElement = element
+    // state.propertyElement = element
     //console.log(`After`)
 
     // console.log(`LOOKING FOR ${element.id}`)
     let path = trackDownElementInLayout(state, element.id)
     //console.log(`path to selected element=`, path)
     state.pathToSelectedElement = path ? path : [ ]
+    state.expandedElement = path ? path[path.length-1] : null
 
     console.log(`Path to selected element=`, path)
     path.forEach((element) => {
       console.log(`  ${element.type}: ${element.id}`)
     })
+  },
+
+  // Set the element currently expanded in the properties panel.
+  // This *must* be an element in pathToSelectedElement.
+  setExpandedElement (state, { element } ) {
+    console.log('In Mutation contentLayout/setPropertyElement()', element)
+    //return
+    // console.log('State is ', state)
+    // Clone the element
+    //let duplicate = JSON.parse(JSON.stringify(data.element));
+    // console.log(`Before`)
+
+    // Check this element is in the path to the current property element.
+    for (let i = 0; i < state.pathToSelectedElement.length; i++) {
+      if (state.pathToSelectedElement[i].id === element.id) {
+        // Found it
+        state.expandedElement = element
+        return
+      }
+    }
+    console.error(`setExpandedElement: element not in pathToSelectedElement`)
   },
 
   // Set the screen mode [view | edit | layout | debug]

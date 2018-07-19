@@ -6,7 +6,7 @@
         // Clipboard. See https://www.npmjs.com/package/v-clipboard
         i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
         | &nbsp;
-        i.fa.fa-files-o.fas.fa-copy(v-clipboard="elementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+        i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
         | &nbsp;
         i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
       | Layout
@@ -17,10 +17,11 @@
 
 <script>
 import PropertyMixins from '../../mixins/PropertyMixins'
+import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
 
 export default {
   name: 'content-layout-props',
-  mixins: [ PropertyMixins ],
+  mixins: [ PropertyMixins, CutAndPasteMixins ],
   computed: {
 
     // We cannot update the element directly - it is stored
@@ -58,7 +59,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .tt-property-value {
+  .c-property-value {
     input.input {
       margin-top: 2px;
       font-size: 9px;

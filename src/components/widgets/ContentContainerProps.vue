@@ -2,24 +2,24 @@
   div
     .tt-property-header Container
     // {{element.id}}
-    .tt-properties
+    .c-element-properties
       .tt-property
-        .tt-property-label Type
-        .tt-property-value
+        .c-property-label Type
+        .c-property-value
           select(v-model="protectedIsFluid")
             option() navbar
             option() hero
             option() section
             option() footer
       .tt-property
-        .tt-property-label
-        .tt-property-value
+        .c-property-label
+        .c-property-value
           label.checkbox
             input(type="checkbox" v-model="protectedIsFluid")
             | &nbsp;full width
       .tt-property
-        .tt-property-label Background
-        .tt-property-value
+        .c-property-label Background
+        .c-property-value
           input.input(v-model="protectedBgColor")
 
 </template>
@@ -70,7 +70,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tt-property-value {
+.c-property-value {
   input.input {
     margin-top: 2px;
     font-size: 9px;

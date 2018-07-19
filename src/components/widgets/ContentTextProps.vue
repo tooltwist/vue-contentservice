@@ -1,16 +1,16 @@
 <template lang="pug">
   div
     .tt-property-header Text
-    .tt-properties
+    .c-element-properties
       .tt-property
-        .tt-property-label color
-        .tt-property-value {{value('color')}}
+        .c-property-label color
+        .c-property-value {{value('color')}}
       .tt-property
-        .tt-property-label font-family
-        .tt-property-value {{value('font-family')}}
+        .c-property-label font-family
+        .c-property-value {{value('font-family')}}
       .tt-property
-        .tt-property-label font-size
-        .tt-property-value {{value('font-size')}}
+        .c-property-label font-size
+        .c-property-value {{value('font-size')}}
 
 </template>
 

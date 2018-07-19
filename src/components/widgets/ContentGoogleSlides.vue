@@ -1,7 +1,7 @@
 <template lang="pug">
 
 
-  .tt-container(v-bind:class="[(pageEditMode=='debug') ? 'tt-container-outline' : '']")
+  .c-google-slides(v-bind:class="[ editModeClass, (pageEditMode=='debug') ? 'tt-container-outline' : '']")
 
     // View mode
     .container(v-if="pageEditMode==='view'")
@@ -37,7 +37,7 @@ import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
 
 
 export default {
-  name: 'content-container',
+  name: 'content-google-slides',
   components: {
   },
   props: {
@@ -107,7 +107,8 @@ export default {
   }
 
 
-  .tt-container-outline {
+  //  .c-google-slides-outline {
+  .c-google-slides.c-edit-mode-debug {
     border-left: dashed 2px lightgreen;
     border-bottom: dashed 2px lightgreen;
     border-right: dashed 2px lightgreen;
@@ -115,6 +116,10 @@ export default {
     //- background-color: lightgreen;
     background-color: #f9fdff;
     background-color: #f6fff3;
+
+    &.c-selected {
+      border-color: $c-editbar-color;
+    }
   }
   .my-content {
     background-color: white;

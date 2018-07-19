@@ -29,7 +29,19 @@ export default {
 
     editModeClass: function () {
       if (this.$store && this.$store.state && this.$store.state.contentLayout && this.$store.state.contentLayout.mode) {
-        return `c-edit-mode-${this.$store.state.contentLayout.mode}`
+        let mode = this.$store.state.contentLayout.mode
+        // console.log(`------ element=`, this.element.id)
+        //console.log(`propertyElement=`, this.$store.state.contentLayout.propertyElement)
+        let cls = `c-edit-mode-${mode}`
+        if (this.element === this.$store.state.contentLayout.propertyElement) {
+          console.log(`HEY THATS ME!!! ${this.element.id} (${this.element.type})`)
+          cls += ` c-selected`
+        }
+        if (this.element === this.$store.state.contentLayout.expandedElement) {
+          cls += ` c-expanded`
+        }
+        console.log(`  class: ${cls}`)
+        return cls
       }
       return 'c-edit-mode-view'
     },

@@ -1,10 +1,10 @@
 <template lang="pug">
   div
     .tt-property-header Content
-    .tt-properties
+    .c-element-properties
       .tt-property
-        .tt-property-label ID
-        .tt-property-value {{element.id}}
+        .c-property-label ID
+        .c-property-value {{element.id}}
     .tt-property-footer
 </template>
 

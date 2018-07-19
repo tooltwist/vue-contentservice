@@ -2,10 +2,10 @@
   div
     .tt-property-header Form
     // {{element.id}}
-    .tt-properties
+    .c-element-properties
       .tt-property
-        .tt-property-label ID
-        .tt-property-value {{element.id}}
+        .c-property-label ID
+        .c-property-value {{element.id}}
 
 </template>
 

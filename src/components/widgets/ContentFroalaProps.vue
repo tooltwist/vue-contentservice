@@ -1,10 +1,10 @@
 <template lang="pug">
   div
     .tt-property-header RichText
-    .tt-properties
+    .c-element-properties
       .tt-property
-        .tt-property-label classes
-        .tt-property-value {{element.classes}}
+        .c-property-label classes
+        .c-property-value {{element.classes}}
 
 </template>
 

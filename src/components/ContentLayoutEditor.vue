@@ -401,8 +401,7 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-  $editbar-height: 16;
-  $editbar-color: #dd0038;
+  @import '../assets/css/content-variables.scss';
 
   .c-triple-pane {
 
@@ -485,8 +484,8 @@ export default {
         //- position: absolute;
         top: 0px;
         left: 0px;
-        height: $editbar-height;
-        background-color: $editbar-color;
+        height: $c-editbar-height;
+        background-color: $c-editbar-color;
         padding: 1px;
         margin: 0px;
 
@@ -509,8 +508,8 @@ export default {
 
         .c-editbar-mode-label {
           display: table;
-          color: $editbar-color;
-          height: $editbar-height;
+          color: $c-editbar-color;
+          height: $c-editbar-height;
           padding-left: 10px;
           padding-right: 10px;
           border-radius: 2px;
@@ -550,7 +549,7 @@ export default {
 
 
       .c-middle-pane-content {
-        margin-top: calc(#{$editbar-height} + 2px);
+        margin-top: calc(#{$c-editbar-height} + 2px);
         padding: 0px;
       }
     }//- .c-editing-layout

@@ -2,7 +2,7 @@
   div
     .tt-property-header Section
     // {{element.id}}
-    .tt-properties
+    .c-element-properties
 
 </template>
 

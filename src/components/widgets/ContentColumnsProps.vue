@@ -3,8 +3,8 @@
     .tt-property-header Columns
     // {{element.id}}
     .columns
-      .column.tt-property-label Columns
-      .column.tt-property-value {{element.children.length}}
+      .column.c-property-label Columns
+      .column.c-property-value {{element.children.length}}
 </template>
 
 <script>
