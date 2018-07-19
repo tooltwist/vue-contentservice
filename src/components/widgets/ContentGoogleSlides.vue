@@ -12,11 +12,18 @@
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
       .c-layout-mode-heading
         .c-heading-icons
-          i.fa.fa-download.fas.fa-download(@click="downloadMyElementJunk")
-            | AZX &nbsp;
-          i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-          | BZX &nbsp;
-          i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
+          a(href="", @click="downloadMyElementJunk")
+            | &nbsp;
+            i.fa.fa-download.fas.fa-download
+            | &nbsp;
+          a(href="", v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+            | &nbsp;
+            i.fa.fa-files-o.fas.fa-copy
+            | &nbsp;
+          a(href="", @click="deleteMyElement")
+            | &nbsp;
+            i.fa.fa-trash-o.fas.fa-trash-alt
+            | &nbsp;
         | google slidesZ
         a(@click="downloadMyElementJunk") BLURB
       .container
@@ -79,6 +86,7 @@ export default {
     downloadMyElementJunk () {
       console.log(`downloadMyElementJunk`)
       console.log(`downloadMyElementJunk`, this.downloadMyElement)
+      this.downloadMyElement()
     }
   }
 }
