@@ -251,8 +251,8 @@ export default {
     keymap () {
       let self = this
       return {
-        // 'ctrl+alt+esc': {
-        'alt+esc': {
+        'ctrl+alt+esc': {
+        //'alt+esc': {
           keydown: this.toggleEditing
         },
       }
