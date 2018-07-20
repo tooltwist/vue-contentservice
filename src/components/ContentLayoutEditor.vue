@@ -136,6 +136,7 @@ export default {
     // whenever anchor changes, this function will run
     anchor: function (newAnchor, oldAnchor) {
       console.error(`anchor changed from ${oldAnchor} to ${newAnchor}`)
+      this.$store.dispatch('contentLayout/setContent', { vm: this, type: 'crowdhound', anchor: newAnchor })
     }
   },
   computed: {
