@@ -132,8 +132,13 @@ export default {
   mixins : [
     ContentMixins,
   ],
+  watch: {
+    // whenever anchor changes, this function will run
+    anchor: function (newAnchor, oldAnchor) {
+      console.error(`anchor changed from ${oldAnchor} to ${newAnchor}`)
+    }
+  },
   computed: {
-
 
     /*
     saveMode: function () {
