@@ -16,14 +16,22 @@
     .my-debug-box(v-else-if="isPageMode('debug')")
       .c-layout-mode-heading
         .c-heading-icons
-          i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
-          | &nbsp;
-          i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-          | &nbsp;
-          i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
+          a(@click.stop="downloadMyElement")
+            | &nbsp;
+            i.fa.fa-download.fas.fa-download
+            | &nbsp;
+          a(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+            | &nbsp;
+            i.fa.fa-files-o.fas.fa-copy
+            | &nbsp;
+          span(@click.stop="deleteMyElement")
+            | &nbsp;
+            i.fa.fa-trash-o.fas.fa-trash-alt
+            | &nbsp;
         | text
       // In debug mode we don't allow editing, because it prevents selecting the element
-      froala-view(:tag="'div'", v-model="element.text", v-on:click="selectThisElement")
+      //froala-view(:tag="'div'", v-model="element.text", v-on:click="selectThisElement")
+      froala(:tag="'div'", :config="config", v-model="protectedText", v-on:click="selectThisElement")
 
     // Editing
     .x(v-else-if="isPageMode('edit')")
