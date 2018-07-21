@@ -123,6 +123,7 @@ export const actions = {
     // Start the timer, to save after a short delay
     rememberToSave(commit, state, vm)
   },
+  // insertChildAction', { vm: this, element, child: newchild, position: -1 })
 
   insertLayoutAction({ commit, state }, { vm, parent, position, layout}) {
     console.log('Action contentLayout/insertLayoutAction()', parent, position, layout)
@@ -346,7 +347,7 @@ export const mutations = {
   // Set the message shown above the page (CLEAN | DIRTY | SAVING, etc).
   setSaveMsg (state, { msg }) {
     //ZZZZ Check the parameters
-    console.log(`mutation contentLayout/setSaveMsg(${msg})`)
+    // console.log(`mutation contentLayout/setSaveMsg(${msg})`)
     state.saveMsg = msg
   },
 
@@ -365,50 +366,57 @@ export const mutations = {
 
   // Clone an element hierarchy and insert it as a child
   // into an element in the current layout.
-  insertChild(state, { vm, element, child, position}) {
-    console.log('In Mutation contentLayout/insertChild()', element)
-    console.log('In Mutation insertChild()', child)
-
-    //console.log(`insertChild, parent before:`, safeJson(element));
-    console.log(`insertChild, child:`, safeJson(child));
-
-    // Clone the hierarchy (this is the cheat's way)
-    //let newchild = JSON.parse(JSON.stringify(child));
-    let newchild = JSON.parse(safeJson(child));
-
-    // Overwrite any element IDs
-    overwriteElementIDs(newchild)
-
-    // Check it is sane
-    // newchild._parent = element //ZZKOP
-    addAnyMissingValues(vm, newchild)
-
-    // Plug it in as a child of the element
-    // The inserted item will become reactive, because the layout is already reactive.
-    // See https://vuejs.org/v2/guide/list.html#Array-Change-Detection
-    if (position >= 0) {
-      element.children.splice(position, 0, newchild)
-    } else {
-      element.children.push(newchild)
-    }
-    //console.log(`insertChild, parent after:`, safeJson(element));
-  },
+  // insertChild(state, { vm, element, child, position}) {
+  //   console.log('In Mutation contentLayout/insertChild()', element)
+  //   console.log('In Mutation insertChild()', child)
+  //
+  //   //console.log(`insertChild, parent before:`, safeJson(element));
+  //   console.log(`insertChild, child:`, safeJson(child));
+  //
+  //   // Clone the hierarchy (this is the cheat's way)
+  //   //let newchild = JSON.parse(JSON.stringify(child));
+  //   let newchild = JSON.parse(safeJson(child));
+  //
+  //   // Overwrite any element IDs
+  //   overwriteElementIDs(newchild)
+  //
+  //   // Check it is sane
+  //   // newchild._parent = element //ZZKOP
+  //   addAnyMissingValues(vm, newchild)
+  //
+  //   // Plug it in as a child of the element
+  //   // The inserted item will become reactive, because the layout is already reactive.
+  //   // See https://vuejs.org/v2/guide/list.html#Array-Change-Detection
+  //   if (position >= 0) {
+  //     element.children.splice(position, 0, newchild)
+  //   } else {
+  //     element.children.push(newchild)
+  //   }
+  //   //console.log(`insertChild, parent after:`, safeJson(element));
+  // },
 
   insertLayoutMutation (state, { vm, parent, position, layout }) {
     console.log('In Mutation contentLayout/insertLayoutMutation()', parent, position, layout)
-    let toInsert = layout
+    //let toInsert = layout
 
-    if (position === 'last') {
-      position = parent.children.length
-    }
+    // if (position === 'last' || position < 0) {
+    //   position = parent.children.length
+    // }
+
+    // Clone the hierarchy (this is the cheat's way)
+    //let newchild = JSON.parse(JSON.stringify(child));
+    let toInsert = JSON.parse(safeJson(layout));
 
     // Before inserting, check we have unique IDs for all elements in the
     // layout. By preference we will retain the IDs, so when a user cuts and
     // pastes any existing references will be retained. However if they copy
-    // and paste, we don't want duplicate IDs in our layout.
+    // and paste, we don't want duplicate IDs already in our parent's layout.
     replaceIdsAlreadyInLayout(state, toInsert)
 
     console.log(`ok 5`)
+
+    // Check it is sane
+    addAnyMissingValues(vm, toInsert)
 
     // For other element types, we insert the actual element.
     if (toInsert.type === 'layout') {
@@ -418,12 +426,19 @@ export const mutations = {
     } else {
       // For non-layout elements, we insert the actual element
       console.log(`Inserting non-layout element: ${toInsert.type} at position ${position}`)
-      if (position < 0 || position > parent.children.length) {
-        alert('insertLayoutMutation: Internal error #2963')
+      if (position === 'last' || position < 0) {
+        // Add to the end
+        parent.children.push(toInsert)
+        console.log(`ok 6a`)
+      } else if (position <= parent.children.length) {
+        // Insert at a specific position
+        parent.children.splice(position, 0, toInsert);
+        console.log(`ok 6b`)
+      } else {
+        // Invalid position
+        alert('insertLayoutMutation: Internal error #2963 (invalid position)')
         return
       }
-      parent.children.splice(position, 0, toInsert);
-      console.log(`ok 6`)
     }
   },
 
@@ -460,14 +475,14 @@ export const mutations = {
 }//- mutations
 
 
-function overwriteElementIDs(element) {
-  element.id = Math.floor(Math.random() * 10000000000)
-  console.log('New Id is ', element.id)
-
-  if (element.children) {
-    element.children.forEach((child) => overwriteElementIDs(child))
-  }
-}
+// function overwriteElementIDs(element) {
+//   element.id = Math.floor(Math.random() * 10000000000)
+//   console.log('New Id is ', element.id)
+//
+//   if (element.children) {
+//     element.children.forEach((child) => overwriteElementIDs(child))
+//   }
+// }
 
 
 // Prepare a hierarchy of elements that will be used to lay out a page.
@@ -588,7 +603,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
     //- this.$content.select(this, params)
     .then(result => {
       // Use the elements
-      console.log(`>>> result=`, result)
+      // console.log(`>>> result=`, result)
       if (result.elements.length < 1) {
         // Should not be possible
         console.error(`Selecting layout returned no element. How is this possible?`)
@@ -602,17 +617,17 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       // console.log('json=', json)
       let layout = null
       if (json === shortAnchor) {
-        console.error(`>>> NOT parsing json (it's the anchor)`)
+        // console.error(`>>> NOT parsing json (it's the anchor)`)
         // New element/layout
       } else {
-        console.error(`>>> parsing JSON`)
+        // console.error(`>>> parsing JSON`)
         try {
           layout = JSON.parse(json)
         } catch (e) {
           console.error(`Broken JSON: `, e)
           console.log(`json=${json}`)
         }
-        console.log('parsed JSON layout=', layout)
+        // console.log('parsed JSON layout=', layout)
         // Check for errors
       }
       console.log(`>>> layout=`, layout)
@@ -739,7 +754,9 @@ function getCurrentlyUsedIds(state) {
   let recurse = (element) => {
     // console.log(` - ${element.id}`)
     hash[element.id] = true
-    element.children.forEach(child => recurse(child))
+    if (element.children) {
+      element.children.forEach(child => recurse(child))
+    }
   }
   recurse(state.layout)
   return hash
@@ -777,6 +794,7 @@ function rememberToSave (commit, state, vm) {
         description: safeJson(state.layout, true/*compressed*/)
       }
       console.log(`saveToCrowdhound() in Store`, crowdhoundElement)
+      console.log( `safeJson length is ${safeJson(state.layout, true/*compressed*/).length}`)
 
       // Update the element (should already exist)
       commit('setSaveMsg', { msg: SAVED })
@@ -830,11 +848,13 @@ function trackDownElementInLayout(state, requiredID) {
     if (elementInLayout.id === requiredID) {
       return [ elementInLayout ]
     }
-    for (let i = 0; i < elementInLayout.children.length; i++) {
-      let child = elementInLayout.children[i]
-      let path = recurse(child)
-      if (path) {
-        return [ elementInLayout, ...path]
+    if (elementInLayout.children) {
+      for (let i = 0; i < elementInLayout.children.length; i++) {
+        let child = elementInLayout.children[i]
+        let path = recurse(child)
+        if (path) {
+          return [ elementInLayout, ...path]
+        }
       }
     }
     return null

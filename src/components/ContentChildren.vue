@@ -133,7 +133,7 @@ export default {
       }
 
       // Get the element to be inserted, from the drop data.
-      let newchild = data.element
+      let insertContent = data.data
 
       // Note that 'child' is the existing child, not the child being inserted.
       if (child) {
@@ -141,13 +141,13 @@ export default {
         for (var i = 0; i < element.children.length; i++) {
           if (element.children[i] === child) {
             console.log(`Insert at position ${i}`)
-            this.$store.commit('contentLayout/insertChild', { vm: this, element, child: newchild, position: i })
+            this.$store.dispatch('contentLayout/insertLayoutAction', { vm: this, parent: element, position: i, layout: insertContent })
             break
           }
         }
       } else {
         // No child specified - add at the end
-        this.$store.commit('contentLayout/insertChild', { vm: this, element, child: newchild, position: -1 })
+        this.$store.dispatch('contentLayout/insertLayoutAction', { vm: this, parent: element, position: -1, layout: insertContent })
       }
     }
   },

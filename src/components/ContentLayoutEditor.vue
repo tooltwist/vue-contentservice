@@ -32,8 +32,6 @@ div
         .c-editbar-mode-label(v-if="pageEditMode==='edit' || pageEditMode==='layout' || pageEditMode==='debug'")
           span(:class="pageEditMode==='edit' ? 'c-selected-mode-style': ''", @click.stop="switchMode('edit')") edit
           | &nbsp;/&nbsp;
-          //span(:class="pageEditMode==='layout' ? 'c-selected-mode-style': ''", @click.stop="switchMode('layout')") layout
-          //| &nbsp;/&nbsp;
           span(:class="pageEditMode==='debug' ? 'c-selected-mode-style': ''", @click.stop="switchMode('debug')") design
         .c-editbar-mode-label(v-else)
           | {{pageEditMode}} mode
@@ -252,9 +250,14 @@ export default {
       let self = this
       return {
         'ctrl+alt+esc': {
-        //'alt+esc': {
           keydown: this.toggleEditing
         },
+        //- 'ctrl+enter': {
+        //-   keydown: this.toggleEditing
+        //- },
+        //- 'ctrl+alt+m': {
+        //-   keydown: this.switchMode(null)
+        //- },
       }
     },
 
@@ -309,7 +312,7 @@ export default {
         let currentMode = this.$store.state.contentLayout.mode
         switch (currentMode) {
           case 'edit':
-            newMode = 'layout'
+            newMode = 'debug'
             break;
 
           case 'layout':

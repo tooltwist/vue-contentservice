@@ -11,12 +11,22 @@ export default [
   {
     dragtype:'component',
     name: 'section',
-    iconClass: 'fa-arrows-h fa',
-    iconClass5: 'fas fa-arrows-alt-h',
+    iconClass: 'fa-arrows-v fa',
+    iconClass5: 'fas fa-arrows-alt-v',
 
     element: {
       type: 'section',
-    }
+    },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'section',
+      }
+    },
   },
 
   // Container
@@ -27,7 +37,18 @@ export default [
     iconClass5: 'fas fa-arrows-alt-h',
     element: {
       type: 'container',
+    },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'container',
+      }
     }
+
   },
 
   // Columns
@@ -50,6 +71,26 @@ export default [
         }
       ]
     },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'columns',
+        children: [
+          {
+            // Column 1
+            children: [ ]
+          },
+          {
+            // Column 2
+            children: [ ]
+          }
+        ]
+      }
+    }
   },
 
   // Text element
@@ -62,6 +103,17 @@ export default [
       // type: 'text',
       type: 'froala',
       text: 'Lorem ipsum dolor sit amet, purus metus congue morbi hac elit id.',
+    },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'froala',
+        text: 'Lorem ipsum dolor sit amet, purus metus congue morbi hac elit id.',
+      }
     }
   },
 
@@ -167,12 +219,23 @@ export default [
   // Google slides
   {
     dragtype:'component',
-    name: 'G. Slides',
-    iconClass: 'fa-arrows-h',
-    iconClass5: 'fas fa-arrows-alt-h',
+    name: 'Slides',
+    iconClass: 'fa fa-file-powerpoint-o',
+    iconClass5: 'fas fa-file-powerpoint',
     element: {
       type: 'google-slides',
-      docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+      //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+    },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'google-slides',
+        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+      }
     }
   },
 

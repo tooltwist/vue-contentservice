@@ -40,7 +40,7 @@ export default {
         if (this.element === this.$store.state.contentLayout.expandedElement) {
           cls += ` c-expanded`
         }
-        console.log(`  class: ${cls}`)
+        // console.log(`  class: ${cls}`)
         return cls
       }
       return 'c-edit-mode-view'

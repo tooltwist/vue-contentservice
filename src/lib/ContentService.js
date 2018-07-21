@@ -350,6 +350,9 @@ class Contentservice {
    */
   update (vm, element) {
 
+    console.log(`ContentService.js:update()`, element)
+    console.log(`element.description.length=`, element.description.length)
+
     return new Promise((resolve, reject) => {
 
       if (this.options.debug) {
@@ -360,7 +363,7 @@ class Contentservice {
       }
 
       let url = `${this.endpoint()}/element`;
-      let params = element
+      //let params = element
       axios({
         method: 'put',
         url,
@@ -369,7 +372,7 @@ class Contentservice {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        params
+        data: element
       })
         .then(response => {
           // JSON responses are automatically parsed.
@@ -378,7 +381,7 @@ class Contentservice {
           return resolve('ok');
         })
         .catch(e => {
-          axiosError(vm, url, params, e)
+          axiosError(vm, url, element, e)
           reject(e)
         })
 

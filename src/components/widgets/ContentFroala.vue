@@ -16,13 +16,17 @@
     .my-debug-box(v-else-if="isPageMode('debug')")
       .c-layout-mode-heading
         .c-heading-icons
+          a(v-clipboard="myElementCutToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+            | &nbsp;
+            i.fa.fa-cut.fas.fa-cut
+            | &nbsp;
+          a(v-clipboard="myElementCopyToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+            | &nbsp;
+            i.fa.fa-files-o.fas.fa-copy
+            | &nbsp;
           a(@click.stop="downloadMyElement")
             | &nbsp;
             i.fa.fa-download.fas.fa-download
-            | &nbsp;
-          a(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-            | &nbsp;
-            i.fa.fa-files-o.fas.fa-copy
             | &nbsp;
           span(@click.stop="deleteMyElement")
             | &nbsp;
@@ -41,8 +45,6 @@
 
     // layout
     .x(v-else @click="selectThisElement")
-      | LAYOUT? {{pageEditMode}}
-      br
       froala-view(:tag="'div'", v-model="element.text", v-on:click="selectThisElement")
 
 </template>

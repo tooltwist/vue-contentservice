@@ -161,7 +161,7 @@ export default {
               console.log('element=', element)
             }
           }
-          console.log(`>>> layout=`, layout)
+          // console.log(`>>> layout=`, layout)
 
           if (layout === null) {
             console.error(`>>> Creating default layout`)

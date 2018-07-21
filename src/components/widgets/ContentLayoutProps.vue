@@ -8,7 +8,7 @@
           | &nbsp;
           i.fa.fa-download.fas.fa-download
           | &nbsp;
-        span(v-clipboard="myElementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
+        span(v-clipboard="myElementCopyToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
           | &nbsp;
           i.fa.fa-files-o.fas.fa-copy
           | &nbsp;

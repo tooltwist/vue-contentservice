@@ -83,16 +83,23 @@ export default {
       this.$store.dispatch('contentLayout/deleteElementAction', { vm: this, element: this.element })
     },
 
-    myElementToClipboard ( ) {
-      console.log(`myElementToClipboard()`)
+    myElementCopyToClipboard ( ) {
+      console.log(`myElementCopyToClipboard()`)
       return this.bundleMyElement()
+    },
+
+    myElementCutToClipboard ( ) {
+      console.log(`myElementCutToClipboard()`)
+      let json = this.bundleMyElement()
+      this.$store.dispatch('contentLayout/deleteElementAction', { vm: this, element: this.element })
+      return json
     },
 
     clipboardSuccessHandler ({ value, event }) {
       let type = this.element.type.substring(0, 1).toUpperCase() + this.element.type.substring(1)
       let msg = `${type} has been copied to the clipboard`
       if (this.$toast) {
-        this.$toast.open({ message: `${msg}`, type: 'is-danger' })
+        this.$toast.open({ message: `${msg}`, type: 'is-success' })
       } else {
         alert(msg)
       }
