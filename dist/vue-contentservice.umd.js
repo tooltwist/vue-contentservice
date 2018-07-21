@@ -6228,17 +6228,18 @@ function loadLayoutFromAnchor(commit, vm, anchor, editable) {
 
       var heading = anchor;
 
-      while (heading.startsWith('$')) {
+      if (heading.startsWith('$')) {
         heading = heading.substring(1);
+      }
+
+      if (heading.startsWith('page-')) {
+        heading = heading.substring(5);
       }
 
       var arr = heading.split('-');
       heading = '';
       arr.forEach(function (word, index) {
-        if (index === 0) {// if (word.toLowerCase() === 'page') {
-          //  return
-          // }
-        } else {
+        if (index > 0) {
           heading += ' ';
         }
 
@@ -6269,7 +6270,7 @@ function loadLayoutFromAnchor(commit, vm, anchor, editable) {
             type: 'container',
             children: [{
               "type": "froala",
-              "text": "<h1><span style=\"font-size: 48px;\">".concat(heading, "!</span></h1>"),
+              "text": "<h1><span style=\"font-size: 48px;\">".concat(heading, "</span></h1>"),
               "id": 2,
               "children": []
             }]

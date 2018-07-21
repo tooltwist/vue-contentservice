@@ -624,17 +624,16 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
 
         // Word out a heading, based on the anchor
         let heading = anchor
-        while (heading.startsWith('$')) {
+        if (heading.startsWith('$')) {
           heading = heading.substring(1)
+        }
+        if (heading.startsWith('page-')) {
+          heading = heading.substring(5)
         }
         let arr = heading.split('-')
         heading = ''
         arr.forEach((word, index) => {
-          if (index === 0) {
-            // if (word.toLowerCase() === 'page') {
-            //  return
-            // }
-          } else {
+          if (index > 0) {
             heading += ' '
           }
           switch (word.toLowerCase()) {
@@ -668,7 +667,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
                   children: [
                     {
                         "type": "froala",
-                        "text": `<h1><span style=\"font-size: 48px;\">${heading}!</span></h1>`,
+                        "text": `<h1><span style=\"font-size: 48px;\">${heading}</span></h1>`,
                         "id": 2,
                         "children": []
                     }
