@@ -5582,6 +5582,8 @@ function _objectDestructuringEmpty(obj) {
 
 
 
+
+
 /*
  *  Keep details of the Element being displayed
  *  in the properties pane.
@@ -6219,20 +6221,58 @@ function loadLayoutFromAnchor(commit, vm, anchor, editable) {
       console.log('parsed JSON layout=', layout); // Check for errors
     }
 
-    console.log(">>> layout=", layout);
+    console.log(">>> layout=", layout); // If we don't already have a layout, create an initial layout now.
 
     if (layout === null) {
-      console.error(">>> Creating default layout"); // Create an initial layout
+      console.error(">>> Creating default layout"); // Word out a heading, based on the anchor
+
+      var heading = anchor;
+
+      while (heading.startsWith('$')) {
+        heading = heading.substring(1);
+      }
+
+      var arr = heading.split('-');
+      heading = '';
+      arr.forEach(function (word, index) {
+        if (index === 0) {// if (word.toLowerCase() === 'page') {
+          //  return
+          // }
+        } else {
+          heading += ' ';
+        }
+
+        switch (word.toLowerCase()) {
+          case 'the':
+          case 'to':
+          case 'by':
+          case 'of':
+          case '&':
+          case 'and':
+          case 'for':
+          case 'with':
+            // Do not capitalize the word
+            heading += word;
+            break;
+
+          default:
+            // Capitalise the word
+            heading += word.substring(0, 1).toUpperCase() + word.substring(1);
+        }
+      }); // Create an initial layout
 
       layout = {
         type: 'layout',
         children: [{
           type: 'section',
           children: [{
-            "type": "froala",
-            "text": "<h1><span style=\"font-size: 48px;\">Example elemente for ".concat(anchor, "!</span></h1>"),
-            "id": 2,
-            "children": []
+            type: 'container',
+            children: [{
+              "type": "froala",
+              "text": "<h1><span style=\"font-size: 48px;\">".concat(heading, "!</span></h1>"),
+              "id": 2,
+              "children": []
+            }]
           }]
         }]
       };

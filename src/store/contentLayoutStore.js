@@ -617,8 +617,45 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       }
       console.log(`>>> layout=`, layout)
 
+      // If we don't already have a layout, create an initial layout now.
       if (layout === null) {
+
         console.error(`>>> Creating default layout`)
+
+        // Word out a heading, based on the anchor
+        let heading = anchor
+        while (heading.startsWith('$')) {
+          heading = heading.substring(1)
+        }
+        let arr = heading.split('-')
+        heading = ''
+        arr.forEach((word, index) => {
+          if (index === 0) {
+            // if (word.toLowerCase() === 'page') {
+            //  return
+            // }
+          } else {
+            heading += ' '
+          }
+          switch (word.toLowerCase()) {
+            case 'the':
+            case 'to':
+            case 'by':
+            case 'of':
+            case '&':
+            case 'and':
+            case 'for':
+            case 'with':
+              // Do not capitalize the word
+              heading += word
+              break
+
+            default:
+              // Capitalise the word
+              heading += word.substring(0, 1).toUpperCase() + word.substring(1)
+          }
+        })
+
         // Create an initial layout
         layout = {
           type: 'layout',
@@ -627,10 +664,15 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
               type: 'section',
               children: [
                 {
-                    "type": "froala",
-                    "text": `<h1><span style=\"font-size: 48px;\">Example elemente for ${anchor}!</span></h1>`,
-                    "id": 2,
-                    "children": []
+                  type: 'container',
+                  children: [
+                    {
+                        "type": "froala",
+                        "text": `<h1><span style=\"font-size: 48px;\">${heading}!</span></h1>`,
+                        "id": 2,
+                        "children": []
+                    }
+                  ]
                 }
               ]
             }
