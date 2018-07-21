@@ -667,7 +667,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
                   children: [
                     {
                         "type": "froala",
-                        "text": `<h1><span style=\"font-size: 48px;\">${heading}</span></h1>`,
+                        "text": `<h1 style=\"text-align: center;\"><span style=\"font-size: 48px;\">${heading}</span></h1>`,
                         "id": 2,
                         "children": []
                     }

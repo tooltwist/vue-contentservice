@@ -6270,7 +6270,7 @@ function loadLayoutFromAnchor(commit, vm, anchor, editable) {
             type: 'container',
             children: [{
               "type": "froala",
-              "text": "<h1><span style=\"font-size: 48px;\">".concat(heading, "</span></h1>"),
+              "text": "<h1 style=\"text-align: center;\"><span style=\"font-size: 48px;\">".concat(heading, "</span></h1>"),
               "id": 2,
               "children": []
             }]
