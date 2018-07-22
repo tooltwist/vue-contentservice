@@ -85,43 +85,16 @@ export default {
 }
 </script>
 
-<style lang="scss">
-
-.tt-container .container {
-  width: 90% !important;
-}
-
-</style>
 
 <style lang="scss" scoped>
 .tt-editable {
   position: relative;
 }
 
-//- .tt-editable-initiate {
-//-   position: absolute;
-//-   right: 5px;
-//-   top: 5px;
-//-   //color: #999;
-//-   color: red;
-//-   cursor: pointer;
-//-   font-size: 20px;
-//-   opacity: 0.5;
-//-
-//-   &:hover {
-//-     //color: red;
-//-     background-color: red;
-//-     color: white;
-//-     opacity: 1.0;
-//-     border-radius: 5px;
-//-   }
-//- }
 .tt-editable-header {
   height: 30px;
-  //background-color: #e0e0e0;
   background-color: #dd0000;
   padding-top: 2px;
-  // justify-content: center;
   align-items: center;
   text-align: center;
 

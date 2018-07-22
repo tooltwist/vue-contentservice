@@ -11,19 +11,7 @@
     // Debug mode
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
       .c-layout-mode-heading
-        .c-heading-icons
-          a(@click.stop="downloadMyElement")
-            | &nbsp;
-            i.fa.fa-download.fas.fa-download
-            | &nbsp;
-          a(v-clipboard="myElementCopyToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-            | &nbsp;
-            i.fa.fa-files-o.fas.fa-copy
-            | &nbsp;
-          span(@click.stop="deleteMyElement")
-            | &nbsp;
-            i.fa.fa-trash-o.fas.fa-trash-alt
-            | &nbsp;
+        edit-bar-icons(:element="element")
         | google slides
       .container
         //| {{element.docID}}
@@ -41,11 +29,13 @@
 <script>
 import ContentMixins from '../../mixins/ContentMixins'
 import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
+import EditBarIcons from './EditBarIcons'
 
 
 export default {
   name: 'content-google-slides',
   components: {
+    EditBarIcons
   },
   props: {
     element: Object,
@@ -94,10 +84,9 @@ export default {
 
 <style lang="scss" scoped>
   @import '../../assets/css/content-variables.scss';
-  //- #gbx4{
-  //-   background-color: #000;
-  //- }
 
+  $frame-color: lightblue;
+  $text-color: darkblue;
 
   .my-iframe {
     //width: 80%;
@@ -105,30 +94,26 @@ export default {
   }
 
   .my-dummy-iframe {
-    //- width: 640px;
-    //- height: 389px;
     width: 1920px;
     height: 1109px;
-    border: solid 1px #333;
+    border: solid 1px #b0b0b0;
     background-color: #d0d0d0;
   }
 
+  .c-layout-mode-heading {
+    // This overrides the definition in content-editor.scss
+    background-color: $frame-color;
+    color: $text-color;
+  }
 
-  //  .c-google-slides-outline {
-  .c-google-slides.c-edit-mode-debug {
-    border-left: dashed 2px lightgreen;
-    border-bottom: dashed 2px lightgreen;
-    border-right: dashed 2px lightgreen;
-    margin: 1px;
-    //- background-color: lightgreen;
-    background-color: #f9fdff;
-    background-color: #f6fff3;
+  .c-edit-mode-debug {
+    border-left: dashed 2px $frame-color;
+    border-bottom: dashed 2px $frame-color;
+    border-right: dashed 2px $frame-color;
+    padding-bottom: 30px;
 
     &.c-selected {
       border-color: $c-editbar-color;
     }
-  }
-  .my-content {
-    background-color: white;
   }
 </style>

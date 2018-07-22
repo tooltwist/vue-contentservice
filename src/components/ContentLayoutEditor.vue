@@ -480,13 +480,14 @@ export default {
         position: relative;
         padding: 0px !important;
         //overflow-y: hidden;
+        overflow-x: scroll;
       }
 
       .c-editbar {
         position: sticky;
         position: -webkit-sticky;
         top: 0;
-        z-index: 100;
+        z-index: 1001;
 
         display: block;
         width: 100%;

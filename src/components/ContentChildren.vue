@@ -1,7 +1,7 @@
 <template lang="pug">
 
   // Display the children of this element
-  .ch-children(v-if="element && element.children", :class="showDropAreas ? 'c-show-drop-areas' : ''")
+  .content-children(v-if="element && element.children", :class="showDropAreas ? 'c-show-drop-areas' : ''")
     div(v-if="extraDebug")
       | &lt;content-children&gt;
       br
@@ -23,7 +23,13 @@
         // | {{''}}
 
         // Display this child
-        content-element(:editcontext="editcontext", :element="child")
+        //- content-element(:editcontext="editcontext", :element="child")
+        component(v-if="componentNameForElement(child)", v-bind:is="componentNameForElement(child)", :editcontext="editcontext", :element="child")
+        template(v-else)
+          | Unknown element type '{{element.type}}'
+          br
+
+
       template(v-else)
         | Missing child {{index}}
         br
@@ -50,6 +56,11 @@ export default {
     ContentMixins
   ],
   methods: {
+    componentNameForElement (element) {
+      let type = element.type
+      let def = this.$content.getLayoutType(type)
+      return def ? def.componentName : null
+    },
     onPaste (e, position) {
       console.log(`onPaste(${position})`, e)
 
@@ -156,7 +167,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.ch-children {
+.content-children {
 
   &.c-show-drop-areas {
     margin: 2px;
@@ -177,9 +188,9 @@ export default {
   .droparea {
     display: block;
     min-height: 15px;
-    //border: dashed 1px magenta;
-    //background-color: #ccc;
     background-image: url(../assets/drop-bg-1.png);
+    position: relative;
+    z-index: 1000;
   }
   .dropover {
     background-color: #ccc;

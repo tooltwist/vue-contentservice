@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  .tt-froala(v-bind:class="[ editModeClass, (pageEditMode==='edit' || pageEditMode==='debug') ? 'tt-element-outline' : '']")
+  .c-content-froala(:class="editModeClass")
     span(v-if="extraDebug")
       | &lt;content-froala
       span(v-if="element") &nbsp;have element
@@ -8,50 +8,32 @@
       | &gt;
       br
 
-    // Live mode
-    .x(v-if="isPageMode('view')")
-      froala-view(:tag="'div'", v-model="protectedText")
-
     // Debug mode
-    .my-debug-box(v-else-if="isPageMode('debug')")
+    div(v-if="isPageMode('debug')", @click.stop="selectThisElement")
       .c-layout-mode-heading
-        .c-heading-icons
-          a(v-clipboard="myElementCutToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-            | &nbsp;
-            i.fa.fa-cut.fas.fa-cut
-            | &nbsp;
-          a(v-clipboard="myElementCopyToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-            | &nbsp;
-            i.fa.fa-files-o.fas.fa-copy
-            | &nbsp;
-          a(@click.stop="downloadMyElement")
-            | &nbsp;
-            i.fa.fa-download.fas.fa-download
-            | &nbsp;
-          span(@click.stop="deleteMyElement")
-            | &nbsp;
-            i.fa.fa-trash-o.fas.fa-trash-alt
-            | &nbsp;
-        | text
-      // In debug mode we don't allow editing, because it prevents selecting the element
-      //froala-view(:tag="'div'", v-model="element.text", v-on:click="selectThisElement")
-      froala(:tag="'div'", :config="config", v-model="protectedText", v-on:click="selectThisElement")
+        edit-bar-icons(:element="element")
+        | richtext
+      froala(:tag="'div'", :config="config", v-model="protectedText")
 
     // Editing
-    .x(v-else-if="isPageMode('edit')")
-      | &nbsp;{{saveMsg}}
-      br
-      froala(:tag="'div'", :config="config", v-model="protectedText", v-on:click="selectThisElement")
+    div(v-else-if="isPageMode('edit')", @click.stop="selectThisElement")
+      froala(:tag="'div'", :config="config", v-model="protectedText")
 
     // layout
-    .x(v-else @click="selectThisElement")
-      froala-view(:tag="'div'", v-model="element.text", v-on:click="selectThisElement")
+    div(v-else-if="isPageMode('layout')", @click.stop="selectThisElement")
+      froala-view(:tag="'div'", v-model="element.text")
+
+    // Live mode
+    template(v-else)
+      froala-view(:tag="'div'", v-model="protectedText")
+
 
 </template>
 
 <script>
 import ContentMixins from '../../mixins/ContentMixins'
 import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
+import EditBarIcons from './EditBarIcons'
 
 // Don't display a license error every time (intentionally global)
 let missingLicenseCounter = 0
@@ -66,6 +48,9 @@ const SAVE_INTERVAL = 2000
 
 export default {
   name: 'content-froala',
+  components: {
+    EditBarIcons
+  },
   props: {
     /*
      *  Must provide either contentId or an element.
@@ -154,10 +139,6 @@ export default {
   },
   methods: {
 
-    // Compare the page mode to a comma separated list
-    isPageMode (modes) {
-      return modes.split(',').includes(this.pageEditMode)
-    },
 
     // Select this element
     //- select (element) {
@@ -289,35 +270,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.my-debug-box {
-  //- border-left: dashed 1px #ccc;
-  //- border-bottom: dashed 1px #ccc;
-  //- border-right: dashed 1px #ccc;
-  //- margin: 1px;
 
-  //- .my-debug-header {
-  //-   background-color: #ccc;
-  //-   color: black;
-  //-   font-size: 9px;
-  //- }
-}
+  $frame-color: lightblue;
+  $text-color: darkblue;
 
-.c-layout-mode-heading {
-  // This adds to the defintion in content-editor.scss
-  background-color: lightblue;
-  color: darkblue;
-}
+  .c-layout-mode-heading {
+    // This extends the definition in content-editor.scss
+    background-color: $frame-color;
+    color: $text-color;
+  }
 
-.c-edit-mode-debug  {
-  border-left: dashed 2px lightblue;
-  border-bottom: dashed 2px lightblue;
-  border-right: dashed 2px lightblue;
-  margin: 1px;
-  //- background-color: lightgreen;
-  background-color: #f9fdff;
-  background-color: #f6fff3;
-}
-
-
+  .c-edit-mode-debug  {
+    border-left: dashed 2px $frame-color;
+    border-bottom: dashed 2px $frame-color;
+    border-right: dashed 2px $frame-color;
+    margin: 1px;
+  }
 
 </style>

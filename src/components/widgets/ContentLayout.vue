@@ -1,7 +1,7 @@
 <template lang="pug">
 
 
-  .tt-container(v-bind:class="[(pageEditMode=='debug') ? 'tt-container-outline' : '']")
+  .c-content-layout(v-bind:class="[(pageEditMode=='debug') ? 'tt-container-outline' : '']")
 
     // Preview mode
     .container(v-if="pageEditMode==='view'", v-on:click.stop="select(element)")
@@ -75,7 +75,7 @@ export default {
 <style lang="scss" scoped>
   @import '../../assets/css/content-variables.scss';
 
-  .tt-container-outline {
+  .c-content-layout-outline {
     border-left: dashed 2px lightgreen;
     border-bottom: dashed 2px lightgreen;
     border-right: dashed 2px lightgreen;

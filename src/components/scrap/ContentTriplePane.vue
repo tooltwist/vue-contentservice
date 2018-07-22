@@ -330,14 +330,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
-
-.tt-container .container {
-  width: 90% !important;
-  //background-color: yellow;
-}
-
-</style>
 
 <style lang="scss" scoped>
 .tt-editable {

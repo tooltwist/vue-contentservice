@@ -9,8 +9,6 @@ $tt-property-header-outline: #ccc;
 $tt-property-header-background: #f7f7f7;
 $tt-property-header-color: #666;
 $tt-property-grid: #f0f0f0;
-$c-property-label-color: #666;
-$c-property-value-color: #88a;
 
 /* Properties Panel */
 .tt-property-header {
@@ -93,20 +91,28 @@ $c-property-value-color: #88a;
   display: relative;
   height: $c-heading-height;
   line-height: $c-heading-height;
-  background-color: lightgreen;
   font-size: $c-heading-font-size;
-  color: darkgreen;
   margin-bottom: 1px;
   position: relative;
+  text-align: left;
+  padding-left: 3px;
+
+  // Expand sideways to cover the dotted surround of the parent.
+  margin-left: -2px;
+  margin-right: -2px;
+
+  // Colors, normally overidden by each widget
+  color: darkgreen;
+  background-color: lightgreen;
 
   .c-heading-icons {
     position: absolute;
     right: 5px;
     padding-top: 1px;
+    font-size: $c-heading-icon-font-size;
 
-    i {
-      margin-left: 4px;
-      cursor: pointer;
+    span:hover {
+      color: $c-editbar-color;
     }
   }
 }

@@ -7,5 +7,10 @@ $c-editbar-color: #dd0038;
 
 
 // The heading above a widget when editing
-$c-heading-height: 14px;
+$c-heading-height: 13px;
 $c-heading-font-size: 11px;
+$c-heading-icon-font-size: 10px;
+
+// Properties being edited
+$c-property-label-color: #666;
+$c-property-value-color: #88a;

@@ -29,17 +29,23 @@ export default {
 
     editModeClass: function () {
       if (this.$store && this.$store.state && this.$store.state.contentLayout && this.$store.state.contentLayout.mode) {
+
+        // Add a class for the current editing mode
         let mode = this.$store.state.contentLayout.mode
-        // console.log(`------ element=`, this.element.id)
-        //console.log(`propertyElement=`, this.$store.state.contentLayout.propertyElement)
         let cls = `c-edit-mode-${mode}`
-        if (this.element === this.$store.state.contentLayout.propertyElement) {
-          console.log(`HEY THATS ME!!! ${this.element.id} (${this.element.type})`)
-          cls += ` c-selected`
+
+        // Add property-editing-related classes, for the currently selected
+        // element, and the element expanded in the properties editor.
+        if (this.element) {
+          if (this.element === this.$store.state.contentLayout.propertyElement) {
+            console.log(`HEY THATS ME!!! ${this.element.id} (${this.element.type})`)
+            cls += ` c-selected`
+          }
+          if (this.element === this.$store.state.contentLayout.expandedElement) {
+            cls += ` c-expanded`
+          }
         }
-        if (this.element === this.$store.state.contentLayout.expandedElement) {
-          cls += ` c-expanded`
-        }
+
         // console.log(`  class: ${cls}`)
         return cls
       }
@@ -64,6 +70,12 @@ export default {
   },
 
   methods: {
+
+    // Compare the page mode to a comma separated list
+    isPageMode (modes) {
+      return modes.split(',').includes(this.pageEditMode)
+    },
+
     selectThisElement () {
       console.log(`selectThisElement()`)
       if (this.pageEditMode != 'view') {

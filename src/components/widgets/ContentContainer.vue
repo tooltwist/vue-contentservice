@@ -1,25 +1,16 @@
 <template lang="pug">
 
 
-  .tt-container(v-bind:class="[(pageEditMode=='debug') ? 'tt-container-outline' : '']")
-
-    // Preview mode
-    .container(v-if="pageEditMode==='view'", v-on:click.stop="select(element)")
-      content-children(:editcontext="editcontext", :element="element")
+  .c-content-container(v-bind:class="editModeClass")
 
     // Edit mode
-    .container(v-else-if="pageEditMode==='edit'", v-on:click.stop="select(element)")
+    .container(v-if="pageEditMode==='edit'", @click.stop="select(element)")
       content-children(:editcontext="editcontext", :element="element")
 
     // Debug mode
-    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
+    div(v-else-if="pageEditMode==='debug'", @click.stop="select(element)")
       .c-layout-mode-heading
-        .c-heading-icons
-          i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
-          | &nbsp;
-          i.fa.fa-files-o.fas.fa-copy(v-clipboard="myElementCopyToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-          | &nbsp;
-          i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
+        edit-bar-icons(:element="element")
         | container
       .container
         content-children.my-content(:editcontext="editcontext", :element="element")
@@ -27,17 +18,17 @@
     // Live
     .container(v-else)
       content-children(:editcontext="editcontext", :element="element")
-
-
 </template>
 
 <script>
 import ContentMixins from '../../mixins/ContentMixins'
 import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
+import EditBarIcons from './EditBarIcons'
 
 export default {
   name: 'content-container',
   components: {
+    EditBarIcons
   },
   props: {
     editcontext: Object,
@@ -73,25 +64,34 @@ export default {
 } */
 </script>
 
+
+<style lang="scss">
+  // NOT SCOPED - Application wide definition
+  .c-content-container .container {
+    width: 90% !important;
+  }
+</style>
+
 <style lang="scss" scoped>
   @import '../../assets/css/content-variables.scss';
 
-  .tt-container-outline {
-    border-left: dashed 2px lightgreen;
-    border-bottom: dashed 2px lightgreen;
-    border-right: dashed 2px lightgreen;
+  $frame-color: lightgreen;
+  $text-color: darkgreen;
+
+  .c-edit-mode-debug {
+    border-left: dashed 2px $frame-color;
+    border-bottom: dashed 2px $frame-color;
+    border-right: dashed 2px $frame-color;
     margin: 1px;
-    //- background-color: lightgreen;
-    background-color: #f9fdff;
-    background-color: #f6fff3;
+
+    .container {
+      width: 90% !important;
+    }
   }
   .c-layout-mode-heading {
-    height: $c-heading-height;
-    line-height: $c-heading-height;
-    background-color: lightgreen;
-    font-size: $c-heading-font-size;
-    color: darkgreen;
-    margin-bottom: 1px;
+    // This overrides the definition in content-editor.scss
+    background-color: $frame-color;
+    color: $text-color;
   }
   .my-content {
     background-color: white;
