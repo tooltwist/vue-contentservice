@@ -487,7 +487,7 @@ export default {
         position: sticky;
         position: -webkit-sticky;
         top: 0;
-        z-index: 1001;
+        z-index: 2000; // Everything on page must be below this.
 
         display: block;
         width: 100%;

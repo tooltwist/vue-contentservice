@@ -86,6 +86,10 @@ export default {
         ],
         charCounterCount: false,
 
+        // Must be higher than drop areas, and less than the editbar at
+        // top of layoutEditor (see ContentChildren, ContentLayoutEditor).
+        zIndex: 1900,
+
         events: {
           'froalaEditor.initialized': function () {
             //console.log('Froala is initialized')
