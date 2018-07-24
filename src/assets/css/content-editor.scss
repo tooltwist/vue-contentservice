@@ -73,7 +73,6 @@ $tt-property-grid: #f0f0f0;
   padding-top: 30px; /* IE6 workaround*/
   height: 0;
   overflow: hidden;
-
 }
 .content-google-slides-embed-container iframe,
 .content-google-slides-embed-container object,
@@ -85,6 +84,54 @@ $tt-property-grid: #f0f0f0;
   width: 96%;
   height: 96%;
 }
+
+// Make the sheets responsive
+// From https://productforums.google.com/forum/#!topic/docs/tuufSoBoxKc
+.content-google-sheets-embed-container {
+  position: relative;
+  padding-bottom: 48.25%; /* 16/9 ratio */
+  padding-top: 30px; /* IE6 workaround*/
+  height: 0;
+  overflow: hidden;
+}
+.content-google-sheets-embed-container iframe,
+.content-google-sheets-embed-container object,
+.content-google-sheets-embed-container embed {
+  position: absolute;
+  top: 3%;
+  left: 2%;
+  right: 2%;
+  width: 96%;
+  height: 96%;
+}
+.content-google-sheets-embed-container iframe {
+  border: solid 2px #f0f0f0;
+}
+
+// Make the docs responsive
+// From https://productforums.google.com/forum/#!topic/docs/tuufSoBoxKc
+.content-google-docs-embed-container {
+  position: relative;
+  padding-bottom: 48.25%; /* 16/9 ratio */
+  padding-top: 30px; /* IE6 workaround*/
+  height: 0;
+  overflow: hidden;
+}
+.content-google-docs-embed-container iframe,
+.content-google-docs-embed-container object,
+.content-google-docs-embed-container embed {
+  position: absolute;
+  top: 3%;
+  left: 2%;
+  right: 2%;
+  width: 96%;
+  height: 96%;
+}
+.content-google-docs-embed-container iframe {
+  border: solid 2px #f0f0f0;
+}
+
+
 
 
 .c-layout-mode-heading {

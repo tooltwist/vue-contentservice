@@ -239,4 +239,50 @@ export default [
     }
   },
 
+  // Google sheets
+  {
+    dragtype:'component',
+    name: 'Sheets',
+    iconClass: 'fa fa-file-excel-o',
+    iconClass5: 'far fa-file-excel',
+    // element: {
+    //   type: 'google-sheets',
+    //   //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+    // },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'google-sheets',
+        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+      }
+    }
+  },
+
+  // Google docs
+  {
+    dragtype:'component',
+    name: 'Doc',
+    iconClass: 'fa fa-file-word-o',
+    iconClass5: 'far fa-file-word',
+    // element: {
+    //   type: 'google-sheets',
+    //   //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+    // },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'google-docs',
+        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+      }
+    }
+  },
+
 ]
