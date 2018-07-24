@@ -2155,7 +2155,7 @@ var es6_regexp_split = __webpack_require__("KKXr");
   dragtype: 'component',
   name: 'Slides',
   iconClass: 'fa fa-file-powerpoint-o',
-  iconClass5: 'fas fa-file-powerpoint',
+  iconClass5: 'far fa-file-powerpoint',
   element: {
     type: 'google-slides' //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
 
