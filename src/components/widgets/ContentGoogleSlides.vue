@@ -49,7 +49,8 @@ export default {
   computed: {
 
     src: function ( ) {
-      let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.element.docID}/embed?start=false&loop=false&delayms=3000`
+      // let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.element.docID}/embed?start=false&loop=false&delayms=3000`
+      let src = `https://docs.google.com/presentation/d/${this.element.docID}/preview?slide=id.p1`
       console.log(`url=${src}`)
       return src
     },
