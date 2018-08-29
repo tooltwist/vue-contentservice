@@ -47,6 +47,8 @@ import ContentGoogleSheets from './widgets/ContentGoogleSheets.vue'
 import ContentGoogleSheetsProps from './widgets/ContentGoogleSheetsProps.vue'
 import ContentGoogleDocs from './widgets/ContentGoogleDocs.vue'
 import ContentGoogleDocsProps from './widgets/ContentGoogleDocsProps.vue'
+import ContentYoutube from './widgets/ContentYoutube.vue'
+import ContentYoutubeProps from './widgets/ContentYoutubeProps.vue'
 
 
 import ContentAdminBlogList from './ContentAdminBlogList.vue'
@@ -181,6 +183,7 @@ function install (Vue, options) {
   _content.registerLayoutType(Vue, 'google-slides', 'content-google-slides', ContentGoogleSlides, ContentGoogleSlidesProps)
   _content.registerLayoutType(Vue, 'google-sheets', 'content-google-sheets', ContentGoogleSheets, ContentGoogleSheetsProps)
   _content.registerLayoutType(Vue, 'google-docs', 'content-google-docs', ContentGoogleDocs, ContentGoogleDocsProps)
+  _content.registerLayoutType(Vue, 'youtube', 'content-youtube', ContentYoutube, ContentYoutubeProps)
 
 
   // Set up external libraries
