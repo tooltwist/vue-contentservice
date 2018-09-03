@@ -9,12 +9,12 @@
         //- i.fa.fa-files-o.fas.fa-copy(v-clipboard="elementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
         //- | &nbsp;
         //- i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
-      | Youtube Video
+      | Google Slides
 
     transition(name="fade")
       .c-element-properties(v-if="isExpandedElement")
         .tt-property
-          .c-property-label Video ID
+          .c-property-label doc ID
           .c-property-value
             input.input(v-model="docID")
 
@@ -24,7 +24,7 @@
 import PropertyMixins from '../../mixins/PropertyMixins'
 
 export default {
-  name: 'content-youtube-props',
+  name: 'content-card-props',
   mixins: [ PropertyMixins ],
   computed: {
 

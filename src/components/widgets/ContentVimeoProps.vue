@@ -9,7 +9,7 @@
         //- i.fa.fa-files-o.fas.fa-copy(v-clipboard="elementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
         //- | &nbsp;
         //- i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
-      | Youtube Video
+      | Vimeo Video
 
     transition(name="fade")
       .c-element-properties(v-if="isExpandedElement")
@@ -24,7 +24,7 @@
 import PropertyMixins from '../../mixins/PropertyMixins'
 
 export default {
-  name: 'content-youtube-props',
+  name: 'content-vimeo-props',
   mixins: [ PropertyMixins ],
   computed: {
 

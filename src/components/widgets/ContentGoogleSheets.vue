@@ -5,7 +5,7 @@
 
     // View mode
     .container(v-if="pageEditMode==='view'")
-      .content-google-sheets-embed-container
+      .my-sheets-container
         iframe(:src="src")
 
     // Debug mode
@@ -14,14 +14,11 @@
         edit-bar-icons(:element="element")
         | google sheets
       .container
-        //| {{element.docID}}
-        .content-google-sheets-embed-container
-          .my-dummy-iframe
+        .my-sheets-container.my-dummy-iframe
 
     // Edit, layout modes
     .container(v-else, v-on:click.stop="select(element)")
-      .content-google-sheets-embed-container
-        .my-dummy-iframe
+      .my-sheets-container.my-dummy-iframe
 
 
 </template>
@@ -89,18 +86,6 @@ export default {
   $frame-color: lightblue;
   $text-color: darkblue;
 
-  .my-iframe {
-    //width: 80%;
-    //height: 400px;
-  }
-
-  .my-dummy-iframe {
-    width: 1920px;
-    height: 1109px;
-    border: solid 1px #b0b0b0;
-    background-color: #d0d0d0;
-  }
-
   .c-layout-mode-heading {
     // This overrides the definition in content-editor.scss
     background-color: $frame-color;
@@ -115,6 +100,30 @@ export default {
 
     &.c-selected {
       border-color: $c-editbar-color;
+    }
+  }
+
+  .my-sheets-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    margin-top: $c-embed-margin-top;
+    margin-bottom: $c-embed-margin-bottom;
+
+    &.my-dummy-iframe {
+      background-color: $c-embed-border-color;
+    }
+
+    iframe,
+    object,
+    embed {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: solid 1px $c-embed-border-color;
     }
   }
 </style>

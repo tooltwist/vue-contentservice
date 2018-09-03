@@ -51,6 +51,30 @@ export default [
 
   },
 
+  // Card
+  /*
+  {
+    dragtype:'component',
+    name: 'card',
+    iconClass: 'fa-arrows-h',
+    iconClass5: 'fas fa-arrows-alt-h',
+    element: {
+      type: 'card',
+    },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'card',
+      }
+    }
+
+  },
+  */
+
   // Columns
   {
     dragtype: 'component',
@@ -280,6 +304,52 @@ export default [
       source: "toolbox",
       layout: {
         type: 'google-docs',
+        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+      }
+    }
+  },
+
+  // Youtube
+  {
+    dragtype:'component',
+    name: 'Youtube',
+    iconClass: 'fa fa-youtube',
+    iconClass5: 'fab fa-youtube',
+    // element: {
+    //   type: 'google-sheets',
+    //   //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+    // },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'youtube',
+        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+      }
+    }
+  },
+
+  // Vimeo
+  {
+    dragtype:'component',
+    name: 'Vimeo',
+    iconClass: 'fa fa-vimeo',
+    iconClass5: 'fab fa-vimeo',
+    // element: {
+    //   type: 'google-sheets',
+    //   //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+    // },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'vimeo',
         //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
       }
     }

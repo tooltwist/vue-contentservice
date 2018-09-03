@@ -20,6 +20,10 @@
       content-google-slides-props(v-else-if="element.type=='google-slides'", :element="element")
       content-google-sheets-props(v-else-if="element.type=='google-sheets'", :element="element")
       content-google-docs-props(v-else-if="element.type=='google-docs'", :element="element")
+      content-youtube-props(v-else-if="element.type=='youtube'", :element="element")
+
+      content-vimeo-props(v-else-if="element.type=='vimeo'", :element="element")
+      content-mbc-visibility-group-props(v-else-if="element.type=='mbc-visibility-group'", :element="element")
 
       content-layout-props(v-if="element.type=='layout'", :element="element")
 

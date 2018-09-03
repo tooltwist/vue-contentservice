@@ -825,6 +825,7 @@ function rememberToSave (commit, state, vm) {
  *  Display an error message, by whatever means is possible.
  */
 function handleError(vm, msg) {
+  // alert(msg)
   if (vm && vm.$toast) {
     vm.$toast.open({ message: `${msg}`, type: 'is-danger' })
   } else {
