@@ -38,6 +38,8 @@ import ContentSection from './widgets/ContentSection.vue'
 import ContentSectionProps from './widgets/ContentSectionProps.vue'
 import ContentContainer from './widgets/ContentContainer.vue'
 import ContentContainerProps from './widgets/ContentContainerProps.vue'
+import ContentFixedPositionContainer from './widgets/ContentFixedPositionContainer.vue'
+import ContentFixedPositionContainerProps from './widgets/ContentFixedPositionContainerProps.vue'
 import ContentColumns from './widgets/ContentColumns.vue'
 import ContentColumnsProps from './widgets/ContentColumnsProps.vue'
 
@@ -183,6 +185,7 @@ function install (Vue, options) {
   _content.registerLayoutType(Vue, 'form', 'content-form', ContentForm, ContentFormProps)
   _content.registerLayoutType(Vue, 'section', 'content-section', ContentSection, ContentSectionProps)
   _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
+  _content.registerLayoutType(Vue, 'fixed-position-container', 'content-fixed-position-container', ContentFixedPositionContainer, ContentFixedPositionContainerProps)
   _content.registerLayoutType(Vue, 'columns', 'content-columns', ContentColumns, ContentColumnsProps)
   _content.registerLayoutType(Vue, 'layout', 'content-layout', ContentLayout, ContentLayoutProps)
   _content.registerLayoutType(Vue, 'card', 'card', ContentCard, ContentCardProps)

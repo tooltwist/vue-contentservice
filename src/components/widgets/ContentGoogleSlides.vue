@@ -46,17 +46,20 @@ export default {
   computed: {
 
     src: function ( ) {
-      if (this.element.docID.startsWith('2PACX-')) {
-        // Use the published version of the file
-        let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.element.docID}/embed?start=false&loop=false&delayms=3000`
-        console.log(`url=${src}`)
-        return src
-      } else {
-        // Use a preview version of the sheet
-        let src = `https://docs.google.com/presentation/d/${this.element.docID}/preview?slide=id.p1`
-        console.log(`url=${src}`)
-        return src
+      if (this.element.docID) {
+        if (this.element.docID.startsWith('2PACX-')) {
+          // Use the published version of the file
+          let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.element.docID}/embed?start=false&loop=false&delayms=3000`
+          console.log(`published url=${src}`)
+          return src
+        } else {
+          // Use a preview version of the sheet
+          let src = `https://docs.google.com/presentation/d/${this.element.docID}/preview?slide=id.p1`
+          console.log(`unpublished url=${src}`)
+          return src
+        }
       }
+      return ''
     },
 
     sectionStyle: function () {

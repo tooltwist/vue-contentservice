@@ -13,6 +13,8 @@ import TestLayoutLongLeft from './testapp/TestLayoutLongLeft.vue'
 // import TestCrowdhoundFixedLeft from './testapp/TestCrowdhoundFixedLeft.vue'
 import TestCrowdhoundLong from './testapp/TestCrowdhoundLong.vue'
 // import TestCrowdhoundLongLeft from './testapp/TestCrowdhoundLongLeft.vue'
+import TestGoogleSheetsVariants from './testapp/TestGoogleSheetsVariants.vue'
+
 
 import FroalaKey from './protected-config/froalaKey.js'
 console.error(`FroalaKey is ${FroalaKey}`)
@@ -49,6 +51,8 @@ new Vue({
       case '/crowdhound-long-left': return h(TestCrowdhoundLongLeft)
       case '/crowdhound-fixed': return h(TestCrowdhoundFixed)
       case '/crowdhound-fixed-left': return h(TestCrowdhoundFixedLeft)
+
+      case '/google-sheets-variants': return h(TestGoogleSheetsVariants)
     }
     return h(TestHomePage)
   },

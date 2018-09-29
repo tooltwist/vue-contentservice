@@ -6,6 +6,7 @@
       // | [type:{{element.type}} children:{{element.children && element.children.length}}]
       content-section-props(v-if="element.type=='section'", :element="element")
       content-container-props(v-else-if="element.type=='container'", :element="element")
+      content-fixed-position-container-props(v-else-if="element.type=='fixed-position-container'", :element="element")
       content-columns-props(v-else-if="element.type=='columns'", :element="element")
       // content-children-props(v-else-if="element.type=='children'", :element="element")
       content-text-props(v-else-if="element.type=='text'", :element="element")

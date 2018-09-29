@@ -51,6 +51,27 @@ export default [
 
   },
 
+  // FixedPositionContainer
+  {
+    dragtype:'component',
+    name: 'fixed-position-container',
+    iconClass: 'fa-arrows-h',
+    iconClass5: 'fas fa-arrows-alt-h',
+    element: {
+      type: 'fixed-position-container',
+    },
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'fixed-position-container',
+      }
+    }
+  },
+
   // Card
   /*
   {

@@ -31,6 +31,8 @@
             br
             a(href="/crowdhound-long-left") Long page + left pane
             br
+            a(href="/google-sheets-variants") Google Sheets variants
+            br
 
       .column.is-one-fifth
         .card
