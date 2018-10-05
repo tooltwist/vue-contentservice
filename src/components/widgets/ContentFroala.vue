@@ -191,7 +191,7 @@ export default {
           this.saveMsg = ERROR
           /* handleError(this, desc, params, e) */
           this.selectError = true
-        })//- axios
+        })//- update
 
     }
   },
@@ -263,7 +263,7 @@ export default {
         console.log(`Dirty rotten error: `, e)
         //handleError(this, desc, params, e)
         this.selectError = true
-      })//- axios
+      })//- select
 
     } else {//- !useCrowdhound
       // Edit the text in the provided element

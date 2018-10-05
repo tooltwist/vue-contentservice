@@ -216,7 +216,7 @@ export default {
           console.log(`Dirty rotten error: `, e)
           /* handleError(this, desc, params, e) */
           this.selectError = true
-        })//- axios
+        })//- select
     }
   },
 

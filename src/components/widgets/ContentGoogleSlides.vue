@@ -19,8 +19,6 @@
     // Edit, layout modes
     .container(v-else, v-on:click.stop="select(element)")
       .my-slides-container.my-dummy-iframe
-
-
 </template>
 
 <script>
@@ -43,18 +41,49 @@ export default {
       //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl',
     }
   },
+  watch: {
+    '$store.state.docservice.refreshCounter': function ( ) {
+      console.log(`^&#^%$&^%$ WATCHED CHANGED REFRESHCOUNTER`);
+    }
+  },
   computed: {
 
+    // docID: function () {
+    //   let value = this.element['docID']
+    //   return value ? value : ''
+    // },
+    //
+    // replacementDocID: function ( ) {
+    //   let value = this.element['docID']
+    //   if (value) {
+    //     // Use a preview version of the sheet
+    //     // console.log(`compute docID 1`, this.$store);
+    //     let userID = null //ZZZZZZ
+    //     let replacementDocID = this.$store.getters['docservice/replacementDocID'](value, userID)
+    //
+    //     console.log(`replacementDocID: ${value} -> ${replacementDocID}`);
+    //     return replacementDocID
+    //   }
+    //   return ''
+    // },
+
     src: function ( ) {
-      if (this.element.docID) {
-        if (this.element.docID.startsWith('2PACX-')) {
+
+      let docID = this.element['docID']
+      if (docID) {
+        if (docID.startsWith('2PACX-')) {
           // Use the published version of the file
           let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.element.docID}/embed?start=false&loop=false&delayms=3000`
           console.log(`published url=${src}`)
           return src
         } else {
-          // Use a preview version of the sheet
-          let src = `https://docs.google.com/presentation/d/${this.element.docID}/preview?slide=id.p1`
+
+          // Get the substitute document ID we'll use for this user.
+          let userID = null //ZZZZZZ
+          let replacementDocID = this.$store.getters['docservice/replacementDocID'](docID, userID)
+
+          console.error(`slides replacementDocID: ${docID} -> ${replacementDocID}`);
+          let src = `https://docs.google.com/presentation/d/${replacementDocID}/preview?slide=id.p1`
           console.log(`unpublished url=${src}`)
           return src
         }
@@ -71,6 +100,11 @@ export default {
       copyStyle(this.element, style, 'padding-left')
       copyStyle(this.element, style, 'padding-right')
       return style
+    }
+  },
+  watch: {
+    refreshCounter (oldvalue, newvalue) {
+      console.log(`Slides refreshCounter changed from ${oldvalue} to ${newvalue}.`);
     }
   },
   methods: {

@@ -53,7 +53,10 @@ export const state = () => {
 
     // Triple pane stuff
     showLeftPane: true,
-    showRightPane: true
+    showRightPane: true,
+
+    // Refresh is activated by incrementing a counter
+    refreshCounter: 1
   }
 }
 //})
@@ -472,6 +475,14 @@ export const mutations = {
 
     state.mode = mode
   },
+
+  // Call this method to trigger redrawing of components that monitor
+  // the value of 'refreshCounter'.
+  refreshMutation (state, { }) {
+    console.log('In Mutation refreshMutation()', state.refreshCounter)
+    state.refreshCounter++
+  }
+
 }//- mutations
 
 
@@ -712,7 +723,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       console.log(`Dirty rotten error: `, e)
       /* handleError(this, desc, params, e) */
       state.selectError = true
-    })//- axios
+    })//- select
 }
 
 // If any of the IDs in the specified element or it's descendants exist

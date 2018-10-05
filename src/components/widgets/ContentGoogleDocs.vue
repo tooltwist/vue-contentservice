@@ -45,11 +45,35 @@ export default {
   },
   computed: {
 
+    //- src: function ( ) {
+    //-   //let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.element.docID}/embed?start=false&loop=false&delayms=3000`
+    //-   let src = `https://docs.google.com/a/tooltwist.com/document/d/e/${this.element.docID}/pub?embedded=true`
+    //-   console.log(`url=${src}`)
+    //-   return src
+    //- },
+
     src: function ( ) {
-      //let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.element.docID}/embed?start=false&loop=false&delayms=3000`
-      let src = `https://docs.google.com/a/tooltwist.com/document/d/e/${this.element.docID}/pub?embedded=true`
-      console.log(`url=${src}`)
-      return src
+
+      let docID = this.element['docID']
+      if (docID) {
+        if (docID.startsWith('2PACX-')) {
+          // Use the published version of the file
+          let src = `https://docs.google.com/a/tooltwist.com/presentation/d/e/${this.element.docID}/embed?start=false&loop=false&delayms=3000`
+          console.log(`published url=${src}`)
+          return src
+        } else {
+
+          // Get the substitute document ID we'll use for this user.
+          let userID = null //ZZZZZZ
+          let replacementDocID = this.$store.getters['docservice/replacementDocID'](docID, userID)
+
+          console.log(`docs replacementDocID: ${docID} -> ${replacementDocID}`);
+          let src = `https://docs.google.com/a/tooltwist.com/document/d/e/${replacementDocID}/pub?embedded=true`
+          console.log(`unpublished url=${src}`)
+          return src
+        }
+      }
+      return ''
     },
 
     sectionStyle: function () {

@@ -7,33 +7,42 @@
     .container(v-if="pageEditMode==='view'")
       | mode is&nbsp;
       b {{displayMode}}
-      | &nbsp;{{modeDescription}}
-      .my-sheets-container(v-if="displayMode==='editable'", :style="contentEditStyle")
-        // Regular embedded mode, to allow editing (with menus, rows and tabs)
-        iframe(:src="`https://docs.google.com/spreadsheets/d/${docID}/edit?gid=0&chrome=false&single=true&widget=false&headers=false`", width="1000", height="500", frameborder="solid 1px red", scrolling="yes")
+      | &nbsp;{{modeDescription}} - {{refreshCounter}}
+      div(v-if="displayMode==='editable'")
+        .my-sheets-container(:style="contentEditStyle")
+          // Regular embedded mode, to allow editing (with menus, rows and tabs)
+          iframe(:src="`https://docs.google.com/spreadsheets/d/${replacementDocID}/edit?gid=0&chrome=false&single=true&widget=false&headers=false`", width="1000", height="500", frameborder="solid 1px red", scrolling="yes")
+        button.button.is-primary(@click="doUpdate") Update
+        .is-clearfix
 
       // Edit, no menus
-      .my-sheets-container(v-else-if="displayMode==='editable-nomenus'", :style="contentEditStyle")
-        iframe(:src="`https://docs.google.com/spreadsheets/d/${docID}/edit?gid=0&chrome=false&single=true&widget=false&headers=false&rm=minimal`", width="1000", height="500", frameborder="solid 1px red", scrolling="yes")
+      div(v-else-if="displayMode==='editable-nomenus'")
+        .my-sheets-container(:style="contentEditStyle")
+          iframe(:src="`https://docs.google.com/spreadsheets/d/${replacementDocID}/edit?gid=0&chrome=false&single=true&widget=false&headers=false&rm=minimal`", width="1000", height="500", frameborder="solid 1px red", scrolling="yes")
+        button.button.is-primary(@click="doUpdate") Update
+        .is-clearfix
 
       // Edit, no menus, no rows, no sheet tabs
-      .my-sheets-container(v-else-if="displayMode==='editable-dataonly'")
-        // From http://metricrat.co.uk/google-sites-classic-embed-live-working-google-sheet-range
-        div(:style="{float:'left', border:'1px solid #f3f3f3', overflow:'hidden', margin:'0px auto', maxWidth:`${width}px`, height:`${height}px`, zwidth:'1000px', backgroundColor:'yellow' }")
-          div(:style="{overflow:'hidden', margin:'0px auto', maxWidth:`${width}px`, backgroundColor:'pink'}")
-            iframe(:src="`https://docs.google.com/spreadsheets/d/${docID}/edit?gid=0&chrome=false&single=true&widget=true&headers=false&rm=minimal`", :style="{ border:'0px none', marginRight:'-10px', marginLeft:'-45px', height:'571px', marginTop:'-23px', width:`${width}px`, overflow:'hidden' }", scrolling="no")
-        div(style="clear: both;")
+      div(v-else-if="displayMode==='editable-dataonly'")
+        .my-sheets-container
+          // From http://metricrat.co.uk/google-sites-classic-embed-live-working-google-sheet-range
+          div(:style="{float:'left', border:'1px solid #f3f3f3', overflow:'hidden', margin:'0px auto', maxWidth:`${width}px`, height:`${height}px`, zwidth:'1000px', backgroundColor:'yellow' }")
+            div(:style="{overflow:'hidden', margin:'0px auto', maxWidth:`${width}px`, backgroundColor:'pink'}")
+              iframe(:src="`https://docs.google.com/spreadsheets/d/${replacementDocID}/edit?gid=0&chrome=false&single=true&widget=true&headers=false&rm=minimal`", :style="{ border:'0px none', marginRight:'-10px', marginLeft:'-45px', height:'571px', marginTop:'-23px', width:`${width}px`, overflow:'hidden' }", scrolling="no")
+          div(style="clear: both;")
+        button.button.is-primary(@click="doUpdate") Update
+        .is-clearfix
 
       // Preview unpublished document
       .my-sheets-container(v-else-if="displayMode==='preview'", :style="contentEditStyle")
-        iframe(:src="`https://docs.google.com/spreadsheets/d/${docID}/preview?gid=0&chrome=false&single=true&widget=false&headers=false`" width="1000", height="500", scrolling="yes")
+        iframe(:src="`https://docs.google.com/spreadsheets/d/${replacementDocID}/preview?gid=0&chrome=false&single=true&widget=false&headers=false`" width="1000", height="500", scrolling="yes")
 
         // Preview unpublished document, without tabs
       .my-sheets-container(v-else-if="displayMode==='preview-notabs'", :style="contentEditStyle")
         // From http://metricrat.co.uk/google-sites-classic-embed-live-working-google-sheet-range
         div(style="float: left; border: 0px solid #f3f3f3; overflow: hidden; margin: 0px auto; max-width: 1000px; height: 500px;")
           div(style="overflow: hidden; margin: 0px auto; max-width: 1000px;")
-            iframe(:src="`https://docs.google.com/spreadsheets/d/${docID}/preview?gid=0&chrome=false&single=true&widget=false&headers=false`", style="margin-right: -10px; margin-left: -45px; height: 650px; margin-top: -23px; width: 1010px; overflow: hidden; border: none;", scrolling="no")
+            iframe(:src="`https://docs.google.com/spreadsheets/d/${replacementDocID}/preview?gid=0&chrome=false&single=true&widget=false&headers=false`", style="margin-right: -10px; margin-left: -45px; height: 650px; margin-top: -23px; width: 1010px; overflow: hidden; border: none;", scrolling="no")
         div(style="clear: both;")
 
       .my-sheets-container(v-else-if="displayMode==='published-notabs'", :style="contentEditStyle")
@@ -98,9 +107,27 @@ export default {
     }
   },
   computed: {
+    refreshCounter () {
+      return this.$store.state.docservice.refreshCounter
+    },
+
     docID: function () {
       let value = this.element['docID']
       return value ? value : ''
+    },
+
+    replacementDocID: function ( ) {
+      let docID = this.element['docID']
+      if (docID) {
+        // Use a preview version of the sheet
+        // console.log(`compute docID 1`, this.$store);
+        let userID = null //ZZZZZZ
+        let replacementDocID = this.$store.getters['docservice/replacementDocID'](docID, userID)
+
+        console.log(`replacementDocID: ${docID} -> ${replacementDocID}`);
+        return replacementDocID
+      }
+      return ''
     },
 
     width: function () {
@@ -128,12 +155,12 @@ export default {
     },
 
     contentEditStyle: function () {
-      console.log(`contentEditStyle()`);
+      // console.log(`contentEditStyle()`);
       let style = { }
 
       // Width
       let value = this.element['width']
-      console.log(` width value=${value}`);
+      // console.log(` width value=${value}`);
       let w = 1000
       if (value && value.trim()) {
         w = parseInt(value)
@@ -146,7 +173,7 @@ export default {
 
       // Height
       value = this.element['height']
-      console.log(` height value=${value}`);
+      // console.log(` height value=${value}`);
       let h = 500
       if (value && value.trim()) {
         h = parseInt(value)
@@ -155,7 +182,7 @@ export default {
         }
       }
       style.height = h + 'px'
-      console.log(`contentEditStyle:`, style);
+      // console.log(`contentEditStyle:`, style);
       return style
     },
 
@@ -273,6 +300,16 @@ export default {
         this.$store.commit('contentLayout/setPropertyElement', { element })
       }
     },
+
+    doUpdate () {
+      console.log(`doUpdate()`);
+      // this.$store.commit('docservice/refreshMutation', { })
+      let docID = this.element['docID']
+      if (docID) {
+        let vm = this
+        this.$store.dispatch('docservice/scanDocument', { vm, docID })
+      }
+    }
   }
 }
 

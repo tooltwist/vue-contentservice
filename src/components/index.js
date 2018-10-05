@@ -70,6 +70,7 @@ import StringProperty from './propertyTypes/StringProperty.vue'
 
 // Our store
 import ContentLayoutStore from '../store/contentLayoutStore.js'
+import DocserviceStore from '../store/docserviceStore.js'
 
 
 
@@ -262,7 +263,8 @@ Object.defineProperty(obj, 'store', {
     _Vue.use(Vuex)
     _store = new Vuex.Store({
       modules: {
-        contentLayout: ContentLayoutStore
+        contentLayout: ContentLayoutStore,
+        docservice: DocserviceStore
       }
     });
     return _store;

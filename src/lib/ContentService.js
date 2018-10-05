@@ -67,6 +67,16 @@ class Contentservice {
     //   this.emailSupported = true;
     // }
 
+    //ZZZZZ Temporarily here from docservice
+    //DSZZ
+    console.log('&&& Contentservice constructor', options)
+    this.docservice = { }
+    if (options.docservice) {
+      this.dshost = options.docservice.host ? options.docservice.host : 'api.docservice.io'
+      this.dsport = opdsdocservice.version = options.docservice.version ? options.docservice.version : '2.0'
+      this.dsapikey = options.docservice.apikey
+    }
+
 
     // Decide which icon set to use with a defaultIconPack option.
     // Loosely based on:
@@ -173,6 +183,16 @@ class Contentservice {
     // console.log('endpoint():', this)
     const protocol = this.protocol ? this.protocol : 'http'
     const endpoint = `${protocol}://${this.host}:${this.port}/api/${this.version}/${this.apikey}`
+    return endpoint
+  }
+
+  //DSZZZ
+  // Docservice endpoint
+  dsendpoint () {
+    // console.log('endpoint():', this)
+    // const protocol = this.dsprotocol ? this.dsprotocol : 'http'
+    // const endpoint = `${protocol}://${this.dshost}:${this.dsport}/api/${this.dsversion}/${this.dsapikey}`
+    let endpoint = `http://localhost:8000/api/v1/mbc`
     return endpoint
   }
 
@@ -407,6 +427,54 @@ class Contentservice {
     	// 		return callback(niceError(jqxhr, textStatus, errorThrown));
     	// 	}
     	// });
+
+    })//- promise
+  }// update()
+
+  /*
+   *DSZZZZ Should be moved to docservice
+   *  Scan an existing document for data values, and regenerate documents that
+   *  might use those values.
+   */
+  scanDocument (vm, documentId) {
+
+    console.log(`ContentService.js:scanDocument()`, documentId)
+
+    return new Promise((resolve, reject) => {
+
+      if (this.options.debug) {
+        console.log('select()');
+      }
+      // if (this.disabled) {
+      //   return reject(new Error('contentservice disabled'));
+      // }
+
+      let url = `${this.dsendpoint()}/scanDocument`;
+      console.log(`url is ${url}`);
+      let params = {
+        document_id: documentId,
+        user_id: 1
+      }
+      axios({
+        method: 'post',
+        url,
+        headers: {
+          // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        data: params
+      })
+        .then(response => {
+          // JSON responses are automatically parsed.
+          console.log(`RESPONSE IS`, response.data)
+          let reply = response.data
+          return resolve(reply);
+        })
+        .catch(e => {
+          axiosError(vm, url, element, e)
+          reject(e)
+        })
 
     })//- promise
   }// update()
