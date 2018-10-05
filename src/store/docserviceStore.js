@@ -16,7 +16,12 @@ export const state = () => {
     },
 
     // Refresh for some components can be activated by incrementing this counter.
-    refreshCounter: 1
+    refreshCounter: 1,
+
+    // Set to true while we are waiting for the server to scan a document
+    // and generate derived documents.
+    currentlyScanning: false,
+    scanMessage: ''
 
   }
 }
@@ -50,25 +55,28 @@ export const actions = {
   scanDocument ({ commit, state }, { vm, docID }) {
     console.log(`In Action docservice/scanDocument(docID=${docID})`)
 
+    commit('scanState', { currentlyScanning: true, message: 'scanning...'})
     vm.$content.scanDocument(vm, docID)
       .then(result => {
-        // setTimeout(() => {
-        //   if (state.saveMsg === DIRTY) {
-        //     commit('setSaveMsg', { msg: CLEAN })
-        //   }
-        // }, 1700)
+        commit('scanState', { currentlyScanning: true, message: 'updating...'})
         console.log(`result of save:`, result)
-        // console.log(`result of save:`, result.data)
-        result.forEach(obj => {
-          console.log(`obj is `, obj);
-          let originalDocumentID = obj.originalDocumentID
-          let replacementDocumentID = obj.replacementDocumentID
-          let userID = null
-          commit('mapDocument', { originalDocumentID, replacementDocumentID, userID })
-        })
-        commit('refreshMutation', { })
+
+        // Wait a while, to give the Google permissions time to propagate
+        setTimeout(() => {
+          // console.log(`result of save:`, result.data)
+          result.forEach(obj => {
+            console.log(`obj is `, obj);
+            let originalDocumentID = obj.originalDocumentID
+            let replacementDocumentID = obj.replacementDocumentID
+            let userID = null
+            commit('mapDocument', { originalDocumentID, replacementDocumentID, userID })
+          })
+          commit('scanState', { currentlyScanning: false })
+          commit('refreshMutation', { })
+        }, 5000)
       })
       .catch(e => {
+        commit('scanState', { currentlyScanning: false })
         let desc = `Error scanning document`
         console.log(desc, e)
         //state.saveMsg = ERROR
@@ -104,6 +112,11 @@ export const mutations = {
       userID: null
     }
     console.log(`map is now`, state.documentMap);
+  },
+
+  scanState(state, { currentlyScanning, message }) {
+    state.currentlyScanning = currentlyScanning
+    state.scanMessage = currentlyScanning ? message : ''
   }
 
 

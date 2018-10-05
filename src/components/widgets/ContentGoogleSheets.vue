@@ -12,14 +12,16 @@
         .my-sheets-container(:style="contentEditStyle")
           // Regular embedded mode, to allow editing (with menus, rows and tabs)
           iframe(:src="`https://docs.google.com/spreadsheets/d/${replacementDocID}/edit?gid=0&chrome=false&single=true&widget=false&headers=false`", width="1000", height="500", frameborder="solid 1px red", scrolling="yes")
-        button.button.is-primary(@click="doUpdate") Update
+        button.button.is-primary(@click="doUpdate", :class="{ 'is-loading': currentlyScanning }") Update
+        .scanMessage {{scanMessage}}
         .is-clearfix
 
       // Edit, no menus
       div(v-else-if="displayMode==='editable-nomenus'")
         .my-sheets-container(:style="contentEditStyle")
           iframe(:src="`https://docs.google.com/spreadsheets/d/${replacementDocID}/edit?gid=0&chrome=false&single=true&widget=false&headers=false&rm=minimal`", width="1000", height="500", frameborder="solid 1px red", scrolling="yes")
-        button.button.is-primary(@click="doUpdate") Update
+        button.button.is-primary(@click="doUpdate", :class="{ 'is-loading': currentlyScanning }") Update
+        .scanMessage {{scanMessage}}
         .is-clearfix
 
       // Edit, no menus, no rows, no sheet tabs
@@ -30,7 +32,8 @@
             div(:style="{overflow:'hidden', margin:'0px auto', maxWidth:`${width}px`, backgroundColor:'pink'}")
               iframe(:src="`https://docs.google.com/spreadsheets/d/${replacementDocID}/edit?gid=0&chrome=false&single=true&widget=true&headers=false&rm=minimal`", :style="{ border:'0px none', marginRight:'-10px', marginLeft:'-45px', height:'571px', marginTop:'-23px', width:`${width}px`, overflow:'hidden' }", scrolling="no")
           div(style="clear: both;")
-        button.button.is-primary(@click="doUpdate") Update
+        button.button.is-primary(@click="doUpdate", :class="{ 'is-loading': currentlyScanning }") Update
+        .scanMessage {{scanMessage}}
         .is-clearfix
 
       // Preview unpublished document
@@ -128,6 +131,14 @@ export default {
         return replacementDocID
       }
       return ''
+    },
+
+    currentlyScanning: function () {
+      return this.$store.state.docservice.currentlyScanning
+    },
+
+    scanMessage: function () {
+      return this.$store.state.docservice.scanMessage
     },
 
     width: function () {
@@ -388,4 +399,14 @@ export default {
       border: solid 1px $c-embed-border-color;
     }
   }
+
+  .scanMessage {
+    display: inline-block;
+    margin-left: 15px;
+    margin-top: 6px;
+    width: 25px;
+    font-size: 16px;
+    color: #999;
+  }
+
 </style>
