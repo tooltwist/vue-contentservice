@@ -8643,6 +8643,13 @@ Object.defineProperty(components_obj, 'storeDefinition', {
     console.error('storeDefinition getter');
     return contentLayoutStore;
   }
+}); //DSZZ
+
+Object.defineProperty(components_obj, 'docserviceStoreDefinition', {
+  get: function get() {
+    console.error('docserviceStoreDefinition getter');
+    return docserviceStore;
+  }
 });
 Object.defineProperty(components_obj, 'store', {
   get: function get() {
@@ -8661,6 +8668,7 @@ Object.defineProperty(components_obj, 'store', {
     _store = new vuex_esm.Store({
       modules: {
         contentLayout: contentLayoutStore,
+        //DSZZ
         docservice: docserviceStore
       }
     });
