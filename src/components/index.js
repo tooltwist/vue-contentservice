@@ -250,6 +250,14 @@ Object.defineProperty(obj, 'storeDefinition', {
   }
 });
 
+//DSZZ
+Object.defineProperty(obj, 'docserviceStoreDefinition', {
+  get: function() {
+    console.error('docserviceStoreDefinition getter')
+    return DocserviceStore
+  }
+});
+
 Object.defineProperty(obj, 'store', {
   get: function() {
     console.error('store getter')
@@ -264,6 +272,8 @@ Object.defineProperty(obj, 'store', {
     _store = new Vuex.Store({
       modules: {
         contentLayout: ContentLayoutStore,
+
+        //DSZZ
         docservice: DocserviceStore
       }
     });
