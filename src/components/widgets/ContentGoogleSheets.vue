@@ -120,6 +120,7 @@ export default {
     },
 
     replacementDocID: function ( ) {
+      console.log(`ContentGoogleSheets METHOD replacementDocumentID`, this.$store.getters);
       let docID = this.element['docID']
       if (docID) {
         // Use a preview version of the sheet

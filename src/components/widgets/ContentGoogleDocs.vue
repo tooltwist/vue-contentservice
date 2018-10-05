@@ -19,8 +19,6 @@
     // Edit, layout modes
     .container(v-else, v-on:click.stop="select(element)")
       .my-doc-container.my-dummy-iframe
-
-
 </template>
 
 <script>
@@ -53,6 +51,7 @@ export default {
     //- },
 
     src: function ( ) {
+      console.log(`ContentGoogleDocs METHOD src`, this.$store.getters);
 
       let docID = this.element['docID']
       if (docID) {

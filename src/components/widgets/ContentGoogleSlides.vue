@@ -68,6 +68,7 @@ export default {
     // },
 
     src: function ( ) {
+      console.log(`ContentGoogleSlides METHOD src`, this.$store.getters);
 
       let docID = this.element['docID']
       if (docID) {

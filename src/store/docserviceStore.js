@@ -34,7 +34,7 @@ export const state = () => {
  ********************************************/
 export const getters = {
   replacementDocID: (state) => (docID, userID) => {
-    console.log(`GETTER replacementDocument(${docID}, ${userID})`);
+    console.log(`GETTER replacementDocID(${docID}, ${userID})`);
     let replacement = state.documentMap[docID]
     if (replacement && state.refreshCounter > 1) {
       console.log(`Found replacement document ${replacement.docID}`);
