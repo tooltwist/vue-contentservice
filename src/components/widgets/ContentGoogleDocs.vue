@@ -64,7 +64,7 @@ export default {
 
           // Get the substitute document ID we'll use for this user.
           let userID = null //ZZZZZZ
-          let replacementDocID = this.$store.getters['docservice/replacementDocID'](docID, userID)
+          let replacementDocID = this.$store.getters['docserviceStore/replacementDocID'](docID, userID)
 
           console.log(`docs replacementDocID: ${docID} -> ${replacementDocID}`);
           let src = `https://docs.google.com/a/tooltwist.com/document/d/e/${replacementDocID}/pub?embedded=true`

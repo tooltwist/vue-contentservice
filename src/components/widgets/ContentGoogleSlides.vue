@@ -42,7 +42,7 @@ export default {
     }
   },
   watch: {
-    '$store.state.docservice.refreshCounter': function ( ) {
+    '$store.state.docserviceStore.refreshCounter': function ( ) {
       console.log(`^&#^%$&^%$ WATCHED CHANGED REFRESHCOUNTER`);
     }
   },
@@ -59,7 +59,7 @@ export default {
     //     // Use a preview version of the sheet
     //     // console.log(`compute docID 1`, this.$store);
     //     let userID = null //ZZZZZZ
-    //     let replacementDocID = this.$store.getters['docservice/replacementDocID'](value, userID)
+    //     let replacementDocID = this.$store.getters['docserviceStore/replacementDocID'](value, userID)
     //
     //     console.log(`replacementDocID: ${value} -> ${replacementDocID}`);
     //     return replacementDocID
@@ -81,7 +81,7 @@ export default {
 
           // Get the substitute document ID we'll use for this user.
           let userID = null //ZZZZZZ
-          let replacementDocID = this.$store.getters['docservice/replacementDocID'](docID, userID)
+          let replacementDocID = this.$store.getters['docserviceStore/replacementDocID'](docID, userID)
 
           console.error(`slides replacementDocID: ${docID} -> ${replacementDocID}`);
           let src = `https://docs.google.com/presentation/d/${replacementDocID}/preview?slide=id.p1`

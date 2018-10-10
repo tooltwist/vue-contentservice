@@ -111,7 +111,7 @@ export default {
   },
   computed: {
     refreshCounter () {
-      return this.$store.state.docservice.refreshCounter
+      return this.$store.state.docserviceStore.refreshCounter
     },
 
     docID: function () {
@@ -126,7 +126,7 @@ export default {
         // Use a preview version of the sheet
         // console.log(`compute docID 1`, this.$store);
         let userID = null //ZZZZZZ
-        let replacementDocID = this.$store.getters['docservice/replacementDocID'](docID, userID)
+        let replacementDocID = this.$store.getters['docserviceStore/replacementDocID'](docID, userID)
 
         console.log(`replacementDocID: ${docID} -> ${replacementDocID}`);
         return replacementDocID
@@ -135,11 +135,11 @@ export default {
     },
 
     currentlyScanning: function () {
-      return this.$store.state.docservice.currentlyScanning
+      return this.$store.state.docserviceStore.currentlyScanning
     },
 
     scanMessage: function () {
-      return this.$store.state.docservice.scanMessage
+      return this.$store.state.docserviceStore.scanMessage
     },
 
     width: function () {
