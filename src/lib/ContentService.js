@@ -4,11 +4,6 @@
  *  Client API for Contentservice.io
  *  See https://contentservice.io
  */
-//import Vue from 'vue'
-// import Vuex from 'vuex'
-
-// Vue.use(Vuex)
-
 //import { install } from './install'
 import jwtDecode from 'jwt-decode'
 import axios from 'axios'
@@ -16,15 +11,9 @@ import axiosError from './axiosError.js'
 import QueryString from 'query-string'
 import { assert, inBrowser } from '../components/misc'
 
-// import { safeJson } from './hierarchy.js'
-// import * as util from './hierarchy.js'
-
-
 
 // const debug = process.env.NODE_ENV !== 'production'
 
-//const JWT_COOKIE_NAME = 'contentservice-jwt'
-//const LOGIN_TIMEOUT_DAYS = 3
 const NETWORK_ERROR_MSG = 'Could not contact authentication server'
 
 class Contentservice {
@@ -58,25 +47,6 @@ class Contentservice {
 
     this.knownElementTypes = [ ]
 
-    // // See if we are supporting email login (default to yes)
-    // if (options.login && typeof(options.login.email) !== 'undefined' && !options.login.email) {
-    //   console.log(`Contentservice(): Email is NOT supported`);
-    //   this.emailSupported = false;
-    // } else {
-    //   console.log(`Contentservice(): Email IS supported`);
-    //   this.emailSupported = true;
-    // }
-
-    //ZZZZZ Temporarily here from docservice
-    //DSZZ
-    console.log('&&& Contentservice constructor', options)
-    this.docservice = { }
-    if (options.docservice) {
-      this.dshost = options.docservice.host ? options.docservice.host : 'api.docservice.io'
-      this.dsport = opdsdocservice.version = options.docservice.version ? options.docservice.version : '2.0'
-      this.dsapikey = options.docservice.apikey
-    }
-
 
     // Decide which icon set to use with a defaultIconPack option.
     // Loosely based on:
@@ -92,70 +62,6 @@ class Contentservice {
       console.log(`Will use icon pack ${options.defaultIconPack}`);
     }
     console.log(`---> icons ---> ${this.defaultIconPack}`);
-
-
-
-
-    // // See if registration is allowed
-    // if (!this.emailSupported) {
-    //   // login.email: false
-    //   console.log(`Contentservice(): Registration is NOT supported`);
-    //   this.registrationSupported = false;
-    // } else if (options.hints && typeof(options.hints.register) !== 'undefined' && !options.hints.register) {
-    //   // Check for hints.register: false
-    //   console.log(`Contentservice(): Registration is NOT supported`);
-    //   this.registrationSupported = false;
-    // } else {
-    //   // We WILL allow registration. Check we have what we need.
-    //   if (typeof(options.hints.register) !== 'object') {
-    //     this.registrationSupported = false;
-    //     console.error('options.hints.register must be false, or an object')
-    //   } else if (!options.hints.register.resumeURL) {
-    //     this.registrationSupported = false;
-    //     console.log(`Contentservice(): Registration is NOT supported`);
-    //     console.error('options.hints.register.resumeURL must be provided')
-    //   } else if (typeof(options.hints.register.resumeURL) !== 'string') {
-    //     this.registrationSupported = false;
-    //     console.log(`Contentservice(): Registration is NOT supported`);
-    //     console.error('options.hints.register.resumeURL must be a string')
-    //   } else {
-    //     // All good for registration
-    //     this.registrationSupported = true
-    //     //this.registerResume = options.hints.register.resumeURL
-    //     console.log(`Contentservice(): Registration IS supported`);
-    //   }
-    // }
-
-    // // See if forgotten password is allowed
-    // if (!this.emailSupported) {
-    //   // Email is not used (options.login.email is false)
-    //   console.log(`Contentservice(): Forgotten password is NOT supported`);
-    //   console.log(`(because email is not supported)`)
-    //   this.forgottenPasswordSupported = false;
-    // } else if (options.hints && typeof(options.hints.forgot) !== 'undefined' && !options.hints.forgot) {
-    //   // Forgot password is specifically disallowed (options.hints.register is false)
-    //   this.forgottenPasswordSupported = false;
-    // } else {
-    //   // We WILL allow forgot password. Check we have what we need.
-    //   if (typeof(options.hints.forgot) !== 'object') {
-    //     this.forgottenPasswordSupported = false;
-    //     console.log(`Contentservice(): Forgotten password is NOT supported`);
-    //     console.error('options.hints.forgot must be false, or an object')
-    //   } else if (!options.hints.forgot || !options.hints.forgot.resumeURL) {
-    //     this.forgottenPasswordSupported = false;
-    //     console.log(`Contentservice(): Forgotten password is NOT supported`);
-    //     console.error('options.hints.forgot.resumeURL must be provided')
-    //   }
-    //   else if (typeof(options.hints.forgot.resumeURL) !== 'string') {
-    //     this.forgottenPasswordSupported = false;
-    //     console.log(`Contentservice(): Forgotten password is NOT supported`);
-    //     console.error('options.hints.forgot.resumeURL must be a string')
-    //   } else {
-    //     // All good for forgotten password
-    //     this.forgottenPasswordSupported = true;
-    //     this.forgotResume = options.hints.forgot.resumeURL
-    //   }
-    // }
 
     // Remember the options
     this.options = options
@@ -183,16 +89,6 @@ class Contentservice {
     // console.log('endpoint():', this)
     const protocol = this.protocol ? this.protocol : 'http'
     const endpoint = `${protocol}://${this.host}:${this.port}/api/${this.version}/${this.apikey}`
-    return endpoint
-  }
-
-  //DSZZZ
-  // Docservice endpoint
-  dsendpoint () {
-    // console.log('endpoint():', this)
-    // const protocol = this.dsprotocol ? this.dsprotocol : 'http'
-    // const endpoint = `${protocol}://${this.dshost}:${this.dsport}/api/${this.dsversion}/${this.dsapikey}`
-    let endpoint = `http://localhost:8000/api/v1/mbc`
     return endpoint
   }
 
@@ -427,54 +323,6 @@ class Contentservice {
     	// 		return callback(niceError(jqxhr, textStatus, errorThrown));
     	// 	}
     	// });
-
-    })//- promise
-  }// update()
-
-  /*
-   *DSZZZZ Should be moved to docservice
-   *  Scan an existing document for data values, and regenerate documents that
-   *  might use those values.
-   */
-  scanDocument (vm, documentId) {
-
-    console.log(`ContentService.js:scanDocument()`, documentId)
-
-    return new Promise((resolve, reject) => {
-
-      if (this.options.debug) {
-        console.log('select()');
-      }
-      // if (this.disabled) {
-      //   return reject(new Error('contentservice disabled'));
-      // }
-
-      let url = `${this.dsendpoint()}/scanDocument`;
-      console.log(`url is ${url}`);
-      let params = {
-        document_id: documentId,
-        user_id: 1
-      }
-      axios({
-        method: 'post',
-        url,
-        headers: {
-          // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        data: params
-      })
-        .then(response => {
-          // JSON responses are automatically parsed.
-          console.log(`RESPONSE IS`, response.data)
-          let reply = response.data
-          return resolve(reply);
-        })
-        .catch(e => {
-          axiosError(vm, url, element, e)
-          reject(e)
-        })
 
     })//- promise
   }// update()

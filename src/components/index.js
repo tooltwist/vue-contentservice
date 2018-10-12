@@ -22,6 +22,7 @@ import ContentElementProps from './ContentElementProps.vue'
 import ContentChildren from './ContentChildren.vue'
 //import ContentChildrenProps from './ContentChildrenProps.vue'
 import ContentContentProps from './ContentContentProps.vue'
+import EditBarIcons from './widgets/EditBarIcons'
 
 // Widgets
 import ContentLayout from './widgets/ContentLayout.vue'
@@ -46,13 +47,7 @@ import ContentColumnsProps from './widgets/ContentColumnsProps.vue'
 import ContentCard from './widgets/ContentCardProps.vue'
 import ContentCardProps from './widgets/ContentCardProps.vue'
 
-
-import ContentGoogleSlides from './widgets/ContentGoogleSlides.vue'
-import ContentGoogleSlidesProps from './widgets/ContentGoogleSlidesProps.vue'
-import ContentGoogleSheets from './widgets/ContentGoogleSheets.vue'
-import ContentGoogleSheetsProps from './widgets/ContentGoogleSheetsProps.vue'
-import ContentGoogleDocs from './widgets/ContentGoogleDocs.vue'
-import ContentGoogleDocsProps from './widgets/ContentGoogleDocsProps.vue'
+// Video widgets
 import ContentYoutube from './widgets/ContentYoutube.vue'
 import ContentYoutubeProps from './widgets/ContentYoutubeProps.vue'
 import ContentVimeo from './widgets/ContentVimeo.vue'
@@ -70,9 +65,6 @@ import StringProperty from './propertyTypes/StringProperty.vue'
 
 // Our store
 import ContentLayoutStore from '../store/contentLayoutStore.js'
-import DocserviceStore from '../store/docserviceStore.js'
-
-
 
 
 let _Vue = null
@@ -177,6 +169,8 @@ function install (Vue, options) {
   Vue.component('content-admin-blog-list', ContentAdminBlogList)
   Vue.component('content-admin-blog-details', ContentAdminBlogDetails)
 
+  Vue.component('edit-bar-icons', EditBarIcons)
+
   // Register the layout element types
   _content.registerLayoutType(Vue, 'element', 'content-element', ContentElement, ContentElementProps)
   _content.registerLayoutType(Vue, 'text', 'content-text', ContentText, ContentTextProps)
@@ -191,9 +185,6 @@ function install (Vue, options) {
   _content.registerLayoutType(Vue, 'layout', 'content-layout', ContentLayout, ContentLayoutProps)
   _content.registerLayoutType(Vue, 'card', 'card', ContentCard, ContentCardProps)
 
-  _content.registerLayoutType(Vue, 'google-slides', 'content-google-slides', ContentGoogleSlides, ContentGoogleSlidesProps)
-  _content.registerLayoutType(Vue, 'google-sheets', 'content-google-sheets', ContentGoogleSheets, ContentGoogleSheetsProps)
-  _content.registerLayoutType(Vue, 'google-docs', 'content-google-docs', ContentGoogleDocs, ContentGoogleDocsProps)
   _content.registerLayoutType(Vue, 'youtube', 'content-youtube', ContentYoutube, ContentYoutubeProps)
   _content.registerLayoutType(Vue, 'vimeo', 'content-vimeo', ContentVimeo, ContentVimeoProps)
 
@@ -228,13 +219,6 @@ function install (Vue, options) {
 
 const obj = {
   install: install,
-//  layoutStore,
-
-  // hierarchy manipulation
-  // sanitizeLayout,
-  // safeJson,
-  // layoutRoot,
-  // layoutChanged,
 }
 
 Object.defineProperty(obj, '_content', {
@@ -245,36 +229,22 @@ Object.defineProperty(obj, '_content', {
 
 Object.defineProperty(obj, 'storeDefinition', {
   get: function() {
-    console.error('storeDefinition getter')
     return ContentLayoutStore
   }
 });
 
-//DSZZ
-Object.defineProperty(obj, 'docserviceStoreDefinition', {
-  get: function() {
-    console.error('docserviceStoreDefinition getter')
-    return DocserviceStore
-  }
-});
 
 Object.defineProperty(obj, 'store', {
   get: function() {
-    console.error('store getter')
     if (_store) {
-      console.error('already have store')
       return _store
     }
 
     // Create a new store object
-    console.error('creating new store')
     _Vue.use(Vuex)
     _store = new Vuex.Store({
       modules: {
         contentLayout: ContentLayoutStore,
-
-        //DSZZ
-        docservice: DocserviceStore
       }
     });
     return _store;
