@@ -26,7 +26,7 @@
         //- content-element(:editcontext="editcontext", :element="child")
         component(v-if="componentNameForElement(child)", v-bind:is="componentNameForElement(child)", :editcontext="editcontext", :element="child")
         template(v-else)
-          | Unknown element type '{{element.type}}'
+          | Unknown element type '{{child.type}}'
           br
 
 
