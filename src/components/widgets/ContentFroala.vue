@@ -33,7 +33,7 @@
 <script>
 import ContentMixins from '../../mixins/ContentMixins'
 import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
-import EditBarIcons from './EditBarIcons'
+import EditBarIcons from '../EditBarIcons'
 
 // Don't display a license error every time (intentionally global)
 let missingLicenseCounter = 0

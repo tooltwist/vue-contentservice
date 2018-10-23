@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import ContentMixins from '../../mixins/ContentMixins'
-import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
+import ContentMixins from '../mixins/ContentMixins'
+import CutAndPasteMixins from '../mixins/CutAndPasteMixins'
 
 
 export default {

@@ -58,6 +58,8 @@ import ContentYoutubeProps from './widgets/ContentYoutubeProps.vue'
 import ContentVimeo from './widgets/ContentVimeo.vue'
 import ContentVimeoProps from './widgets/ContentVimeoProps.vue'
 
+import EditBarIcons from './EditBarIcons.vue'
+
 
 import ContentAdminBlogList from './ContentAdminBlogList.vue'
 import ContentAdminBlogDetails from './ContentAdminBlogDetails.vue'

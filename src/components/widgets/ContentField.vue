@@ -34,7 +34,7 @@
 import ProtectedTooltwistField from '../../lib/ProtectedTooltwistField.js'
 import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
 import ContentMixins from '../../mixins/ContentMixins'
-import EditBarIcons from './EditBarIcons'
+import EditBarIcons from '../EditBarIcons'
 
 
 export default {

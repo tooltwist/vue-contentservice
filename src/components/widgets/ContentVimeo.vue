@@ -25,7 +25,7 @@
 <script>
 import ContentMixins from '../../mixins/ContentMixins'
 import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
-import EditBarIcons from './EditBarIcons'
+import EditBarIcons from '../EditBarIcons'
 
 
 export default {
