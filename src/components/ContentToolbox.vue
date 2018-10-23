@@ -2,7 +2,24 @@
 
   .toolbox-pane
     .my-components
+      div(v-for="cat in this.$content.toolboxCategories()")
+        .my-category-name {{cat.name}}
+        //br(v-if="cat.name != ''")
+        //- hr(v-if="cat.name != ''")
+        div(v-for="type in cat.types")
+          //- | type={{type.name}}-[{{type.iconClass}}, {{type.iconClass5}}]
+          //- br
+        .my-widget(v-for="type in cat.types" v-if="type.dragtype == 'component'")
+          drag(:transfer-data="type", @dragstart="dragStart", @dragend="dragStop")
+            i(:class="iconClass(type)")
+            //- i(v-else).fas.fa-2x.fa-file-word-o
+            //- div(slot="image")
+            //-   i.fas.fa-2x.fa-file-word-o
+          .my-component-label {{type.name}}
 
+      hr
+      | OLD WIDGETS
+      br
       // Using font awesome version 5
       .my-widget(v-for="tool in theToolbox")
         drag(:transfer-data="tool", @dragstart="dragStart", @dragend="dragStop")
@@ -11,7 +28,6 @@
           //- div(slot="image")
           //-   i.fas.fa-2x.fa-file-word-o
         .my-component-label {{tool.name}}
-
 </template>
 
 <script>
@@ -31,6 +47,7 @@ export default {
   },
   methods: {
     iconClass: function (tool) {
+      console.log(`iconClass()`, tool)
       if (this.$content) {
 
         if (this.$content.icons('fa')) {
@@ -122,6 +139,10 @@ function chooseIcon(rules) {
   margin: 0px;
 }
 
+h1 {
+  background-color: purple;
+}
+
 .title {
   font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
   display: block;
@@ -129,11 +150,19 @@ function chooseIcon(rules) {
   font-size: 100px;
   color: #35495e;
   letter-spacing: 1px;
+  margin-bottom: 5px;
+  background-color: red;
 }
 
 
 .my-components {
   padding: 20px;
+  padding-top: 0px;
+}
+
+.my-category-name {
+  margin-left: -10px;
+  zfont-weight: 800;
 }
 
 .my-widget {

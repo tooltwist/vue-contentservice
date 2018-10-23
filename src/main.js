@@ -22,7 +22,12 @@ console.error(`FroalaKey is ${FroalaKey}`)
 Vue.config.productionTip = false
 
 // Content Service
-import ContentService from './components/index.js'
+// import { ContentServiceModule } from './components/index.js'
+import ContentServiceModule from './components/index.js'
+console.error(`ContentServiceModule=`, ContentServiceModule)
+let ContentService = ContentServiceModule
+
+
 const options = {
   protocol: 'http',
   host: 'uat.crowdhound.io',

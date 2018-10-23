@@ -186,22 +186,15 @@ class Contentservice {
     return endpoint
   }
 
-  //DSZZZ
-  // Docservice endpoint
-  dsendpoint () {
-    // console.log('endpoint():', this)
-    // const protocol = this.dsprotocol ? this.dsprotocol : 'http'
-    // const endpoint = `${protocol}://${this.dshost}:${this.dsport}/api/${this.dsversion}/${this.dsapikey}`
-    let endpoint = `http://localhost:8000/api/v1/mbc`
-    return endpoint
-  }
-
   registerLayoutType (vm, layoutType, componentName, component, propertyComponent) {
     let propertyComponentName = `${componentName}-props`
 
     // Remember the component names used for this type of layout element.
     this.knownElementTypes[layoutType] = {
       layoutType,
+      label: layoutType,
+      name: layoutType,
+      category: '',
       componentName,
       propertyComponentName,
       component,
@@ -219,6 +212,96 @@ class Contentservice {
     //console.error(`getLayoutType(${layoutType})`)
     return this.knownElementTypes[layoutType]
   }
+
+  registerWidget (vm, { name, label, category, iconClass, iconClass5, componentName, component, propertyComponent, data}) {
+    console.error(`registerWidget(${name}, ${category})`)
+
+    if (!label) {
+      label = name
+    }
+    if (!category) {
+      category = ''
+    }
+
+    let propertyComponentName = `${componentName}-props`
+
+    // Remember the component names used for this type of layout element.
+    this.knownElementTypes[name] = {
+      layoutType: name,//ZZZ
+      name,
+      label,
+      category,
+      iconClass,
+      iconClass5,
+
+      componentName,
+      propertyComponentName,
+      component,
+      propertyComponent,
+
+      // The definition used when creating a new component.
+      data,
+
+      dragtype: 'component'
+    }
+
+    // Define the components
+    console.log(`registering widget ${componentName}`)
+    vm.component(componentName, component)
+    vm.component(propertyComponentName, propertyComponent)
+  }
+
+  toolboxCategories () {
+    let categories = [ ] // category -> { type[] }
+    for (var name in this.knownElementTypes) {
+      if (this.knownElementTypes.hasOwnProperty(name)) {
+        let type = this.knownElementTypes[name]
+        console.error(`Add tool ${name}`, type);
+        let categoryRec = categories[type.category]
+        console.log(`category = ${type.category}`, categoryRec);
+        if ( !categoryRec) {
+          categoryRec = {
+            name: type.category,
+            types: [ ]
+          }
+          console.error(`Add category ${type.category}`);
+          categories[type.category] = categoryRec
+        }
+        categoryRec.types[name] = type
+      }
+    }
+    console.error(`Toolbox Types - `, categories);
+
+    // Convert categories to an array and sort
+    let arr = [ ]
+    for (var categoryName in categories) {
+      let category = categories[categoryName]
+      arr.push(category)
+    }
+    categories = arr
+    categories.sort((a,b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return +1
+      return 0
+    })
+
+    // Sort categories
+
+    // Convert the types in each category to an array
+    categories.forEach(category => {
+      let arr = [ ]
+      for (var name in category.types) {
+        if (category.types.hasOwnProperty(name)) {
+          let type = category.types[name]
+          arr.push(type)
+        }
+      }
+      category.types = arr
+    })
+
+    return categories
+  }
+
 
   // safeJSON (json) {
   //   return util.safeJson(json)
@@ -427,54 +510,6 @@ class Contentservice {
     	// 		return callback(niceError(jqxhr, textStatus, errorThrown));
     	// 	}
     	// });
-
-    })//- promise
-  }// update()
-
-  /*
-   *DSZZZZ Should be moved to docservice
-   *  Scan an existing document for data values, and regenerate documents that
-   *  might use those values.
-   */
-  scanDocument (vm, documentId) {
-
-    console.log(`ContentService.js:scanDocument()`, documentId)
-
-    return new Promise((resolve, reject) => {
-
-      if (this.options.debug) {
-        console.log('select()');
-      }
-      // if (this.disabled) {
-      //   return reject(new Error('contentservice disabled'));
-      // }
-
-      let url = `${this.dsendpoint()}/scanDocument`;
-      console.log(`url is ${url}`);
-      let params = {
-        document_id: documentId,
-        user_id: 1
-      }
-      axios({
-        method: 'post',
-        url,
-        headers: {
-          // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        data: params
-      })
-        .then(response => {
-          // JSON responses are automatically parsed.
-          console.log(`RESPONSE IS`, response.data)
-          let reply = response.data
-          return resolve(reply);
-        })
-        .catch(e => {
-          axiosError(vm, url, element, e)
-          reject(e)
-        })
 
     })//- promise
   }// update()

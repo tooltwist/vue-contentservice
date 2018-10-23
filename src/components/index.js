@@ -8,7 +8,8 @@ import VueDragDrop from 'vue-drag-drop';
 import Clipboard from 'v-clipboard'
 
 // Our main class
-import ContentService from '../lib/ContentService.js'
+//import { ContentService }  from '../lib/ContentService.js'
+import ContentService  from '../lib/ContentService.js'
 
 // Editing-related stuff.
 import CrowdhoundMinimal from './CrowdhoundMinimal.vue'
@@ -47,12 +48,6 @@ import ContentCard from './widgets/ContentCardProps.vue'
 import ContentCardProps from './widgets/ContentCardProps.vue'
 
 
-import ContentGoogleSlides from './widgets/ContentGoogleSlides.vue'
-import ContentGoogleSlidesProps from './widgets/ContentGoogleSlidesProps.vue'
-import ContentGoogleSheets from './widgets/ContentGoogleSheets.vue'
-import ContentGoogleSheetsProps from './widgets/ContentGoogleSheetsProps.vue'
-import ContentGoogleDocs from './widgets/ContentGoogleDocs.vue'
-import ContentGoogleDocsProps from './widgets/ContentGoogleDocsProps.vue'
 import ContentYoutube from './widgets/ContentYoutube.vue'
 import ContentYoutubeProps from './widgets/ContentYoutubeProps.vue'
 import ContentVimeo from './widgets/ContentVimeo.vue'
@@ -180,24 +175,193 @@ function install (Vue, options) {
   Vue.component('content-admin-blog-details', ContentAdminBlogDetails)
 
   // Register the layout element types
+  // _content.registerLayoutType(Vue, 'section', 'content-section', ContentSection, ContentSectionProps)
+
+  // Section Widget
+  _content.registerWidget(Vue, {
+    name: 'section',
+    label: 'Section',
+    category: 'Lovely Widgets',
+    iconClass: 'fa-arrows-v fa',
+    iconClass5: 'fas fa-arrows-alt-v',
+    dragtype: 'component',
+
+    // Registering for native Vue templates
+    componentName: 'content-section',
+    component: ContentSection,
+    propertyComponent: ContentSectionProps,
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'section',
+      }
+    }
+  })
+
+  // Container Widget
+  _content.registerWidget(Vue, {
+    name: 'container',
+    label: 'Container',
+    category: 'Lovely Widgets',
+    iconClass: 'fa-arrows-h fa',
+    iconClass5: 'fas fa-arrows-alt-h',
+    dragtype: 'component',
+
+    // Register native Vue templates
+    componentName: 'content-container',
+    component: ContentContainer,
+    propertyComponent: ContentContainerProps,
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'container',
+      }
+    }
+  })
+
+
+  // Columns Widget
+  _content.registerWidget(Vue, {
+    name: 'columns',
+    label: 'Columns',
+    category: 'Lovely Widgets',
+    iconClass: 'fa-columns fa',
+    iconClass5: 'fas fa-columns',
+    dragtype: 'component',
+
+    // Register native Vue templates
+    componentName: 'content-columns',
+    component: ContentColumns,
+    propertyComponent: ContentColumnsProps,
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'columns',
+        children: [
+          {
+            // Column 1
+            children: [ ]
+          },
+          {
+            // Column 2
+            children: [ ]
+          }
+        ]
+      }
+    }
+  })
+
+
+  // Text Widget
+  _content.registerWidget(Vue, {
+    name: 'text',
+    label: 'Text',
+    category: 'Lovely Widgets',
+    iconClass: 'fa-font fa',
+    iconClass5: 'fas fa-font',
+    dragtype: 'component',
+
+    // Register native Vue templates
+    componentName: 'content-text',
+    component: ContentText,
+    propertyComponent: ContentTextProps,
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'froala',
+        text: 'Lorem ipsum dolor sit amet, purus metus congue morbi hac elit id.',
+      }
+    }
+  })
+
+
+  // Youtube Widget
+  _content.registerWidget(Vue, {
+    name: 'Youtube',
+    label: 'Youtube',
+    category: 'Video',
+    iconClass: 'fa fa-youtube',
+    iconClass5: 'fab fa-youtube',
+    dragtype: 'component',
+
+    // Register native Vue templates
+    componentName: 'content-youtube',
+    component: ContentYoutube,
+    propertyComponent: ContentYoutubeProps,
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'youtube',
+        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+      }
+    }
+  })
+
+
+  // Vimeo Widget
+  _content.registerWidget(Vue, {
+    name: 'Vimeo',
+    label: 'Vimeo',
+    category: 'Video',
+    iconClass: 'fa fa-vimeo',
+    iconClass5: 'fab fa-vimeo',
+    dragtype: 'component',
+
+    // Register native Vue templates
+    componentName: 'content-youtube',
+    component: ContentVimeo,
+    propertyComponent: ContentVimeoProps,
+
+    // Identical structure to a CUT or COPY from edit mode.
+    data: {
+      type: "contentservice.io",
+      version: "1.0",
+      source: "toolbox",
+      layout: {
+        type: 'vimeo',
+        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+      }
+    }
+  })
+
+
+
+
+  // _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
+  // _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
   _content.registerLayoutType(Vue, 'element', 'content-element', ContentElement, ContentElementProps)
-  _content.registerLayoutType(Vue, 'text', 'content-text', ContentText, ContentTextProps)
+  // _content.registerLayoutType(Vue, 'text', 'content-text', ContentText, ContentTextProps)
   _content.registerLayoutType(Vue, 'froala', 'content-froala', ContentFroala, ContentFroalaProps)
   _content.registerLayoutType(Vue, 'html', 'content-html', ContentFroala, ContentFroalaProps)
   _content.registerLayoutType(Vue, 'field', 'content-field', ContentField, ContentFieldProps)
   _content.registerLayoutType(Vue, 'form', 'content-form', ContentForm, ContentFormProps)
-  _content.registerLayoutType(Vue, 'section', 'content-section', ContentSection, ContentSectionProps)
-  _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
   _content.registerLayoutType(Vue, 'fixed-position-container', 'content-fixed-position-container', ContentFixedPositionContainer, ContentFixedPositionContainerProps)
-  _content.registerLayoutType(Vue, 'columns', 'content-columns', ContentColumns, ContentColumnsProps)
+  // _content.registerLayoutType(Vue, 'columns', 'content-columns', ContentColumns, ContentColumnsProps)
   _content.registerLayoutType(Vue, 'layout', 'content-layout', ContentLayout, ContentLayoutProps)
   _content.registerLayoutType(Vue, 'card', 'card', ContentCard, ContentCardProps)
 
-  _content.registerLayoutType(Vue, 'google-slides', 'content-google-slides', ContentGoogleSlides, ContentGoogleSlidesProps)
-  _content.registerLayoutType(Vue, 'google-sheets', 'content-google-sheets', ContentGoogleSheets, ContentGoogleSheetsProps)
-  _content.registerLayoutType(Vue, 'google-docs', 'content-google-docs', ContentGoogleDocs, ContentGoogleDocsProps)
-  _content.registerLayoutType(Vue, 'youtube', 'content-youtube', ContentYoutube, ContentYoutubeProps)
-  _content.registerLayoutType(Vue, 'vimeo', 'content-vimeo', ContentVimeo, ContentVimeoProps)
+
+  Vue.component('edit-bar-icons', EditBarIcons)
 
 
   // Set up external libraries
@@ -209,7 +373,7 @@ function install (Vue, options) {
 
   // Froala. Unfortunately requires jQuery.
   // https://github.com/froala/vue-froala-wysiwyg
-  if (window) {
+  if (typeof window != 'undefined') {
     window.$ = require('jquery');
   }
   require('froala-editor/js/froala_editor.pkgd.min.js')
@@ -283,4 +447,29 @@ Object.defineProperty(obj, 'store', {
   }
 });
 
+// Version 1:
+// Works for full npm publish and import, but not for npm link because the
+// ECM cannot import default exports, so results in errors when including
+// this module in a Nuxt project:
+//
+//    "export 'default' (imported as 'ContentService') was not found in 'vue-contentservice'""
 export default obj
+
+// Version 2:
+// This makes the build here decide this is ECM, which prevents
+// it from importing defaults while compiling this module:
+//
+//    "export 'default' (imported as 'mod') was not found in '~entry'
+// export const ContentServiceModule = obj
+// export const yipyip = `yahoo`
+
+// Version 3:
+// Error :
+//
+//    "export 'ContentServiceModule3' was not found in 'vue-contentservice'"
+// let ContentServiceModule3 = obj
+//export default ContentServiceModule3
+
+// Version 4
+// Export as an object, containing our object.
+// export default { ContentServiceModule4: obj }

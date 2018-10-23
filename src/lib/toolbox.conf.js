@@ -8,6 +8,7 @@
 export default [
 
   // Section
+  /*
   {
     dragtype:'component',
     name: 'section',
@@ -48,8 +49,8 @@ export default [
         type: 'container',
       }
     }
-
   },
+  */
 
   // FixedPositionContainer
   {
@@ -96,6 +97,7 @@ export default [
   },
   */
 
+  /*
   // Columns
   {
     dragtype: 'component',
@@ -137,7 +139,9 @@ export default [
       }
     }
   },
+*/
 
+  /*
   // Text element
   {
     dragtype:'component',
@@ -161,6 +165,7 @@ export default [
       }
     }
   },
+  */
 
   // Form
   //  fa-list-ul
@@ -261,6 +266,7 @@ export default [
   //   }
   // },
 
+/*
   // Google slides
   {
     dragtype:'component',
@@ -329,7 +335,8 @@ export default [
       }
     }
   },
-
+*/
+  /*
   // Youtube
   {
     dragtype:'component',
@@ -352,7 +359,9 @@ export default [
       }
     }
   },
+  */
 
+/*
   // Vimeo
   {
     dragtype:'component',
@@ -375,5 +384,6 @@ export default [
       }
     }
   },
+  */
 
 ]
