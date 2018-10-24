@@ -390,24 +390,24 @@ function install (Vue, options) {
   return _content
 } //- install()
 
-const obj = {
+const ContentServiceLib = {
   install: install,
 }
 
-Object.defineProperty(obj, '_content', {
+Object.defineProperty(ContentServiceLib, '_content', {
   get: function() {
       return _content
   }
 });
 
-Object.defineProperty(obj, 'storeDefinition', {
+Object.defineProperty(ContentServiceLib, 'storeDefinition', {
   get: function() {
     return ContentLayoutStore
   }
 });
 
 
-Object.defineProperty(obj, 'store', {
+Object.defineProperty(ContentServiceLib, 'store', {
   get: function() {
     if (_store) {
       return _store
@@ -430,23 +430,29 @@ Object.defineProperty(obj, 'store', {
 // this module in a Nuxt project:
 //
 //    "export 'default' (imported as 'ContentService') was not found in 'vue-contentservice'""
-export default obj
+export default ContentServiceLib
 
 // Version 2:
 // This makes the build here decide this is ECM, which prevents
 // it from importing defaults while compiling this module:
 //
 //    "export 'default' (imported as 'mod') was not found in '~entry'
-// export const ContentServiceModule = obj
+// export const ContentServiceModule = ContentServiceLib
 // export const yipyip = `yahoo`
 
 // Version 3:
 // Error :
 //
 //    "export 'ContentServiceModule3' was not found in 'vue-contentservice'"
-// let ContentServiceModule3 = obj
+// let ContentServiceModule3 = ContentServiceLib
 //export default ContentServiceModule3
 
 // Version 4
 // Export as an object, containing our object.
-// export default { ContentServiceModule4: obj }
+// export default { ContentServiceModule4: ContentServiceLib }
+
+
+// This is used when the npm package is included into an HTML page
+if (typeof window !== "undefined" && window.Vue) {
+  window.ContentService = ContentServiceLib
+}

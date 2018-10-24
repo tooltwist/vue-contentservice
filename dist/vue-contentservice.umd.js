@@ -760,6 +760,27 @@ module.exports = Axios;
 
 /***/ }),
 
+/***/ "0bfb":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// 21.2.5.3 get RegExp.prototype.flags
+var anObject = __webpack_require__("cb7c");
+module.exports = function () {
+  var that = anObject(this);
+  var result = '';
+  if (that.global) result += 'g';
+  if (that.ignoreCase) result += 'i';
+  if (that.multiline) result += 'm';
+  if (that.unicode) result += 'u';
+  if (that.sticky) result += 'y';
+  return result;
+};
+
+
+/***/ }),
+
 /***/ "0d19":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -11271,6 +11292,97 @@ module.exports = __webpack_require__("9e1e") ? Object.defineProperties : functio
 
 /***/ }),
 
+/***/ "1991":
+/***/ (function(module, exports, __webpack_require__) {
+
+var ctx = __webpack_require__("9b43");
+var invoke = __webpack_require__("31f4");
+var html = __webpack_require__("fab2");
+var cel = __webpack_require__("230e");
+var global = __webpack_require__("7726");
+var process = global.process;
+var setTask = global.setImmediate;
+var clearTask = global.clearImmediate;
+var MessageChannel = global.MessageChannel;
+var Dispatch = global.Dispatch;
+var counter = 0;
+var queue = {};
+var ONREADYSTATECHANGE = 'onreadystatechange';
+var defer, channel, port;
+var run = function () {
+  var id = +this;
+  // eslint-disable-next-line no-prototype-builtins
+  if (queue.hasOwnProperty(id)) {
+    var fn = queue[id];
+    delete queue[id];
+    fn();
+  }
+};
+var listener = function (event) {
+  run.call(event.data);
+};
+// Node.js 0.9+ & IE10+ has setImmediate, otherwise:
+if (!setTask || !clearTask) {
+  setTask = function setImmediate(fn) {
+    var args = [];
+    var i = 1;
+    while (arguments.length > i) args.push(arguments[i++]);
+    queue[++counter] = function () {
+      // eslint-disable-next-line no-new-func
+      invoke(typeof fn == 'function' ? fn : Function(fn), args);
+    };
+    defer(counter);
+    return counter;
+  };
+  clearTask = function clearImmediate(id) {
+    delete queue[id];
+  };
+  // Node.js 0.8-
+  if (__webpack_require__("2d95")(process) == 'process') {
+    defer = function (id) {
+      process.nextTick(ctx(run, id, 1));
+    };
+  // Sphere (JS game engine) Dispatch API
+  } else if (Dispatch && Dispatch.now) {
+    defer = function (id) {
+      Dispatch.now(ctx(run, id, 1));
+    };
+  // Browsers with MessageChannel, includes WebWorkers
+  } else if (MessageChannel) {
+    channel = new MessageChannel();
+    port = channel.port2;
+    channel.port1.onmessage = listener;
+    defer = ctx(port.postMessage, port, 1);
+  // Browsers with postMessage, skip WebWorkers
+  // IE8 has postMessage, but it's sync & typeof its postMessage is 'object'
+  } else if (global.addEventListener && typeof postMessage == 'function' && !global.importScripts) {
+    defer = function (id) {
+      global.postMessage(id + '', '*');
+    };
+    global.addEventListener('message', listener, false);
+  // IE8-
+  } else if (ONREADYSTATECHANGE in cel('script')) {
+    defer = function (id) {
+      html.appendChild(cel('script'))[ONREADYSTATECHANGE] = function () {
+        html.removeChild(this);
+        run.call(id);
+      };
+    };
+  // Rest old browsers
+  } else {
+    defer = function (id) {
+      setTimeout(ctx(run, id, 1), 0);
+    };
+  }
+}
+module.exports = {
+  set: setTask,
+  clear: clearTask
+};
+
+
+/***/ }),
+
 /***/ "1af3":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -11330,6 +11442,25 @@ module.exports = function bind(fn, thisArg) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "1fa8":
+/***/ (function(module, exports, __webpack_require__) {
+
+// call something on iterator step with safe closing on error
+var anObject = __webpack_require__("cb7c");
+module.exports = function (iterator, fn, value, entries) {
+  try {
+    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
+  // 7.4.6 IteratorClose(iterator, completion)
+  } catch (e) {
+    var ret = iterator['return'];
+    if (ret !== undefined) anObject(ret.call(iterator));
+    throw e;
+  }
+};
+
 
 /***/ }),
 
@@ -11396,6 +11527,36 @@ var document = __webpack_require__("7726").document;
 var is = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
   return is ? document.createElement(it) : {};
+};
+
+
+/***/ }),
+
+/***/ "23c6":
+/***/ (function(module, exports, __webpack_require__) {
+
+// getting tag from 19.1.3.6 Object.prototype.toString()
+var cof = __webpack_require__("2d95");
+var TAG = __webpack_require__("2b4c")('toStringTag');
+// ES3 wrong here
+var ARG = cof(function () { return arguments; }()) == 'Arguments';
+
+// fallback for IE11 Script Access Denied error
+var tryGet = function (it, key) {
+  try {
+    return it[key];
+  } catch (e) { /* empty */ }
+};
+
+module.exports = function (it) {
+  var O, T, B;
+  return it === undefined ? 'Undefined' : it === null ? 'Null'
+    // @@toStringTag case
+    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
+    // builtinTag case
+    : ARG ? cof(O)
+    // ES3 arguments fallback
+    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
 };
 
 
@@ -11712,57 +11873,79 @@ module.exports = defaults;
 /***/ "262e":
 /***/ (function(module, exports) {
 
-
 module.exports = function (vm, msg, params, e) {
   if (msg) {
-    console.log(`${msg}`)
+    console.log("".concat(msg));
   }
+
   if (params) {
-    console.log(`params=`, params)
-  }
-  // console.log('e=', e)
+    console.log("params=", params);
+  } // console.log('e=', e)
   // console.log('e.Error=', e.Error)
   // console.log('e.statusCode=', e.statusCode)
   // console.log('e.response=', e.response)
   // console.log('e.message=', e.message)
+
+
   if (e.message) {
     // An application error produced by:
     //  return reject(new Error('...'));
-    console.error(`Error: ${e.message}`)
+    console.error("Error: ".concat(e.message));
+
     if (e.stack) {
-      console.log(e.stack)
+      console.log(e.stack);
     }
   } else if (e.response) {
     // An axios error
-    console.log(`Status: ${e.response.status} ${e.response.statusText}`)
+    console.log("Status: ".concat(e.response.status, " ").concat(e.response.statusText));
+
     if (e.response.data) {
       if (e.response.data.Error) {
-        console.log(`Error: ${e.response.data.Error}`)
+        console.log("Error: ".concat(e.response.data.Error));
       }
+
       if (e.response.data.Code) {
-        console.log(`Code: ${e.response.data.code}`)
+        console.log("Code: ".concat(e.response.data.code));
       }
+
       if (e.response.data.Message) {
-        console.log(`Message: ${e.response.data.message}`)
-        //msg = e.response.data.message
+        console.log("Message: ".concat(e.response.data.message)); //msg = e.response.data.message
       }
-      console.log('response.data: ', e.response.data)
+
+      console.log('response.data: ', e.response.data);
     }
   } else {
     // Network error from browser
     // See https://github.com/axios/axios/issues/383#issuecomment-234079506
-    console.error(`Could not contact server.`)
-    console.log(`Error:`, e)
-    msg = 'Could not communicate with server'
-  }
+    console.error("Could not contact server.");
+    console.log("Error:", e);
+    msg = 'Could not communicate with server';
+  } // Display an error on the screen
 
-  // Display an error on the screen
+
   if (vm && vm.$toast) {
-    vm.$toast.open({ message: `${msg}`, type: 'is-danger' })
+    vm.$toast.open({
+      message: "".concat(msg),
+      type: 'is-danger'
+    });
   } else {
-    alert(msg)
+    alert(msg);
   }
-}
+};
+
+/***/ }),
+
+/***/ "27ee":
+/***/ (function(module, exports, __webpack_require__) {
+
+var classof = __webpack_require__("23c6");
+var ITERATOR = __webpack_require__("2b4c")('iterator');
+var Iterators = __webpack_require__("84f2");
+module.exports = __webpack_require__("8378").getIteratorMethod = function (it) {
+  if (it != undefined) return it[ITERATOR]
+    || it['@@iterator']
+    || Iterators[classof(it)];
+};
 
 
 /***/ }),
@@ -12015,6 +12198,23 @@ module.exports = function isCancel(value) {
 
 /***/ }),
 
+/***/ "2f21":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var fails = __webpack_require__("79e5");
+
+module.exports = function (method, arg) {
+  return !!method && fails(function () {
+    // eslint-disable-next-line no-useless-call
+    arg ? method.call(null, function () { /* empty */ }, 1) : method.call(null);
+  });
+};
+
+
+/***/ }),
+
 /***/ "2fdb":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12120,6 +12320,29 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 /***/ }),
 
+/***/ "31f4":
+/***/ (function(module, exports) {
+
+// fast apply, http://jsperf.lnkit.com/fast-apply/5
+module.exports = function (fn, args, that) {
+  var un = that === undefined;
+  switch (args.length) {
+    case 0: return un ? fn()
+                      : fn.call(that);
+    case 1: return un ? fn(args[0])
+                      : fn.call(that, args[0]);
+    case 2: return un ? fn(args[0], args[1])
+                      : fn.call(that, args[0], args[1]);
+    case 3: return un ? fn(args[0], args[1], args[2])
+                      : fn.call(that, args[0], args[1], args[2]);
+    case 4: return un ? fn(args[0], args[1], args[2], args[3])
+                      : fn.call(that, args[0], args[1], args[2], args[3]);
+  } return fn.apply(that, args);
+};
+
+
+/***/ }),
+
 /***/ "32e9":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12136,6 +12359,21 @@ module.exports = __webpack_require__("9e1e") ? function (object, key, value) {
 /***/ }),
 
 /***/ "33a4":
+/***/ (function(module, exports, __webpack_require__) {
+
+// check on default Array iterator
+var Iterators = __webpack_require__("84f2");
+var ITERATOR = __webpack_require__("2b4c")('iterator');
+var ArrayProto = Array.prototype;
+
+module.exports = function (it) {
+  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
+};
+
+
+/***/ }),
+
+/***/ "33a4e":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12161,6 +12399,18 @@ module.exports = __webpack_require__("9e1e") ? function (object, key, value) {
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_lib_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ContentContainer_vue_vue_type_style_index_1_id_30cbb3d6_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_lib_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ContentContainer_vue_vue_type_style_index_1_id_30cbb3d6_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_lib_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ContentContainer_vue_vue_type_style_index_1_id_30cbb3d6_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "3846":
+/***/ (function(module, exports, __webpack_require__) {
+
+// 21.2.5.3 get RegExp.prototype.flags()
+if (__webpack_require__("9e1e") && /./g.flags != 'g') __webpack_require__("86cc").f(RegExp.prototype, 'flags', {
+  configurable: true,
+  get: __webpack_require__("0bfb")
+});
+
 
 /***/ }),
 
@@ -12509,6 +12759,38 @@ module.exports = function settle(resolve, reject, response) {
 
 /***/ }),
 
+/***/ "4a59":
+/***/ (function(module, exports, __webpack_require__) {
+
+var ctx = __webpack_require__("9b43");
+var call = __webpack_require__("1fa8");
+var isArrayIter = __webpack_require__("33a4");
+var anObject = __webpack_require__("cb7c");
+var toLength = __webpack_require__("9def");
+var getIterFn = __webpack_require__("27ee");
+var BREAK = {};
+var RETURN = {};
+var exports = module.exports = function (iterable, entries, fn, that, ITERATOR) {
+  var iterFn = ITERATOR ? function () { return iterable; } : getIterFn(iterable);
+  var f = ctx(fn, that, entries ? 2 : 1);
+  var index = 0;
+  var length, step, iterator, result;
+  if (typeof iterFn != 'function') throw TypeError(iterable + ' is not iterable!');
+  // fast case for arrays with default iterator
+  if (isArrayIter(iterFn)) for (length = toLength(iterable.length); length > index; index++) {
+    result = entries ? f(anObject(step = iterable[index])[0], step[1]) : f(iterable[index]);
+    if (result === BREAK || result === RETURN) return result;
+  } else for (iterator = iterFn.call(iterable); !(step = iterator.next()).done;) {
+    result = call(iterator, f, step.value, entries);
+    if (result === BREAK || result === RETURN) return result;
+  }
+};
+exports.BREAK = BREAK;
+exports.RETURN = RETURN;
+
+
+/***/ }),
+
 /***/ "4ae6":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12532,47 +12814,54 @@ module.exports = function (it) {
 /***/ "4da6":
 /***/ (function(module, exports) {
 
-
 module.exports = function (vm, url, params, e) {
-  console.log('API ERROR')
-  console.log('---------v')
-  let msg = 'Error calling server'
-  console.error(`Error calling API server:`)
-  console.log(`${url}`)
+  console.log('API ERROR');
+  console.log('---------v');
+  var msg = 'Error calling server';
+  console.error("Error calling API server:");
+  console.log("".concat(url));
+
   if (params) {
-    console.log(params)
+    console.log(params);
   }
+
   if (e.response) {
-    console.log(`Status: ${e.response.status} ${e.response.statusText}`)
+    console.log("Status: ".concat(e.response.status, " ").concat(e.response.statusText));
+
     if (e.response.data) {
       if (e.response.data.Error) {
-        console.log(`Error: ${e.response.data.Error}`)
+        console.log("Error: ".concat(e.response.data.Error));
       }
+
       if (e.response.data.Code) {
-        console.log(`Code: ${e.response.data.code}`)
+        console.log("Code: ".concat(e.response.data.code));
       }
+
       if (e.response.data.Message) {
-        console.log(`Message: ${e.response.data.message}`)
-        msg = e.response.data.message
+        console.log("Message: ".concat(e.response.data.message));
+        msg = e.response.data.message;
       }
-      console.log('response.data: ', e.response.data)
+
+      console.log('response.data: ', e.response.data);
     }
   } else {
     // Network error from browser
     // See https://github.com/axios/axios/issues/383#issuecomment-234079506
-    console.error(`Could not contact server.`)
-    console.log(`Error:`, e)
-    msg = 'Could not communicate with server'
-  }
+    console.error("Could not contact server.");
+    console.log("Error:", e);
+    msg = 'Could not communicate with server';
+  } // Display an error on the screen
 
-  // Display an error on the screen
+
   if (vm && vm.$toast) {
-    vm.$toast.open({ message: `${msg}`, type: 'is-danger' })
+    vm.$toast.open({
+      message: "".concat(msg),
+      type: 'is-danger'
+    });
   } else {
-    alert(msg)
+    alert(msg);
   }
-}
-
+};
 
 /***/ }),
 
@@ -12722,6 +13011,300 @@ exports.f = {}.propertyIsEnumerable;
 
 /***/ }),
 
+/***/ "551c":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var LIBRARY = __webpack_require__("2d00");
+var global = __webpack_require__("7726");
+var ctx = __webpack_require__("9b43");
+var classof = __webpack_require__("23c6");
+var $export = __webpack_require__("5ca1");
+var isObject = __webpack_require__("d3f4");
+var aFunction = __webpack_require__("d8e8");
+var anInstance = __webpack_require__("f605");
+var forOf = __webpack_require__("4a59");
+var speciesConstructor = __webpack_require__("ebd6");
+var task = __webpack_require__("1991").set;
+var microtask = __webpack_require__("8079")();
+var newPromiseCapabilityModule = __webpack_require__("a5b8");
+var perform = __webpack_require__("9c80");
+var userAgent = __webpack_require__("a25f");
+var promiseResolve = __webpack_require__("bcaa");
+var PROMISE = 'Promise';
+var TypeError = global.TypeError;
+var process = global.process;
+var versions = process && process.versions;
+var v8 = versions && versions.v8 || '';
+var $Promise = global[PROMISE];
+var isNode = classof(process) == 'process';
+var empty = function () { /* empty */ };
+var Internal, newGenericPromiseCapability, OwnPromiseCapability, Wrapper;
+var newPromiseCapability = newGenericPromiseCapability = newPromiseCapabilityModule.f;
+
+var USE_NATIVE = !!function () {
+  try {
+    // correct subclassing with @@species support
+    var promise = $Promise.resolve(1);
+    var FakePromise = (promise.constructor = {})[__webpack_require__("2b4c")('species')] = function (exec) {
+      exec(empty, empty);
+    };
+    // unhandled rejections tracking support, NodeJS Promise without it fails @@species test
+    return (isNode || typeof PromiseRejectionEvent == 'function')
+      && promise.then(empty) instanceof FakePromise
+      // v8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=830565
+      // we can't detect it synchronously, so just check versions
+      && v8.indexOf('6.6') !== 0
+      && userAgent.indexOf('Chrome/66') === -1;
+  } catch (e) { /* empty */ }
+}();
+
+// helpers
+var isThenable = function (it) {
+  var then;
+  return isObject(it) && typeof (then = it.then) == 'function' ? then : false;
+};
+var notify = function (promise, isReject) {
+  if (promise._n) return;
+  promise._n = true;
+  var chain = promise._c;
+  microtask(function () {
+    var value = promise._v;
+    var ok = promise._s == 1;
+    var i = 0;
+    var run = function (reaction) {
+      var handler = ok ? reaction.ok : reaction.fail;
+      var resolve = reaction.resolve;
+      var reject = reaction.reject;
+      var domain = reaction.domain;
+      var result, then, exited;
+      try {
+        if (handler) {
+          if (!ok) {
+            if (promise._h == 2) onHandleUnhandled(promise);
+            promise._h = 1;
+          }
+          if (handler === true) result = value;
+          else {
+            if (domain) domain.enter();
+            result = handler(value); // may throw
+            if (domain) {
+              domain.exit();
+              exited = true;
+            }
+          }
+          if (result === reaction.promise) {
+            reject(TypeError('Promise-chain cycle'));
+          } else if (then = isThenable(result)) {
+            then.call(result, resolve, reject);
+          } else resolve(result);
+        } else reject(value);
+      } catch (e) {
+        if (domain && !exited) domain.exit();
+        reject(e);
+      }
+    };
+    while (chain.length > i) run(chain[i++]); // variable length - can't use forEach
+    promise._c = [];
+    promise._n = false;
+    if (isReject && !promise._h) onUnhandled(promise);
+  });
+};
+var onUnhandled = function (promise) {
+  task.call(global, function () {
+    var value = promise._v;
+    var unhandled = isUnhandled(promise);
+    var result, handler, console;
+    if (unhandled) {
+      result = perform(function () {
+        if (isNode) {
+          process.emit('unhandledRejection', value, promise);
+        } else if (handler = global.onunhandledrejection) {
+          handler({ promise: promise, reason: value });
+        } else if ((console = global.console) && console.error) {
+          console.error('Unhandled promise rejection', value);
+        }
+      });
+      // Browsers should not trigger `rejectionHandled` event if it was handled here, NodeJS - should
+      promise._h = isNode || isUnhandled(promise) ? 2 : 1;
+    } promise._a = undefined;
+    if (unhandled && result.e) throw result.v;
+  });
+};
+var isUnhandled = function (promise) {
+  return promise._h !== 1 && (promise._a || promise._c).length === 0;
+};
+var onHandleUnhandled = function (promise) {
+  task.call(global, function () {
+    var handler;
+    if (isNode) {
+      process.emit('rejectionHandled', promise);
+    } else if (handler = global.onrejectionhandled) {
+      handler({ promise: promise, reason: promise._v });
+    }
+  });
+};
+var $reject = function (value) {
+  var promise = this;
+  if (promise._d) return;
+  promise._d = true;
+  promise = promise._w || promise; // unwrap
+  promise._v = value;
+  promise._s = 2;
+  if (!promise._a) promise._a = promise._c.slice();
+  notify(promise, true);
+};
+var $resolve = function (value) {
+  var promise = this;
+  var then;
+  if (promise._d) return;
+  promise._d = true;
+  promise = promise._w || promise; // unwrap
+  try {
+    if (promise === value) throw TypeError("Promise can't be resolved itself");
+    if (then = isThenable(value)) {
+      microtask(function () {
+        var wrapper = { _w: promise, _d: false }; // wrap
+        try {
+          then.call(value, ctx($resolve, wrapper, 1), ctx($reject, wrapper, 1));
+        } catch (e) {
+          $reject.call(wrapper, e);
+        }
+      });
+    } else {
+      promise._v = value;
+      promise._s = 1;
+      notify(promise, false);
+    }
+  } catch (e) {
+    $reject.call({ _w: promise, _d: false }, e); // wrap
+  }
+};
+
+// constructor polyfill
+if (!USE_NATIVE) {
+  // 25.4.3.1 Promise(executor)
+  $Promise = function Promise(executor) {
+    anInstance(this, $Promise, PROMISE, '_h');
+    aFunction(executor);
+    Internal.call(this);
+    try {
+      executor(ctx($resolve, this, 1), ctx($reject, this, 1));
+    } catch (err) {
+      $reject.call(this, err);
+    }
+  };
+  // eslint-disable-next-line no-unused-vars
+  Internal = function Promise(executor) {
+    this._c = [];             // <- awaiting reactions
+    this._a = undefined;      // <- checked in isUnhandled reactions
+    this._s = 0;              // <- state
+    this._d = false;          // <- done
+    this._v = undefined;      // <- value
+    this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
+    this._n = false;          // <- notify
+  };
+  Internal.prototype = __webpack_require__("dcbc")($Promise.prototype, {
+    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
+    then: function then(onFulfilled, onRejected) {
+      var reaction = newPromiseCapability(speciesConstructor(this, $Promise));
+      reaction.ok = typeof onFulfilled == 'function' ? onFulfilled : true;
+      reaction.fail = typeof onRejected == 'function' && onRejected;
+      reaction.domain = isNode ? process.domain : undefined;
+      this._c.push(reaction);
+      if (this._a) this._a.push(reaction);
+      if (this._s) notify(this, false);
+      return reaction.promise;
+    },
+    // 25.4.5.1 Promise.prototype.catch(onRejected)
+    'catch': function (onRejected) {
+      return this.then(undefined, onRejected);
+    }
+  });
+  OwnPromiseCapability = function () {
+    var promise = new Internal();
+    this.promise = promise;
+    this.resolve = ctx($resolve, promise, 1);
+    this.reject = ctx($reject, promise, 1);
+  };
+  newPromiseCapabilityModule.f = newPromiseCapability = function (C) {
+    return C === $Promise || C === Wrapper
+      ? new OwnPromiseCapability(C)
+      : newGenericPromiseCapability(C);
+  };
+}
+
+$export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
+__webpack_require__("7f20")($Promise, PROMISE);
+__webpack_require__("7a56")(PROMISE);
+Wrapper = __webpack_require__("8378")[PROMISE];
+
+// statics
+$export($export.S + $export.F * !USE_NATIVE, PROMISE, {
+  // 25.4.4.5 Promise.reject(r)
+  reject: function reject(r) {
+    var capability = newPromiseCapability(this);
+    var $$reject = capability.reject;
+    $$reject(r);
+    return capability.promise;
+  }
+});
+$export($export.S + $export.F * (LIBRARY || !USE_NATIVE), PROMISE, {
+  // 25.4.4.6 Promise.resolve(x)
+  resolve: function resolve(x) {
+    return promiseResolve(LIBRARY && this === Wrapper ? $Promise : this, x);
+  }
+});
+$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__("5cc5")(function (iter) {
+  $Promise.all(iter)['catch'](empty);
+})), PROMISE, {
+  // 25.4.4.1 Promise.all(iterable)
+  all: function all(iterable) {
+    var C = this;
+    var capability = newPromiseCapability(C);
+    var resolve = capability.resolve;
+    var reject = capability.reject;
+    var result = perform(function () {
+      var values = [];
+      var index = 0;
+      var remaining = 1;
+      forOf(iterable, false, function (promise) {
+        var $index = index++;
+        var alreadyCalled = false;
+        values.push(undefined);
+        remaining++;
+        C.resolve(promise).then(function (value) {
+          if (alreadyCalled) return;
+          alreadyCalled = true;
+          values[$index] = value;
+          --remaining || resolve(values);
+        }, reject);
+      });
+      --remaining || resolve(values);
+    });
+    if (result.e) reject(result.v);
+    return capability.promise;
+  },
+  // 25.4.4.4 Promise.race(iterable)
+  race: function race(iterable) {
+    var C = this;
+    var capability = newPromiseCapability(C);
+    var reject = capability.reject;
+    var result = perform(function () {
+      forOf(iterable, false, function (promise) {
+        C.resolve(promise).then(capability.resolve, reject);
+      });
+    });
+    if (result.e) reject(result.v);
+    return capability.promise;
+  }
+});
+
+
+/***/ }),
+
 /***/ "5537":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12736,6 +13319,37 @@ var store = global[SHARED] || (global[SHARED] = {});
   version: core.version,
   mode: __webpack_require__("2d00") ? 'pure' : 'global',
   copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+});
+
+
+/***/ }),
+
+/***/ "55dd":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $export = __webpack_require__("5ca1");
+var aFunction = __webpack_require__("d8e8");
+var toObject = __webpack_require__("4bf8");
+var fails = __webpack_require__("79e5");
+var $sort = [].sort;
+var test = [1, 2, 3];
+
+$export($export.P + $export.F * (fails(function () {
+  // IE8-
+  test.sort(undefined);
+}) || !fails(function () {
+  // V8 bug
+  test.sort(null);
+  // Old WebKit
+}) || !__webpack_require__("2f21")($sort)), 'Array', {
+  // 22.1.3.25 Array.prototype.sort(comparefn)
+  sort: function sort(comparefn) {
+    return comparefn === undefined
+      ? $sort.call(toObject(this))
+      : $sort.call(toObject(this), aFunction(comparefn));
+  }
 });
 
 
@@ -12829,6 +13443,35 @@ $export.W = 32;  // wrap
 $export.U = 64;  // safe
 $export.R = 128; // real proto method for `library`
 module.exports = $export;
+
+
+/***/ }),
+
+/***/ "5cc5":
+/***/ (function(module, exports, __webpack_require__) {
+
+var ITERATOR = __webpack_require__("2b4c")('iterator');
+var SAFE_CLOSING = false;
+
+try {
+  var riter = [7][ITERATOR]();
+  riter['return'] = function () { SAFE_CLOSING = true; };
+  // eslint-disable-next-line no-throw-literal
+  Array.from(riter, function () { throw 2; });
+} catch (e) { /* empty */ }
+
+module.exports = function (exec, skipClosing) {
+  if (!skipClosing && !SAFE_CLOSING) return false;
+  var safe = false;
+  try {
+    var arr = [7];
+    var iter = arr[ITERATOR]();
+    iter.next = function () { return { done: safe = true }; };
+    arr[ITERATOR] = function () { return iter; };
+    exec(arr);
+  } catch (e) { /* empty */ }
+  return safe;
+};
 
 
 /***/ }),
@@ -12968,6 +13611,39 @@ module.exports = function (it, S) {
   if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
   throw TypeError("Can't convert object to primitive value");
 };
+
+
+/***/ }),
+
+/***/ "6b54":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+__webpack_require__("3846");
+var anObject = __webpack_require__("cb7c");
+var $flags = __webpack_require__("0bfb");
+var DESCRIPTORS = __webpack_require__("9e1e");
+var TO_STRING = 'toString';
+var $toString = /./[TO_STRING];
+
+var define = function (fn) {
+  __webpack_require__("2aba")(RegExp.prototype, TO_STRING, fn, true);
+};
+
+// 21.2.5.14 RegExp.prototype.toString()
+if (__webpack_require__("79e5")(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
+  define(function toString() {
+    var R = anObject(this);
+    return '/'.concat(R.source, '/',
+      'flags' in R ? R.flags : !DESCRIPTORS && R instanceof RegExp ? $flags.call(R) : undefined);
+  });
+// FF44- RegExp#toString has a wrong name
+} else if ($toString.name != TO_STRING) {
+  define(function toString() {
+    return $toString.call(this);
+  });
+}
 
 
 /***/ }),
@@ -13309,6 +13985,27 @@ module.exports = function (exec) {
 
 /***/ }),
 
+/***/ "7a56":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var global = __webpack_require__("7726");
+var dP = __webpack_require__("86cc");
+var DESCRIPTORS = __webpack_require__("9e1e");
+var SPECIES = __webpack_require__("2b4c")('species');
+
+module.exports = function (KEY) {
+  var C = global[KEY];
+  if (DESCRIPTORS && C && !C[SPECIES]) dP.f(C, SPECIES, {
+    configurable: true,
+    get: function () { return this; }
+  });
+};
+
+
+/***/ }),
+
 /***/ "7a77":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13501,6 +14198,82 @@ NAME in FProto || __webpack_require__("9e1e") && dP(FProto, NAME, {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = { "default": __webpack_require__("a21f"), __esModule: true };
+
+/***/ }),
+
+/***/ "8079":
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__("7726");
+var macrotask = __webpack_require__("1991").set;
+var Observer = global.MutationObserver || global.WebKitMutationObserver;
+var process = global.process;
+var Promise = global.Promise;
+var isNode = __webpack_require__("2d95")(process) == 'process';
+
+module.exports = function () {
+  var head, last, notify;
+
+  var flush = function () {
+    var parent, fn;
+    if (isNode && (parent = process.domain)) parent.exit();
+    while (head) {
+      fn = head.fn;
+      head = head.next;
+      try {
+        fn();
+      } catch (e) {
+        if (head) notify();
+        else last = undefined;
+        throw e;
+      }
+    } last = undefined;
+    if (parent) parent.enter();
+  };
+
+  // Node.js
+  if (isNode) {
+    notify = function () {
+      process.nextTick(flush);
+    };
+  // browsers with MutationObserver, except iOS Safari - https://github.com/zloirock/core-js/issues/339
+  } else if (Observer && !(global.navigator && global.navigator.standalone)) {
+    var toggle = true;
+    var node = document.createTextNode('');
+    new Observer(flush).observe(node, { characterData: true }); // eslint-disable-line no-new
+    notify = function () {
+      node.data = toggle = !toggle;
+    };
+  // environments with maybe non-completely correct, but existent Promise
+  } else if (Promise && Promise.resolve) {
+    // Promise.resolve without an argument throws an error in LG WebOS 2
+    var promise = Promise.resolve(undefined);
+    notify = function () {
+      promise.then(flush);
+    };
+  // for other environments - macrotask based on:
+  // - setImmediate
+  // - MessageChannel
+  // - window.postMessag
+  // - onreadystatechange
+  // - setTimeout
+  } else {
+    notify = function () {
+      // strange IE + webpack dev server bug - use .call(global)
+      macrotask.call(global, flush);
+    };
+  }
+
+  return function (fn) {
+    var task = { fn: fn, next: undefined };
+    if (last) last.next = task;
+    if (!head) {
+      head = task;
+      notify();
+    } last = task;
+  };
+};
+
 
 /***/ }),
 
@@ -16015,6 +16788,20 @@ module.exports = function (key) {
 
 /***/ }),
 
+/***/ "9c80":
+/***/ (function(module, exports) {
+
+module.exports = function (exec) {
+  try {
+    return { e: false, v: exec() };
+  } catch (e) {
+    return { e: true, v: e };
+  }
+};
+
+
+/***/ }),
+
 /***/ "9def":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16106,6 +16893,17 @@ module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
 
 /***/ }),
 
+/***/ "a25f":
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__("7726");
+var navigator = global.navigator;
+
+module.exports = navigator && navigator.userAgent || '';
+
+
+/***/ }),
+
 /***/ "a481":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16140,6 +16938,32 @@ __webpack_require__("214f")('replace', 2, function (defined, REPLACE, $replace) 
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "a5b8":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// 25.4.1.5 NewPromiseCapability(C)
+var aFunction = __webpack_require__("d8e8");
+
+function PromiseCapability(C) {
+  var resolve, reject;
+  this.promise = new C(function ($$resolve, $$reject) {
+    if (resolve !== undefined || reject !== undefined) throw TypeError('Bad Promise constructor');
+    resolve = $$resolve;
+    reject = $$reject;
+  });
+  this.resolve = aFunction(resolve);
+  this.reject = aFunction(reject);
+}
+
+module.exports.f = function (C) {
+  return new PromiseCapability(C);
+};
+
 
 /***/ }),
 
@@ -16506,6 +17330,25 @@ module.exports = function xhrAdapter(config) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__("cee4");
+
+/***/ }),
+
+/***/ "bcaa":
+/***/ (function(module, exports, __webpack_require__) {
+
+var anObject = __webpack_require__("cb7c");
+var isObject = __webpack_require__("d3f4");
+var newPromiseCapability = __webpack_require__("a5b8");
+
+module.exports = function (C, x) {
+  anObject(C);
+  if (isObject(x) && x.constructor === C) return x;
+  var promiseCapability = newPromiseCapability.f(C);
+  var resolve = promiseCapability.resolve;
+  resolve(x);
+  return promiseCapability.promise;
+};
+
 
 /***/ }),
 
@@ -17333,118 +18176,124 @@ module.exports.default = axios;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("2440");
-/* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(file_saver__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("7f7f");
+/* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("28a5");
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("6762");
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("2fdb");
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("2440");
+/* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(file_saver__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
   computed: {
-
-    extraDebug: function () {
+    extraDebug: function extraDebug() {
       if (this.$store && this.$store.state && this.$store.state.contentLayout) {
-        return this.$store.state.contentLayout.extraDebug
+        return this.$store.state.contentLayout.extraDebug;
       }
-      console.error('this.$store.state.contentLayout.extraDebug not defined');
-      return true
-    },
 
-    isEditing: function () {
+      console.error('this.$store.state.contentLayout.extraDebug not defined');
+      return true;
+    },
+    isEditing: function isEditing() {
       switch (this.$store.state.contentLayout.mode) {
         case 'view':
         case 'live':
-          return false
+          return false;
       }
-      return true
-    },
 
-    pageEditMode: function () {
+      return true;
+    },
+    pageEditMode: function pageEditMode() {
       if (this.$store && this.$store.state && this.$store.state.contentLayout && this.$store.state.contentLayout.mode) {
-        return this.$store.state.contentLayout.mode
+        return this.$store.state.contentLayout.mode;
       }
-      return 'view'
+
+      return 'view';
     },
-
-    editModeClass: function () {
+    editModeClass: function editModeClass() {
       if (this.$store && this.$store.state && this.$store.state.contentLayout && this.$store.state.contentLayout.mode) {
-
         // Add a class for the current editing mode
-        let mode = this.$store.state.contentLayout.mode
-        let cls = `c-edit-mode-${mode}`
-
-        // Add property-editing-related classes, for the currently selected
+        var mode = this.$store.state.contentLayout.mode;
+        var cls = "c-edit-mode-".concat(mode); // Add property-editing-related classes, for the currently selected
         // element, and the element expanded in the properties editor.
+
         if (this.element) {
           if (this.element === this.$store.state.contentLayout.propertyElement) {
-            console.log(`HEY THATS ME!!! ${this.element.id} (${this.element.type})`)
-            cls += ` c-selected`
+            console.log("HEY THATS ME!!! ".concat(this.element.id, " (").concat(this.element.type, ")"));
+            cls += " c-selected";
           }
+
           if (this.element === this.$store.state.contentLayout.expandedElement) {
-            cls += ` c-expanded`
+            cls += " c-expanded";
           }
-        }
+        } // console.log(`  class: ${cls}`)
 
-        // console.log(`  class: ${cls}`)
-        return cls
+
+        return cls;
       }
-      return 'c-edit-mode-view'
-    },
 
-    debugClass () {
-      return (this.pageEditMode === 'debug') ? 'tt-debug' : ''
+      return 'c-edit-mode-view';
     },
-
-    showDropAreas () {
+    debugClass: function debugClass() {
+      return this.pageEditMode === 'debug' ? 'tt-debug' : '';
+    },
+    showDropAreas: function showDropAreas() {
       //console.log(`++++ showDropAreas: `, this.pageEditMode)
       if (this.pageEditMode === 'layout' || this.pageEditMode === 'debug') {
-        return true
+        return true;
       }
+
       if (this.pageEditMode === 'edit' && this.$store.state.contentLayout.dragging) {
-        return true
+        return true;
       }
-      return false
+
+      return false;
     }
-
   },
-
   methods: {
-
     // Compare the page mode to a comma separated list
-    isPageMode (modes) {
-      return modes.split(',').includes(this.pageEditMode)
+    isPageMode: function isPageMode(modes) {
+      return modes.split(',').includes(this.pageEditMode);
     },
+    selectThisElement: function selectThisElement() {
+      console.log("selectThisElement()");
 
-    selectThisElement () {
-      console.log(`selectThisElement()`)
       if (this.pageEditMode != 'view') {
-        let element = this.element
-        this.$store.commit('contentLayout/setPropertyElement', { element })
+        var element = this.element;
+        this.$store.commit('contentLayout/setPropertyElement', {
+          element: element
+        });
       }
     },
-
-    copyStyle (from, to, name) {
+    copyStyle: function copyStyle(from, to, name) {
       if (from[name]) {
-        to[name] = from[name]
+        to[name] = from[name];
       }
     },
-
-    safeJSON: function (element) {
-
+    safeJSON: function safeJSON(element) {
       // Custom replacer function - gets around "TypeError: Converting circular structure to JSON"
       // Modified from http://www.johnantony.com/pretty-printing-javascript-objects-as-json/
-      var replacer = function(key, value) {
+      var replacer = function replacer(key, value) {
         // ignore parent links (they are circular)
         if (key === '_parent') {
-          return
+          return;
         }
-        return value
-      }
-      let json = JSON.stringify(element, replacer, 4);
 
+        return value;
+      };
+
+      var json = JSON.stringify(element, replacer, 4);
       return json;
-    },
+    }
   }
 });
-
 
 /***/ }),
 
@@ -17511,6 +18360,18 @@ module.exports = function isAbsoluteURL(url) {
   // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
   // by any combination of letters, digits, plus, period, or hyphen.
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+
+/***/ }),
+
+/***/ "dcbc":
+/***/ (function(module, exports, __webpack_require__) {
+
+var redefine = __webpack_require__("2aba");
+module.exports = function (target, src, safe) {
+  for (var key in src) redefine(target, key, src[key], safe);
+  return target;
 };
 
 
@@ -17853,6 +18714,22 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 /***/ }),
 
+/***/ "ebd6":
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.3.20 SpeciesConstructor(O, defaultConstructor)
+var anObject = __webpack_require__("cb7c");
+var aFunction = __webpack_require__("d8e8");
+var SPECIES = __webpack_require__("2b4c")('species');
+module.exports = function (O, D) {
+  var C = anObject(O).constructor;
+  var S;
+  return C === undefined || (S = anObject(C)[SPECIES]) == undefined ? D : aFunction(S);
+};
+
+
+/***/ }),
+
 /***/ "f032":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17966,6 +18843,44 @@ module.exports = function (encodedURI) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "f559":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// 21.1.3.18 String.prototype.startsWith(searchString [, position ])
+
+var $export = __webpack_require__("5ca1");
+var toLength = __webpack_require__("9def");
+var context = __webpack_require__("d2c8");
+var STARTS_WITH = 'startsWith';
+var $startsWith = ''[STARTS_WITH];
+
+$export($export.P + $export.F * __webpack_require__("5147")(STARTS_WITH), 'String', {
+  startsWith: function startsWith(searchString /* , position = 0 */) {
+    var that = context(this, searchString, STARTS_WITH);
+    var index = toLength(Math.min(arguments.length > 1 ? arguments[1] : undefined, that.length));
+    var search = String(searchString);
+    return $startsWith
+      ? $startsWith.call(that, search, index)
+      : that.slice(index, index + search.length) === search;
+  }
+});
+
+
+/***/ }),
+
+/***/ "f605":
+/***/ (function(module, exports) {
+
+module.exports = function (it, Constructor, name, forbiddenField) {
+  if (!(it instanceof Constructor) || (forbiddenField !== undefined && forbiddenField in it)) {
+    throw TypeError(name + ': incorrect invocation!');
+  } return it;
+};
+
 
 /***/ }),
 
@@ -18247,7 +19162,7 @@ ModuleCollection.prototype.getNamespace = function getNamespace (path) {
 };
 
 ModuleCollection.prototype.update = function update$1 (rawRootModule) {
-  update([], this.root, rawRootModule);
+  vuex_esm_update([], this.root, rawRootModule);
 };
 
 ModuleCollection.prototype.register = function register (path, rawModule, runtime) {
@@ -18280,7 +19195,7 @@ ModuleCollection.prototype.unregister = function unregister (path) {
   parent.removeChild(key);
 };
 
-function update (path, targetModule, newModule) {
+function vuex_esm_update (path, targetModule, newModule) {
   if (false) {}
 
   // update target module
@@ -18293,7 +19208,7 @@ function update (path, targetModule, newModule) {
         if (false) {}
         return
       }
-      update(
+      vuex_esm_update(
         path.concat(key),
         targetModule.getChild(key),
         newModule.modules[key]
@@ -18964,6 +19879,56 @@ var vue_drag_drop_common_default = /*#__PURE__*/__webpack_require__.n(vue_drag_d
 var index_min = __webpack_require__("4ae6");
 var index_min_default = /*#__PURE__*/__webpack_require__.n(index_min);
 
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/builtin/es6/typeof.js
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
+var es6_promise = __webpack_require__("551c");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
+var web_dom_iterable = __webpack_require__("ac6a");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.sort.js
+var es6_array_sort = __webpack_require__("55dd");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.function.name.js
+var es6_function_name = __webpack_require__("7f7f");
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/builtin/es6/classCallCheck.js
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/builtin/es6/createClass.js
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
 // EXTERNAL MODULE: ./node_modules/jwt-decode/lib/index.js
 var lib = __webpack_require__("04e1");
 
@@ -18978,27 +19943,35 @@ var axiosError_default = /*#__PURE__*/__webpack_require__.n(axiosError);
 // EXTERNAL MODULE: ./node_modules/query-string/index.js
 var query_string = __webpack_require__("72bf");
 
-// CONCATENATED MODULE: ./src/components/misc.js
-/* @ f low */
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
+var es6_regexp_to_string = __webpack_require__("6b54");
 
+// CONCATENATED MODULE: ./src/components/misc.js
+
+
+/* @ f low */
 //module.exports.assert = function (condition, message) {
-function misc_assert (condition, message) {
+function misc_assert(condition, message) {
   if (!condition) {
-    throw new Error(`[vue-contentservice] ${message}`)
+    throw new Error("[vue-contentservice] ".concat(message));
   }
 }
-
-function warn (condition, message) {
+function warn(condition, message) {
   if (false) {}
 }
-
-function isError (err) {
-  return Object.prototype.toString.call(err).indexOf('Error') > -1
+function isError(err) {
+  return Object.prototype.toString.call(err).indexOf('Error') > -1;
 }
-
-const inBrowser = typeof window !== 'undefined'
-
+var inBrowser = typeof window !== 'undefined';
 // CONCATENATED MODULE: ./src/lib/ContentService.js
+
+
+
+
+
+
+
+
 /* @flZZow */
 
 /*
@@ -19010,17 +19983,15 @@ const inBrowser = typeof window !== 'undefined'
 
 
 
+ // const debug = process.env.NODE_ENV !== 'production'
 
+var NETWORK_ERROR_MSG = 'Could not contact authentication server';
 
-
-// const debug = process.env.NODE_ENV !== 'production'
-
-const NETWORK_ERROR_MSG = 'Could not contact authentication server'
-
-class ContentService_Contentservice {
+var ContentService_Contentservice =
+/*#__PURE__*/
+function () {
   // static install: (Vue) => void;
   // static version: string;
-
   // static install (Vue) {
   //   alert('Install 2...')
   //   // Vue.prototype.$auth = new Contentservice()
@@ -19030,405 +20001,412 @@ class ContentService_Contentservice {
   //     get () { return 987 }
   //   })
   // }
+  function Contentservice(options) {
+    var _this = this;
 
-  constructor (options) {
+    _classCallCheck(this, Contentservice);
 
-      if (!options) {
-        console.error(`Contentservice was passed null options, so will be disabled.`)
-        this.disabled = true
-        return
-      }
-      this.disabled = false
+    if (!options) {
+      console.error("Contentservice was passed null options, so will be disabled.");
+      this.disabled = true;
+      return;
+    }
 
-    console.log('&&& Contentservice constructor', options)
-    this.host = options.host ? options.host : 'api.contentservice.io'
-    this.port = options.port ? options.port : 80
-    this.version = options.version ? options.version : '2.0'
-    this.apikey = options.apikey
-
-    this.knownElementTypes = [ ]
-
-
-    // Decide which icon set to use with a defaultIconPack option.
+    this.disabled = false;
+    console.log('&&& Contentservice constructor', options);
+    this.host = options.host ? options.host : 'api.contentservice.io';
+    this.port = options.port ? options.port : 80;
+    this.version = options.version ? options.version : '2.0';
+    this.apikey = options.apikey;
+    this.knownElementTypes = []; // Decide which icon set to use with a defaultIconPack option.
     // Loosely based on:
     //    https://buefy.github.io/#/documentation/constructor-options
     //
     // Currently recognise:
     //    fa (font-awsome 4)
     //    fas (font-awsome 5)
-    this.defaultIconPack = options.defaultIconPack ? options.defaultIconPack : 'fa'
-    this.icons = (pack) => { return this.defaultIconPack === pack }
+
+    this.defaultIconPack = options.defaultIconPack ? options.defaultIconPack : 'fa';
+
+    this.icons = function (pack) {
+      return _this.defaultIconPack === pack;
+    };
 
     if (options.defaultIconPack) {
-      console.log(`Will use icon pack ${options.defaultIconPack}`);
+      console.log("Will use icon pack ".concat(options.defaultIconPack));
     }
-    console.log(`---> icons ---> ${this.defaultIconPack}`);
 
-    // Remember the options
-    this.options = options
+    console.log("---> icons ---> ".concat(this.defaultIconPack)); // Remember the options
 
-    // Current user details
+    this.options = options; // Current user details
     // this.user = null
     // this.jwt = null
     // this.fromCache = false
-  }
+  } // init (app: any /* Vue component instance */) {
 
-  // init (app: any /* Vue component instance */) {
-  init (app /* Vue component instance */) {
-    console.log('&&& ContentService.init')
 
-    // VVVVV This does not seem to be called
-    // alert('za init()')
-    false && false
-  }
+  _createClass(Contentservice, [{
+    key: "init",
+    value: function init(app
+    /* Vue component instance */
+    ) {
+      console.log('&&& ContentService.init'); // VVVVV This does not seem to be called
+      // alert('za init()')
 
-  endpoint () {
-    // console.log('endpoint():', this)
-    const protocol = this.protocol ? this.protocol : 'http'
-    const endpoint = `${protocol}://${this.host}:${this.port}/api/${this.version}/${this.apikey}`
-    return endpoint
-  }
-
-  registerLayoutType (vm, layoutType, componentName, component, propertyComponent) {
-    let propertyComponentName = `${componentName}-props`
-
-    // Remember the component names used for this type of layout element.
-    this.knownElementTypes[layoutType] = {
-      layoutType,
-      label: layoutType,
-      name: layoutType,
-      category: '',
-      componentName,
-      propertyComponentName,
-      component,
-      propertyComponent
+      false && false;
     }
-
-    // Define the components
-    console.log(`registering ${componentName}`)
-    vm.component(componentName, component)
-    vm.component(propertyComponentName, propertyComponent)
-  }
-
-  // -> { component, propertyComponent }
-  getLayoutType (layoutType) {
-    //console.error(`getLayoutType(${layoutType})`)
-    return this.knownElementTypes[layoutType]
-  }
-
-  registerWidget (vm, { name, label, category, iconClass, iconClass5, componentName, component, propertyComponent, data}) {
-    console.error(`registerWidget(${name}, ${category})`)
-
-    if (!label) {
-      label = name
+  }, {
+    key: "endpoint",
+    value: function endpoint() {
+      // console.log('endpoint():', this)
+      var protocol = this.protocol ? this.protocol : 'http';
+      var endpoint = "".concat(protocol, "://").concat(this.host, ":").concat(this.port, "/api/").concat(this.version, "/").concat(this.apikey);
+      return endpoint;
     }
-    if (!category) {
-      category = ''
+  }, {
+    key: "registerLayoutType",
+    value: function registerLayoutType(vm, layoutType, componentName, component, propertyComponent) {
+      var propertyComponentName = "".concat(componentName, "-props"); // Remember the component names used for this type of layout element.
+
+      this.knownElementTypes[layoutType] = {
+        layoutType: layoutType,
+        label: layoutType,
+        name: layoutType,
+        category: '',
+        componentName: componentName,
+        propertyComponentName: propertyComponentName,
+        component: component,
+        propertyComponent: propertyComponent // Define the components
+
+      };
+      console.log("registering ".concat(componentName));
+      vm.component(componentName, component);
+      vm.component(propertyComponentName, propertyComponent);
+    } // -> { component, propertyComponent }
+
+  }, {
+    key: "getLayoutType",
+    value: function getLayoutType(layoutType) {
+      //console.error(`getLayoutType(${layoutType})`)
+      return this.knownElementTypes[layoutType];
     }
+  }, {
+    key: "registerWidget",
+    value: function registerWidget(vm, _ref) {
+      var name = _ref.name,
+          label = _ref.label,
+          category = _ref.category,
+          iconClass = _ref.iconClass,
+          iconClass5 = _ref.iconClass5,
+          componentName = _ref.componentName,
+          component = _ref.component,
+          propertyComponent = _ref.propertyComponent,
+          data = _ref.data;
+      console.error("registerWidget(".concat(name, ", ").concat(category, ")"));
 
-    let propertyComponentName = `${componentName}-props`
+      if (!label) {
+        label = name;
+      }
 
-    // Remember the component names used for this type of layout element.
-    this.knownElementTypes[name] = {
-      layoutType: name,//ZZZ
-      name,
-      label,
-      category,
-      iconClass,
-      iconClass5,
+      if (!category) {
+        category = '';
+      }
 
-      componentName,
-      propertyComponentName,
-      component,
-      propertyComponent,
+      var propertyComponentName = "".concat(componentName, "-props"); // Remember the component names used for this type of layout element.
 
-      // The definition used when creating a new component.
-      data,
+      this.knownElementTypes[name] = {
+        layoutType: name,
+        //ZZZ
+        name: name,
+        label: label,
+        category: category,
+        iconClass: iconClass,
+        iconClass5: iconClass5,
+        componentName: componentName,
+        propertyComponentName: propertyComponentName,
+        component: component,
+        propertyComponent: propertyComponent,
+        // The definition used when creating a new component.
+        data: data,
+        dragtype: 'component' // Define the components
 
-      dragtype: 'component'
+      };
+      console.log("registering widget ".concat(componentName));
+      vm.component(componentName, component);
+      vm.component(propertyComponentName, propertyComponent);
     }
+  }, {
+    key: "toolboxCategories",
+    value: function toolboxCategories() {
+      var categories = []; // category -> { type[] }
 
-    // Define the components
-    console.log(`registering widget ${componentName}`)
-    vm.component(componentName, component)
-    vm.component(propertyComponentName, propertyComponent)
-  }
+      for (var name in this.knownElementTypes) {
+        if (this.knownElementTypes.hasOwnProperty(name)) {
+          var type = this.knownElementTypes[name];
+          console.error("Add tool ".concat(name), type);
+          var categoryRec = categories[type.category];
+          console.log("category = ".concat(type.category), categoryRec);
 
-  toolboxCategories () {
-    let categories = [ ] // category -> { type[] }
-    for (var name in this.knownElementTypes) {
-      if (this.knownElementTypes.hasOwnProperty(name)) {
-        let type = this.knownElementTypes[name]
-        console.error(`Add tool ${name}`, type);
-        let categoryRec = categories[type.category]
-        console.log(`category = ${type.category}`, categoryRec);
-        if ( !categoryRec) {
-          categoryRec = {
-            name: type.category,
-            types: [ ]
+          if (!categoryRec) {
+            categoryRec = {
+              name: type.category,
+              types: []
+            };
+            console.error("Add category ".concat(type.category));
+            categories[type.category] = categoryRec;
           }
-          console.error(`Add category ${type.category}`);
-          categories[type.category] = categoryRec
-        }
-        categoryRec.types[name] = type
-      }
-    }
-    console.error(`Toolbox Types - `, categories);
 
-    // Convert categories to an array and sort
-    let arr = [ ]
-    for (var categoryName in categories) {
-      let category = categories[categoryName]
-      arr.push(category)
-    }
-    categories = arr
-    categories.sort((a,b) => {
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return +1
-      return 0
-    })
-
-    // Sort categories
-
-    // Convert the types in each category to an array
-    categories.forEach(category => {
-      let arr = [ ]
-      for (var name in category.types) {
-        if (category.types.hasOwnProperty(name)) {
-          let type = category.types[name]
-          arr.push(type)
+          categoryRec.types[name] = type;
         }
       }
-      category.types = arr
-    })
 
-    return categories
-  }
+      console.error("Toolbox Types - ", categories); // Convert categories to an array and sort
 
+      var arr = [];
 
-  // safeJSON (json) {
-  //   return util.safeJson(json)
-  // }
-
-  //----------------------------------------------------------------------------//
-  //                          NEW STUFF FROM CROWDHOUND                         //
-  //----------------------------------------------------------------------------//
-
-
-
-
-	/**
-	 *	Select may be in various formats:
-	 *		select(vm, '$my-anchor', 'user-list', callback) - select a thread by it's anchor and anchorType.
-	 *		select(vm, rootId, callback) - select a thread. Anchor will not be created if it doesn't exist.
-	 *		select(vm, params, callback)
-   *	Select may be in various formats:
-	 *		select(vm, '$my-anchor', 'user-list') - select a thread by it's anchor and anchorType.
-	 *		select(vm, rootId) - select a thread. Anchor will NOT be created if it doesn't exist.
-	 *		select(vm, params)
-	 */
-  select(vm, param1, param2) {
-
-    return new Promise((resolve, reject) => {
-
-      if (this.options.debug) {
-        console.log('select()');
-      }
-      if (this.disabled) {
-        return reject(new Error('contentservice disabled'));
+      for (var categoryName in categories) {
+        var category = categories[categoryName];
+        arr.push(category);
       }
 
-      // Work out what combination of parameters we've been passed
-      var type1 = typeof(param1);
-      var type2 = typeof(param2);
-      var type3 = typeof(param3);
+      categories = arr;
+      categories.sort(function (a, b) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return +1;
+        return 0;
+      }); // Sort categories
+      // Convert the types in each category to an array
 
-      if (arguments.length === 3) {
+      categories.forEach(function (category) {
+        var arr = [];
 
-        // Short form:  select(vm, anchor, anchorType)
-        // Check the anchor starts with $
-        var anchor = param1;
-        var anchorType = param2;
-        if (typeof(anchor) != 'string') {
-          console.log('CrowdHound.select: anchor must be a string: ' + anchor + ', ' + typeof(anchor));
-          return reject(new Error('invalid anchor parameter'));
+        for (var name in category.types) {
+          if (category.types.hasOwnProperty(name)) {
+            var _type = category.types[name];
+            arr.push(_type);
+          }
         }
-        if (anchor.charAt(0) != '$') {
-          console.log('CrowdHound.select: anchor must start with \'$\': ' + anchor);
-          return reject(new Error('invalid anchor parameter - must start with \'$\''));
+
+        category.types = arr;
+      });
+      return categories;
+    } // safeJSON (json) {
+    //   return util.safeJson(json)
+    // }
+    //----------------------------------------------------------------------------//
+    //                          NEW STUFF FROM CROWDHOUND                         //
+    //----------------------------------------------------------------------------//
+
+    /**
+     *	Select may be in various formats:
+     *		select(vm, '$my-anchor', 'user-list', callback) - select a thread by it's anchor and anchorType.
+     *		select(vm, rootId, callback) - select a thread. Anchor will not be created if it doesn't exist.
+     *		select(vm, params, callback)
+      *	Select may be in various formats:
+     *		select(vm, '$my-anchor', 'user-list') - select a thread by it's anchor and anchorType.
+     *		select(vm, rootId) - select a thread. Anchor will NOT be created if it doesn't exist.
+     *		select(vm, params)
+     */
+
+  }, {
+    key: "select",
+    value: function select(vm, param1, param2) {
+      var _this2 = this,
+          _arguments = arguments;
+
+      return new Promise(function (resolve, reject) {
+        if (_this2.options.debug) {
+          console.log('select()');
         }
-        if (typeof(anchorType) != 'string') {
-          console.log('CrowdHound.select: anchorType must be a string: ' + anchorType + ', ' + typeof(anchorType));
-          return reject(new Error('invalid anchor parameter'));
-        }
-        console.log('select anchor')
-        var params = {
-          elementId: anchor,
-          type: anchorType
-        };
-      } else if (arguments.length === 2) {
 
-        if (type1 == 'object') {
+        if (_this2.disabled) {
+          return reject(new Error('contentservice disabled'));
+        } // Work out what combination of parameters we've been passed
 
-          // select(vm, params)
-          var params = param1
-        } else {
 
-          // select(vm, rootId) - select a thread. Anchor will NOT be created if it doesn't exist.
+        var type1 = _typeof(param1);
+
+        var type2 = _typeof(param2);
+
+        var type3 = typeof param3 === "undefined" ? "undefined" : _typeof(param3);
+
+        if (_arguments.length === 3) {
+          // Short form:  select(vm, anchor, anchorType)
+          // Check the anchor starts with $
+          var anchor = param1;
+          var anchorType = param2;
+
+          if (typeof anchor != 'string') {
+            console.log('CrowdHound.select: anchor must be a string: ' + anchor + ', ' + _typeof(anchor));
+            return reject(new Error('invalid anchor parameter'));
+          }
+
+          if (anchor.charAt(0) != '$') {
+            console.log('CrowdHound.select: anchor must start with \'$\': ' + anchor);
+            return reject(new Error('invalid anchor parameter - must start with \'$\''));
+          }
+
+          if (typeof anchorType != 'string') {
+            console.log('CrowdHound.select: anchorType must be a string: ' + anchorType + ', ' + _typeof(anchorType));
+            return reject(new Error('invalid anchor parameter'));
+          }
+
+          console.log('select anchor');
           var params = {
-            elementId: '' + param1
+            elementId: anchor,
+            type: anchorType
           };
+        } else if (_arguments.length === 2) {
+          if (type1 == 'object') {
+            // select(vm, params)
+            var params = param1;
+          } else {
+            // select(vm, rootId) - select a thread. Anchor will NOT be created if it doesn't exist.
+            var params = {
+              elementId: '' + param1
+            };
+          }
+        } else {
+          reject('Unknown parameters to CrowdHound.select'); // if (type1 == 'function') {
+          //   var callback = param1;
+          //   return callback(new Error('Invalid parameters'));
+          // }
+          // if (typeof(type4) == 'function') {
+          //   var callback = param4;
+          //   return callback(new Error('Invalid parameters'));
+          // }
+          // if (typeof(type5) == 'function') {
+          //   var callback = param5;
+          //   return callback(new Error('Invalid parameters'));
+          // }
+
+          return;
+        } //var elementType = 'file';
+        //		var url = _API_URL + '/elements?type=' + elementType;
+
+
+        var url = "".concat(_this2.endpoint(), "/elements"); // url = addAuthenticationToken(url);
+
+        if (_this2.options.debug) {
+          console.log('URL= ' + url);
         }
 
-      } else {
-        reject('Unknown parameters to CrowdHound.select');
-        // if (type1 == 'function') {
-        //   var callback = param1;
-        //   return callback(new Error('Invalid parameters'));
-        // }
-        // if (typeof(type4) == 'function') {
-        //   var callback = param4;
-        //   return callback(new Error('Invalid parameters'));
-        // }
-        // if (typeof(type5) == 'function') {
-        //   var callback = param5;
-        //   return callback(new Error('Invalid parameters'));
-        // }
-        return;
-      }
-
-      //var elementType = 'file';
-      //		var url = _API_URL + '/elements?type=' + elementType;
-      var url = `${this.endpoint()}/elements`;
-      // url = addAuthenticationToken(url);
-      if (this.options.debug) {
-        console.log('URL= ' + url)
-      }
-      console.log('CrowdHound.select()')
-      console.log('  url=' + url)
-      console.log('  params=', params)
-
-
-
-      axios_default()({
-        method: 'get',
-        url,
-        headers: {
-          // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        params: params
-      })
-        .then(response => {
+        console.log('CrowdHound.select()');
+        console.log('  url=' + url);
+        console.log('  params=', params);
+        axios_default()({
+          method: 'get',
+          url: url,
+          headers: {
+            // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          params: params
+        }).then(function (response) {
           // JSON responses are automatically parsed.
           //console.log(`RESPONSE IS`, response.data)
-          let reply = response.data
+          var reply = response.data; // If the first item in the array is the current user, pluck it off the array now.
 
-          // If the first item in the array is the current user, pluck it off the array now.
-          let userdata = null
-          if ((reply instanceof Array) && reply.length > 0 && reply[0].__currentUser) {
+          var userdata = null;
+
+          if (reply instanceof Array && reply.length > 0 && reply[0].__currentUser) {
             userdata = reply[0];
             reply.shift(); // remove from the array
           }
 
-          let selection = {
+          var selection = {
             cooked: false,
             params: params,
-            elements: reply,
+            elements: reply
           };
           return resolve(selection);
-        })
-        .catch(e => {
-          axiosError_default()(vm, url, params, e)
-          reject(e)
-        })
-    })// new promise
+        }).catch(function (e) {
+          axiosError_default()(vm, url, params, e);
+          reject(e);
+        });
+      }); // new promise
+    } //- select()
 
-  } //- select()
+    /*
+     *  Update an existing element.
+     *	If an anchor and a type is provided, the element will be created
+     *	if it does not already exist.
+     */
 
+  }, {
+    key: "update",
+    value: function update(vm, element) {
+      var _this3 = this;
 
+      console.log("ContentService.js:update()", element);
+      console.log("element.description.length=", element.description.length);
+      return new Promise(function (resolve, reject) {
+        if (_this3.options.debug) {
+          console.log('select()');
+        }
 
-  /*
-   *  Update an existing element.
-   *	If an anchor and a type is provided, the element will be created
-   *	if it does not already exist.
-   */
-  update (vm, element) {
+        if (_this3.disabled) {
+          return reject(new Error('contentservice disabled'));
+        }
 
-    console.log(`ContentService.js:update()`, element)
-    console.log(`element.description.length=`, element.description.length)
+        var url = "".concat(_this3.endpoint(), "/element"); //let params = element
 
-    return new Promise((resolve, reject) => {
-
-      if (this.options.debug) {
-        console.log('select()');
-      }
-      if (this.disabled) {
-        return reject(new Error('contentservice disabled'));
-      }
-
-      let url = `${this.endpoint()}/element`;
-      //let params = element
-      axios_default()({
-        method: 'put',
-        url,
-        headers: {
-          // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        data: element
-      })
-        .then(response => {
+        axios_default()({
+          method: 'put',
+          url: url,
+          headers: {
+            // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          data: element
+        }).then(function (response) {
           // JSON responses are automatically parsed.
           //console.log(`RESPONSE IS`, response.data)
           // let reply = response.data
           return resolve('ok');
-        })
-        .catch(e => {
-          axiosError_default()(vm, url, element, e)
-          reject(e)
-        })
+        }).catch(function (e) {
+          axiosError_default()(vm, url, element, e);
+          reject(e);
+        }); // var API_URL = '//' + CROWDHOUND_HOST + ':' + CROWDHOUND_PORT + '/api/' + CROWDHOUND_VERSION + '/' + CROWDHOUND_TENANT;
+        // var url = API_URL + '/element';
+        // var url = Curia.addAuthenticationToken(url);
+        //
+        // console.log('url   =' + url);
+        // console.log('element=', element);
+        //
+        // $.ajax({
+        // 	type : 'PUT',
+        // 	url : url,
+        // 	data : element,
+        // 	success : function(response) {
+        //
+        // 		return callback(null);
+        // 	},
+        // 	error : function(jqxhr, textStatus, errorThrown) {
+        // 		// Failed AJAX call
+        // 		console.log('An error occurred while updating an element.\n  status: ' + jqxhr.status + "\n  responseText: ", qXHR.responseText);
+        // 		return callback(niceError(jqxhr, textStatus, errorThrown));
+        // 	}
+        // });
+      }); //- promise
+    } // update()
 
+  }]);
 
-    	// var API_URL = '//' + CROWDHOUND_HOST + ':' + CROWDHOUND_PORT + '/api/' + CROWDHOUND_VERSION + '/' + CROWDHOUND_TENANT;
-    	// var url = API_URL + '/element';
-    	// var url = Curia.addAuthenticationToken(url);
-      //
-    	// console.log('url   =' + url);
-    	// console.log('element=', element);
-      //
-    	// $.ajax({
-    	// 	type : 'PUT',
-    	// 	url : url,
-    	// 	data : element,
-    	// 	success : function(response) {
-      //
-    	// 		return callback(null);
-    	// 	},
-    	// 	error : function(jqxhr, textStatus, errorThrown) {
-    	// 		// Failed AJAX call
-    	// 		console.log('An error occurred while updating an element.\n  status: ' + jqxhr.status + "\n  responseText: ", qXHR.responseText);
-    	// 		return callback(niceError(jqxhr, textStatus, errorThrown));
-    	// 	}
-    	// });
-
-    })//- promise
-  }// update()
-
-}
-
-// Add the hierarchy manipulation functions
+  return Contentservice;
+}(); // Add the hierarchy manipulation functions
 // Contentservice.prototype.util = util
 
-ContentService_Contentservice.version = '__VERSION__'
+
+ContentService_Contentservice.version = '__VERSION__';
+
 if (inBrowser && window.Vue) {
-  window.Vue.use(ContentService_Contentservice)
+  window.Vue.use(ContentService_Contentservice);
 }
 
 /* harmony default export */ var ContentService = (ContentService_Contentservice);
-
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"f8d4f68e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/CrowdhoundMinimal.vue?vue&type=template&id=42c9faea&scoped=true&lang=pug&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"content-dummy"},[_c('crowdhound-minimal-element',{attrs:{"element":_vm.element,"level":0}})],1)}
 var staticRenderFns = []
@@ -19905,394 +20883,69 @@ var es6_regexp_split = __webpack_require__("28a5");
 // CONCATENATED MODULE: ./src/lib/toolbox.conf.js
 // This file contains definitions of the components
 // that may be dragged onto a page layout.
-
 // Icons:
 // https://fontawesome.com/v4.7.0/icons/
 // https://fontawesome.com/v4.7.0/cheatsheet/
+/* harmony default export */ var toolbox_conf = ([// Section
 
-/* harmony default export */ var toolbox_conf = ([
-
-  // Section
-  /*
-  {
-    dragtype:'component',
-    name: 'section',
-    iconClass: 'fa-arrows-v fa',
-    iconClass5: 'fas fa-arrows-alt-v',
-
-    element: {
+/*
+{
+  dragtype:'component',
+  name: 'section',
+  iconClass: 'fa-arrows-v fa',
+  iconClass5: 'fas fa-arrows-alt-v',
+   element: {
+    type: 'section',
+  },
+   // Identical structure to a CUT or COPY from edit mode.
+  data: {
+    type: "contentservice.io",
+    version: "1.0",
+    source: "toolbox",
+    layout: {
       type: 'section',
-    },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'section',
-      }
-    },
+    }
   },
-
-  // Container
-  {
-    dragtype:'component',
-    name: 'container',
-    iconClass: 'fa-arrows-h',
-    iconClass5: 'fas fa-arrows-alt-h',
-    element: {
+},
+ // Container
+{
+  dragtype:'component',
+  name: 'container',
+  iconClass: 'fa-arrows-h',
+  iconClass5: 'fas fa-arrows-alt-h',
+  element: {
+    type: 'container',
+  },
+   // Identical structure to a CUT or COPY from edit mode.
+  data: {
+    type: "contentservice.io",
+    version: "1.0",
+    source: "toolbox",
+    layout: {
       type: 'container',
-    },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'container',
-      }
     }
-  },
-  */
-
-  // FixedPositionContainer
-  {
-    dragtype:'component',
-    name: 'fixed-position-container',
-    iconClass: 'fa-arrows-h',
-    iconClass5: 'fas fa-arrows-alt-h',
-    element: {
-      type: 'fixed-position-container',
-    },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'fixed-position-container',
-      }
-    }
-  },
-
-  // Card
-  /*
-  {
-    dragtype:'component',
-    name: 'card',
-    iconClass: 'fa-arrows-h',
-    iconClass5: 'fas fa-arrows-alt-h',
-    element: {
-      type: 'card',
-    },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'card',
-      }
-    }
-
-  },
-  */
-
-  /*
-  // Columns
-  {
-    dragtype: 'component',
-    name: 'columns',
-    //iconClass: [ 'fa-bars', 'fa-rotate-90' ],
-    iconClass: 'fa-columns',
-    iconClass5: 'fa-columns',
-    element: {
-      type: 'columns',
-      children: [
-        {
-          // Column 1
-          children: [ ]
-        },
-        {
-          // Column 2
-          children: [ ]
-        }
-      ]
-    },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'columns',
-        children: [
-          {
-            // Column 1
-            children: [ ]
-          },
-          {
-            // Column 2
-            children: [ ]
-          }
-        ]
-      }
-    }
-  },
+  }
+},
 */
-
-  /*
-  // Text element
-  {
-    dragtype:'component',
-    name: 'text',
-    iconClass: 'fa-font',
-    iconClass5: 'fa-font',
-    element: {
-      // type: 'text',
-      type: 'froala',
-      text: 'Lorem ipsum dolor sit amet, purus metus congue morbi hac elit id.',
-    },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'froala',
-        text: 'Lorem ipsum dolor sit amet, purus metus congue morbi hac elit id.',
-      }
-    }
+// FixedPositionContainer
+{
+  dragtype: 'component',
+  name: 'fixed-position-container',
+  iconClass: 'fa-arrows-h',
+  iconClass5: 'fas fa-arrows-alt-h',
+  element: {
+    type: 'fixed-position-container'
   },
-  */
-
-  // Form
-  //  fa-list-ul
-  //  fa-server
-  //  fa-list-alt
-  //  fa-list-ol
-  // {
-  //   dragtype: 'component',
-  //   name: 'form',
-  //   iconClass: 'fa-list-ul',
-  //   iconClass5: 'fa-list-ul',
-  //   element: {
-  //     type: 'form',
-  //     children: [ ],
-  //   },
-  // },
-
-  // Field
-  // fa-ellipsis-h
-  // fa-edit
-  // fa-keyboard-o
-  // fa-minus
-  // fa-pencil-square-o
-  // fa-tasks
-  // fa-window-minimize
-  // fa-terminal
-  // fa-square-o
-  // fa-picture-o
-  // {
-  //   dragtype:'component',
-  //   name: 'form field',
-  //   iconClass: 'fa-ellipsis-h',
-  //   iconClass5: 'fa-ellipsis-h',
-  //   element: {
-  //     type: 'field',
-  //     label: 'Label',
-  //     placeholder: '',
-  //     help: '',
-  //   }
-  // },
-
-  // Intellidox
-  // fa-ellipsis-h
-  // fa-edit
-  // fa-keyboard-o
-  // fa-minus
-  // fa-pencil-square-o
-  // fa-tasks
-  // fa-window-minimize
-  // fa-terminal
-  // fa-square-o
-  // fa-picture-o
-
-
-  // {
-  //   dragtype:'component',
-  //   name: 'intellidox',
-  //   iconClass: 'fa-wpforms',
-  //   iconClass5: 'fab fa-wpforms',
-  //   element: {
-  //     type: 'ix',
-  //     label: 'First Name',
-  //     placeholder: 'First name',
-  //     help: 'Enter your first name',
-  //   }
-  // },
-
-  // {
-  //   dragtype:'component',
-  //   name: 'documents',
-  //   // iconClass: 'fa-wpforms',
-  //   iconClass: 'fa-copy',
-  //   iconClass5: 'fa-copy',
-  //   element: {
-  //     type: 'documents',
-  //     documents: [
-  //       {
-  //         type: 'document',
-  //         doctype: 'gsheet',
-  //         name: 'Margins and overhead calculations'
-  //       },
-  //       {
-  //         type: 'document',
-  //         doctype: 'gdoc',
-  //         name: 'Non-disclosure Agreement'
-  //       },
-  //       {
-  //         type: 'document',
-  //         doctype: 'gsheet',
-  //         name: 'March estimates'
-  //       },
-  //       {
-  //         type: 'document',
-  //         doctype: 'gsheet',
-  //         name: 'April estimates'
-  //       },
-  //     ]
-  //   }
-  // },
-
-/*
-  // Google slides
-  {
-    dragtype:'component',
-    name: 'Slides',
-    iconClass: 'fa fa-file-powerpoint-o',
-    iconClass5: 'far fa-file-powerpoint',
-    element: {
-      type: 'google-slides',
-      //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-    },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'google-slides',
-        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-      }
+  // Identical structure to a CUT or COPY from edit mode.
+  data: {
+    type: "contentservice.io",
+    version: "1.0",
+    source: "toolbox",
+    layout: {
+      type: 'fixed-position-container'
     }
-  },
-
-  // Google sheets
-  {
-    dragtype:'component',
-    name: 'Sheets',
-    iconClass: 'fa fa-file-excel-o',
-    iconClass5: 'far fa-file-excel',
-    // element: {
-    //   type: 'google-sheets',
-    //   //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-    // },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'google-sheets',
-        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-      }
-    }
-  },
-
-  // Google docs
-  {
-    dragtype:'component',
-    name: 'Doc',
-    iconClass: 'fa fa-file-word-o',
-    iconClass5: 'far fa-file-word',
-    // element: {
-    //   type: 'google-sheets',
-    //   //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-    // },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'google-docs',
-        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-      }
-    }
-  },
-*/
-  /*
-  // Youtube
-  {
-    dragtype:'component',
-    name: 'Youtube',
-    iconClass: 'fa fa-youtube',
-    iconClass5: 'fab fa-youtube',
-    // element: {
-    //   type: 'google-sheets',
-    //   //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-    // },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'youtube',
-        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-      }
-    }
-  },
-  */
-
-/*
-  // Vimeo
-  {
-    dragtype:'component',
-    name: 'Vimeo',
-    iconClass: 'fa fa-vimeo',
-    iconClass5: 'fab fa-vimeo',
-    // element: {
-    //   type: 'google-sheets',
-    //   //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-    // },
-
-    // Identical structure to a CUT or COPY from edit mode.
-    data: {
-      type: "contentservice.io",
-      version: "1.0",
-      source: "toolbox",
-      layout: {
-        type: 'vimeo',
-        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
-      }
-    }
-  },
-  */
-
-]);
-
+  }
+}]);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ContentToolbox.vue?vue&type=script&lang=js&
 
 //
@@ -20772,22 +21425,6 @@ var ContentChildrenvue_type_template_id_29f99235_scoped_true_lang_pug_staticRend
 
 // CONCATENATED MODULE: ./src/components/ContentChildren.vue?vue&type=template&id=29f99235&scoped=true&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/builtin/es6/typeof.js
-function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
-
-function _typeof(obj) {
-  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
-    _typeof = function _typeof(obj) {
-      return _typeof2(obj);
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
-    };
-  }
-
-  return _typeof(obj);
-}
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ContentChildren.vue?vue&type=script&lang=js&
 
 //
@@ -21144,114 +21781,56 @@ var FileSaver_default = /*#__PURE__*/__webpack_require__.n(FileSaver);
 
 // CONCATENATED MODULE: ./src/mixins/PropertyMixins.js
 
-
 /* harmony default export */ var PropertyMixins = ({
   props: {
     element: Object
   },
   computed: {
-    isExpandedElement: function ( ) {
+    isExpandedElement: function isExpandedElement() {
       if (this.element === this.$store.state.contentLayout.expandedElement) {
-        return true
+        return true;
       }
-      return false
-    },
 
-    isSelectedElement: function ( ) {
+      return false;
+    },
+    isSelectedElement: function isSelectedElement() {
       if (this.element === this.$store.state.contentLayout.propertyElement) {
-        return true
+        return true;
       }
-      return false
+
+      return false;
     }
-
   },
-
   methods: {
+    propertyClass: function propertyClass() {
+      var cls = '';
 
-    propertyClass ( ) {
-      let cls = ''
       if (this.element === this.$store.state.contentLayout.expandedElement) {
-        cls += ' c-expanded'
+        cls += ' c-expanded';
       }
+
       if (this.element === this.$store.state.contentLayout.propertyElement) {
-        cls += ' c-selected'
+        cls += ' c-selected';
       }
-      return cls
-    },
 
-    setExpandedElement () {
-      console.log(`setExpandedElement()`)
+      return cls;
+    },
+    setExpandedElement: function setExpandedElement() {
+      console.log("setExpandedElement()");
+
       if (this.pageEditMode != 'view') {
-        this.$store.commit('contentLayout/setExpandedElement', { element: this.element })
+        this.$store.commit('contentLayout/setExpandedElement', {
+          element: this.element
+        });
       }
-    },
-
-    // THESE ALL BECOME OBSOLETE
-    // deleteMyElement ( ) {
-    //   console.log(`Deleting element ${this.element.id}`)
-    //   this.$store.dispatch('contentLayout/deleteElementAction', { vm: this, element: this.element })
-    // },
-    //
-    // elementToClipboard ( ) {
-    //   console.log(`elementToClipboard()`)
-    //   return this.bundleMyElement()
-    // },
-
-    // clipboardSuccessHandler ({ value, event }) {
-    //   let type = this.element.type.substring(0, 1).toUpperCase() + this.element.type.substring(1)
-    //   let msg = `${type} has been copied to the clipboard`
-    //   if (this.$toast) {
-    //     this.$toast.open({ message: `${msg}`, type: 'is-danger' })
-    //   } else {
-    //     alert(msg)
-    //   }
-    // },
-    //
-    // clipboardErrorHandler ({ value, event }) {
-    //   console.log('error', value)
-    // },
-
-    // Save the current element to file and download it.
-    // See https://github.com/eligrey/FileSaver.js
-    // downloadMyElement ( ) {
-    //   console.log(`downloadElement()`)
-    //   let json = this.bundleMyElement()
-    //   var blob = new Blob([json], {type: "text/plain;charset=utf-8"});
-    //
-    //   let filename = 'layout'
-    //   if (this.$store.state.contentLayout.anchor) {
-    //     filename += '-' + this.$store.state.contentLayout.anchor.substring(1)
-    //   }
-    //   filename += `-${this.element.type}-${this.element.id}.txt`
-    //   FileSaver.saveAs(blob, filename);
-    // },
-
-    // Create a nicely packaged payload.
-    // bundleMyElement () {
-    //
-    //   let payload = {
-    //     type: 'contentservice.io',
-    //     version: '1.0',
-    //     source: this.$store.state.contentLayout.anchor,
-    //     timestamp: new Date(),
-    //     layout: this.element
-    //   }
-    //   if (this.$authservice && this.$authservice.user) {
-    //     payload.user = this.$authservice.user
-    //     payload.username = this.$authservice.user.fullname
-    //   }
-    //   let json = JSON.stringify(payload, null, 2);
-    //   return json
-    // },
+    }
   }
 });
-
 // CONCATENATED MODULE: ./src/mixins/CutAndPasteMixins.js
 
 
 /* harmony default export */ var CutAndPasteMixins = ({
-  computed: {
-    //
+  computed: {//
     // extraDebug: function () {
     //   if (this.$store && this.$store.state && this.$store.state.contentLayout) {
     //     return this.$store.state.contentLayout.extraDebug
@@ -21290,9 +21869,7 @@ var FileSaver_default = /*#__PURE__*/__webpack_require__.n(FileSaver);
     //   }
     //   return false
     // }
-
   },
-
   methods: {
     // selectThisElement () {
     //   console.log(`selectThisElement()`)
@@ -21327,72 +21904,83 @@ var FileSaver_default = /*#__PURE__*/__webpack_require__.n(FileSaver);
     /*
      *  Methods related to cut/copy/paste, delete, and download/drop.
     */
-    deleteMyElement ( ) {
-      console.log(`Deleting element ${this.element.id}`)
-      this.$store.dispatch('contentLayout/deleteElementAction', { vm: this, element: this.element })
+    deleteMyElement: function deleteMyElement() {
+      console.log("Deleting element ".concat(this.element.id));
+      this.$store.dispatch('contentLayout/deleteElementAction', {
+        vm: this,
+        element: this.element
+      });
     },
-
-    myElementCopyToClipboard ( ) {
-      console.log(`myElementCopyToClipboard()`)
-      return this.bundleMyElement()
+    myElementCopyToClipboard: function myElementCopyToClipboard() {
+      console.log("myElementCopyToClipboard()");
+      return this.bundleMyElement();
     },
-
-    myElementCutToClipboard ( ) {
-      console.log(`myElementCutToClipboard()`)
-      let json = this.bundleMyElement()
-      this.$store.dispatch('contentLayout/deleteElementAction', { vm: this, element: this.element })
-      return json
+    myElementCutToClipboard: function myElementCutToClipboard() {
+      console.log("myElementCutToClipboard()");
+      var json = this.bundleMyElement();
+      this.$store.dispatch('contentLayout/deleteElementAction', {
+        vm: this,
+        element: this.element
+      });
+      return json;
     },
+    clipboardSuccessHandler: function clipboardSuccessHandler(_ref) {
+      var value = _ref.value,
+          event = _ref.event;
+      var type = this.element.type.substring(0, 1).toUpperCase() + this.element.type.substring(1);
+      var msg = "".concat(type, " has been copied to the clipboard");
 
-    clipboardSuccessHandler ({ value, event }) {
-      let type = this.element.type.substring(0, 1).toUpperCase() + this.element.type.substring(1)
-      let msg = `${type} has been copied to the clipboard`
       if (this.$toast) {
-        this.$toast.open({ message: `${msg}`, type: 'is-success' })
+        this.$toast.open({
+          message: "".concat(msg),
+          type: 'is-success'
+        });
       } else {
-        alert(msg)
+        alert(msg);
       }
     },
-
-    clipboardErrorHandler ({ value, event }) {
-      console.log('error', value)
+    clipboardErrorHandler: function clipboardErrorHandler(_ref2) {
+      var value = _ref2.value,
+          event = _ref2.event;
+      console.log('error', value);
     },
-
     // Save the current element to file and download it.
     // See https://github.com/eligrey/FileSaver.js
-    downloadMyElement ( ) {
-      console.log(`downloadMyElement()`)
-      let json = this.bundleMyElement()
-      var blob = new Blob([json], {type: "text/plain;charset=utf-8"});
+    downloadMyElement: function downloadMyElement() {
+      console.log("downloadMyElement()");
+      var json = this.bundleMyElement();
+      var blob = new Blob([json], {
+        type: "text/plain;charset=utf-8"
+      });
+      var filename = 'layout';
 
-      let filename = 'layout'
       if (this.$store.state.contentLayout.anchor) {
-        filename += '-' + this.$store.state.contentLayout.anchor.substring(1)
+        filename += '-' + this.$store.state.contentLayout.anchor.substring(1);
       }
-      filename += `-${this.element.type}-${this.element.id}.txt`
+
+      filename += "-".concat(this.element.type, "-").concat(this.element.id, ".txt");
       FileSaver_default.a.saveAs(blob, filename);
     },
-
     // Create a nicely packaged payload.
-    bundleMyElement () {
-
-      let payload = {
+    bundleMyElement: function bundleMyElement() {
+      var payload = {
         type: 'contentservice.io',
         version: '1.0',
         source: this.$store.state.contentLayout.anchor,
         timestamp: new Date(),
         layout: this.element
-      }
+      };
+
       if (this.$authservice && this.$authservice.user) {
-        payload.user = this.$authservice.user
-        payload.username = this.$authservice.user.fullname
+        payload.user = this.$authservice.user;
+        payload.username = this.$authservice.user.fullname;
       }
-      let json = JSON.stringify(payload, null, 2);
-      return json
-    },
+
+      var json = JSON.stringify(payload, null, 2);
+      return json;
+    }
   }
 });
-
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/widgets/ContentLayoutProps.vue?vue&type=script&lang=js&
 //
 //
@@ -21767,9 +22355,6 @@ var ContentTextPropsvue_type_template_id_351e9006_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./src/components/widgets/ContentTextProps.vue?vue&type=template&id=351e9006&lang=pug&
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.function.name.js
-var es6_function_name = __webpack_require__("7f7f");
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/widgets/ContentTextProps.vue?vue&type=script&lang=js&
 
@@ -22286,24 +22871,28 @@ function _objectSpread(target) {
 }
 // CONCATENATED MODULE: ./src/lib/ProtectedTooltwistField.js
 
-/* harmony default export */ var ProtectedTooltwistField = (function (name) {
-  let protectedName = `protected${name.substring(0,1).toUpperCase()}${name.substring(1)}`
-  // console.log(`protectedName=${protectedName}`)
-  let obj = {
-    [protectedName]: {
-      get () {
-        return this.element[name]
-      },
-      set (value) {
-        // console.log('-->' + protectedName)
-        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: name, value })
-      }
-    }
-  }
-  // console.log('obj is ', obj)
-  return obj
-});
 
+/* harmony default export */ var ProtectedTooltwistField = (function (name) {
+  var protectedName = "protected".concat(name.substring(0, 1).toUpperCase()).concat(name.substring(1)); // console.log(`protectedName=${protectedName}`)
+
+  var obj = _defineProperty({}, protectedName, {
+    get: function get() {
+      return this.element[name];
+    },
+    set: function set(value) {
+      // console.log('-->' + protectedName)
+      this.$store.dispatch('contentLayout/setProperty', {
+        vm: this,
+        element: this.element,
+        name: name,
+        value: value
+      });
+    }
+  }); // console.log('obj is ', obj)
+
+
+  return obj;
+});
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/widgets/ContentField.vue?vue&type=script&lang=js&
 
 //
@@ -23084,7 +23673,7 @@ var ContentFixedPositionContainervue_type_template_id_d18c2d80_scoped_true_lang_
 // CONCATENATED MODULE: ./src/components/widgets/ContentFixedPositionContainer.vue?vue&type=script&lang=js&
  /* harmony default export */ var widgets_ContentFixedPositionContainervue_type_script_lang_js_ = (ContentFixedPositionContainervue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/components/widgets/ContentFixedPositionContainer.vue?vue&type=style&index=0&lang=scss&
-var ContentFixedPositionContainervue_type_style_index_0_lang_scss_ = __webpack_require__("33a4");
+var ContentFixedPositionContainervue_type_style_index_0_lang_scss_ = __webpack_require__("33a4e");
 
 // EXTERNAL MODULE: ./src/components/widgets/ContentFixedPositionContainer.vue?vue&type=style&index=1&id=d18c2d80&lang=scss&scoped=true&
 var ContentFixedPositionContainervue_type_style_index_1_id_d18c2d80_lang_scss_scoped_true_ = __webpack_require__("3e63");
@@ -23827,9 +24416,6 @@ var ContentAdminBlogListElementvue_type_template_id_3baf7e68_scoped_true_lang_pu
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.replace.js
 var es6_regexp_replace = __webpack_require__("a481");
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__("ac6a");
-
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ContentAdminBlogListElement.vue?vue&type=script&lang=js&
 
 
@@ -24290,376 +24876,446 @@ var ContentAdminBlogDetails_component = normalizeComponent(
 
 ContentAdminBlogDetails_component.options.__file = "ContentAdminBlogDetails.vue"
 /* harmony default export */ var ContentAdminBlogDetails = (ContentAdminBlogDetails_component.exports);
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/builtin/es6/arrayWithoutHoles.js
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/builtin/es6/iterableToArray.js
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/builtin/es6/nonIterableSpread.js
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/builtin/es6/toConsumableArray.js
+
+
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.string.starts-with.js
+var es6_string_starts_with = __webpack_require__("f559");
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/builtin/es6/objectDestructuringEmpty.js
+function _objectDestructuringEmpty(obj) {
+  if (obj == null) throw new TypeError("Cannot destructure undefined");
+}
 // CONCATENATED MODULE: ./src/store/contentLayoutStore.js
+
+
+
+
+
+
+
+
+
+
+var _mutations;
+
 /*
  *  Keep details of the Element being displayed
  *  in the properties pane.
  */
 //import { sanitizeLayout, safeJson } from '~/lib/Tooltwist.js'
 // import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
-
 //export const namespaced = true
+var contentLayoutStore_CLEAN = '';
+var contentLayoutStore_DIRTY = 'waiting to save';
+var contentLayoutStore_SAVING = 'saving';
+var contentLayoutStore_SAVED = 'your changes have been saved';
+var contentLayoutStore_ERROR = 'warning: your changes have not been saved';
+var contentLayoutStore_SAVE_INTERVAL = 2000; // Handle returned by setTimeout.
 
-
-const contentLayoutStore_CLEAN = ''
-const contentLayoutStore_DIRTY = 'waiting to save'
-const contentLayoutStore_SAVING = 'saving'
-const contentLayoutStore_SAVED = 'your changes have been saved'
-const contentLayoutStore_ERROR = 'warning: your changes have not been saved'
-const contentLayoutStore_SAVE_INTERVAL = 2000
-
-// Handle returned by setTimeout.
-let saveTimer = null
-
-// initial state
+var saveTimer = null; // initial state
 //export const state = () => ({
-const state = () => {
+
+var contentLayoutStore_state = function state() {
   return {
     // Edit mode
-    mode: 'view', // { view | edit | layout | debug }}
+    mode: 'view',
+    // { view | edit | layout | debug }}
     previousEditMode: 'edit',
     extraDebug: false,
     dragging: false,
-
     // An element from Crowdhound with the layout as JSON in the description field.
     // This is only set if we were given an anchor.
     // If it is null we don't save here.
     anchor: null,
     crowdhoundElement: null,
-
     // Currently loaded layout.
     // = hierarchy of element Objects
     layout: null,
-
     // Element currently being edited
     // = element Object
     //propertyElement: null,
-    pathToSelectedElement: [ ], // elements, from root to currently selected element
-
+    pathToSelectedElement: [],
+    // elements, from root to currently selected element
     // Element with properties being shown.
     // This will be within 'pathToSelectedElement'
     expandedElement: null,
-
     // Message shown at top of screen
     selectError: '',
     saveMsg: contentLayoutStore_CLEAN,
-
     // Triple pane stuff
     showLeftPane: true,
     showRightPane: true,
-
     // Refresh is activated by incrementing a counter
     refreshCounter: 1
-  }
-}
-//})
+  };
+}; //})
 
 /********************************************
  *
  *                 GETTERS
  *
  ********************************************/
-const getters = {
 
-  propertyElement: (state) => {
+var getters = {
+  propertyElement: function propertyElement(state) {
     if (state.pathToSelectedElement) {
-      let len = state.pathToSelectedElement.length
-      let element = (len > 0) ? state.pathToSelectedElement[len - 1] : null
-      console.log(`propertyElement=`, element)
-      return element
-    }
-    return null
-  },
+      var len = state.pathToSelectedElement.length;
 
-  layoutAsJson: (state) => {
-    return safeJson(state.layout, false/*not compressed*/)
-    // let json = JSON.stringify(state.layout, jsonReplacerCallback, 4);
+      var _element = len > 0 ? state.pathToSelectedElement[len - 1] : null;
+
+      console.log("propertyElement=", _element);
+      return _element;
+    }
+
+    return null;
+  },
+  layoutAsJson: function layoutAsJson(state) {
+    return safeJson(state.layout, false
+    /*not compressed*/
+    ); // let json = JSON.stringify(state.layout, jsonReplacerCallback, 4);
     // return json;
   },
-
-
-  propertyElementAsJson: (state) => {
+  propertyElementAsJson: function propertyElementAsJson(state) {
     if (state.pathToSelectedElement && state.pathToSelectedElement.length > 0) {
-      let element = state.pathToSelectedElement[state.pathToSelectedElement - 1]
-      return safeJson(element, false/*not compressed*/)
+      var _element2 = state.pathToSelectedElement[state.pathToSelectedElement - 1];
+      return safeJson(_element2, false
+      /*not compressed*/
+      );
     }
-    return null
-  },
 
-}
+    return null;
+  }
+  /********************************************
+   *
+   *                 ACTIONS
+   *
+   ********************************************/
+  // see https://vuex.vuejs.org/guide/actions.html
 
+};
+var actions = {
+  setContent: function setContent(_ref, _ref2) {
+    var commit = _ref.commit,
+        state = _ref.state;
+    var vm = _ref2.vm,
+        type = _ref2.type,
+        layout = _ref2.layout,
+        anchor = _ref2.anchor;
+    console.log("In Action contentLayout/setContent(type=".concat(type, ", layout=").concat(layout ? 'yes' : 'no', ", anchor=").concat(anchor, ")"));
 
-/********************************************
- *
- *                 ACTIONS
- *
- ********************************************/
-// see https://vuex.vuejs.org/guide/actions.html
-const actions = {
-
-  setContent ({ commit, state }, { vm, type, layout, anchor}) {
-    console.log(`In Action contentLayout/setContent(type=${type}, layout=${layout?'yes':'no'}, anchor=${anchor})`)
     if (layout) {
-      commit('setLayout', { vm, layout: layout, crowdhoundElement: null, editable: false })
+      commit('setLayout', {
+        vm: vm,
+        layout: layout,
+        crowdhoundElement: null,
+        editable: false
+      });
     } else if (anchor) {
-      loadLayoutFromAnchor(commit, vm, anchor)
+      loadLayoutFromAnchor(commit, vm, anchor);
     } else {
-      console.error(`Action contentLayout/setContent should be passed either anchor or layout`)
+      console.error("Action contentLayout/setContent should be passed either anchor or layout");
     }
   },
-
-
   // Delete an element from the current layout.
-  deleteElementAction({ commit, state }, { vm, element}) {
-    console.log('Action contentLayout/deleteElementAction()', element)
+  deleteElementAction: function deleteElementAction(_ref3, _ref4) {
+    var commit = _ref3.commit,
+        state = _ref3.state;
+    var vm = _ref4.vm,
+        element = _ref4.element;
+    console.log('Action contentLayout/deleteElementAction()', element); // Ok, let's do it
 
-    // Ok, let's do it
-    commit('deleteElementMutation', { vm, element })
+    commit('deleteElementMutation', {
+      vm: vm,
+      element: element
+    }); // Start the timer, to save after a short delay
 
-    // Start the timer, to save after a short delay
-    rememberToSave(commit, state, vm)
+    rememberToSave(commit, state, vm);
   },
   // insertChildAction', { vm: this, element, child: newchild, position: -1 })
+  insertLayoutAction: function insertLayoutAction(_ref5, _ref6) {
+    var commit = _ref5.commit,
+        state = _ref5.state;
+    var vm = _ref6.vm,
+        parent = _ref6.parent,
+        position = _ref6.position,
+        layout = _ref6.layout;
+    console.log('Action contentLayout/insertLayoutAction()', parent, position, layout);
+    console.log("state=", state);
+    console.log("ok 1");
+    var data;
 
-  insertLayoutAction({ commit, state }, { vm, parent, position, layout}) {
-    console.log('Action contentLayout/insertLayoutAction()', parent, position, layout)
-    console.log(`state=`, state)
-
-console.log(`ok 1`)
-    let data
-    switch (typeof(layout)) {
+    switch (_typeof(layout)) {
       case 'string':
-
         // Parse the layout
-        console.log(`ok 1a`)
+        console.log("ok 1a");
+
         try {
           data = JSON.parse(layout);
-          console.log(`ok 1b`)
-        } catch(e) {
-          console.log(`ok 1c`)
+          console.log("ok 1b");
+        } catch (e) {
+          console.log("ok 1c");
           console.error('Error while pasting:', e);
-          console.log(`ok 1d`)
-          return contentLayoutStore_handleError(vm, `Invalid paste object (not JSON).`)
+          console.log("ok 1d");
+          return contentLayoutStore_handleError(vm, "Invalid paste object (not JSON).");
         }
+
         break;
 
       case 'object':
-      console.log(`ok 1e`)
-        data = layout
+        console.log("ok 1e");
+        data = layout;
         break;
 
       default:
-        return contentLayoutStore_handleError(`Invalid paste object`)
+        return contentLayoutStore_handleError("Invalid paste object");
     }
-    console.log(`ok 2`)
-    console.log(`data=`, data)
 
-    // Do basic checks, to ensure something unrelated isn't being pasted
+    console.log("ok 2");
+    console.log("data=", data); // Do basic checks, to ensure something unrelated isn't being pasted
+
     if (data.type !== 'contentservice.io') {
-      return contentLayoutStore_handleError(`Invalid paste object (not from contentservice.io).`)
+      return contentLayoutStore_handleError("Invalid paste object (not from contentservice.io).");
     }
-    console.log(`ok 3`)
 
-    // Check the data, according to the version
-    let toInsert
+    console.log("ok 3"); // Check the data, according to the version
+
+    var toInsert;
+
     if (data.version === '1.0') {
-
       // Check it complies to version 1.0
-      if (typeof(data.layout) === 'undefined') {
-        return contentLayoutStore_handleError(`Invalid paste object (missing layout).`)
+      if (typeof data.layout === 'undefined') {
+        return contentLayoutStore_handleError("Invalid paste object (missing layout).");
       }
-      toInsert = data.layout
-    } else {
-      return contentLayoutStore_handleError(`Invalid paste object (unknown version ${data.version}).`)
-    }
-    console.log(`ok 4`)
 
-    // Check we have all the required dependencies
+      toInsert = data.layout;
+    } else {
+      return contentLayoutStore_handleError("Invalid paste object (unknown version ".concat(data.version, ")."));
+    }
+
+    console.log("ok 4"); // Check we have all the required dependencies
     //ZZZZ
 
-    console.log(`Will insert `, toInsert)
-    console.log(`Position is`, position)
+    console.log("Will insert ", toInsert);
+    console.log("Position is", position); // Ok, let's do it
 
-    // Ok, let's do it
-    commit('insertLayoutMutation', { vm, parent, position, layout: toInsert })
+    commit('insertLayoutMutation', {
+      vm: vm,
+      parent: parent,
+      position: position,
+      layout: toInsert
+    }); // Start the timer, to save after a short delay
 
-    // Start the timer, to save after a short delay
-    rememberToSave(commit, state, vm)
+    rememberToSave(commit, state, vm);
   },
-
-
   // setPropertyElement ({ commit }, { element }) {
   //   console.log(`setPropertyElement(${element.id})`)
   //   commit(types.SET_PROPERTY_ELEMENT, { element })
   // },
-  setProperty ({ commit, state }, { vm, element, name, value }) {
-    console.log(`action setProperty(${element.id}, ${name}, ${value})`)
-
+  setProperty: function setProperty(_ref7, _ref8) {
+    var commit = _ref7.commit,
+        state = _ref7.state;
+    var vm = _ref8.vm,
+        element = _ref8.element,
+        name = _ref8.name,
+        value = _ref8.value;
+    console.log("action setProperty(".concat(element.id, ", ").concat(name, ", ").concat(value, ")"));
     /*
      *  Two possibilities here:
      *    1. We are trying to update a fixed layout - error.
      *    2. We are updating an element within a layout - save the layout.
      */
     // Check that we are updating an element in a layout that is being edited.
-    if (state.crowdhoundElement === null) {
-      // Should not be trying to update this.
+
+    if (state.crowdhoundElement === null) {// Should not be trying to update this.
     }
 
-    commit('updateElementProperty', { vm, element, name, value })
-
-    //ZZZZ Timer should probably be set in the mutation?
+    commit('updateElementProperty', {
+      vm: vm,
+      element: element,
+      name: name,
+      value: value
+    }); //ZZZZ Timer should probably be set in the mutation?
     // There is a potential timing problem.
     // - the commit might not be instantaneous (is that correct), so
     // a timeout created here might run before the commit occurs.
-    commit('setSaveMsg', { msg: contentLayoutStore_DIRTY })
 
-    // Start the timer, to save after a short delay
-    rememberToSave(commit, state, vm)
-  },
+    commit('setSaveMsg', {
+      msg: contentLayoutStore_DIRTY
+    }); // Start the timer, to save after a short delay
 
-}
-
-
-
-
+    rememberToSave(commit, state, vm);
+  }
+};
 /********************************************
  *
  *                 MUTATIONS
  *
  ********************************************/
-const mutations = {
 
+var mutations = (_mutations = {
   // Set the current layout, displayed in the middle panel.
-  setLayout (state, { vm, layout, anchor, crowdhoundElement, /*tenant, elementId, */ editable /*, element */ } ) {
+  setLayout: function setLayout(state, _ref9) {
+    var vm = _ref9.vm,
+        layout = _ref9.layout,
+        anchor = _ref9.anchor,
+        crowdhoundElement = _ref9.crowdhoundElement,
+        editable = _ref9.editable;
     //console.log('In Mutation contentLayout/setLayout()', state)
-    console.log('In Mutation contentLayout/setLayout()', layout)
+    console.log('In Mutation contentLayout/setLayout()', layout);
 
     if (layout) {
-      state.layout = addAnyMissingValues(vm, layout)
-      console.log(`sanitized layout:`, state.layout)
-      state.crowdhoundElement = crowdhoundElement
+      state.layout = addAnyMissingValues(vm, layout);
+      console.log("sanitized layout:", state.layout);
+      state.crowdhoundElement = crowdhoundElement;
     } else {
-      console.error(`Mutation contentLayout/setLayout requires 'layout' parameter`)
-      state.layout = null
-      state.anchor = null
-      state.crowdhoundElement = null
-      state.editable = false
+      console.error("Mutation contentLayout/setLayout requires 'layout' parameter");
+      state.layout = null;
+      state.anchor = null;
+      state.crowdhoundElement = null;
+      state.editable = false; // Hack
 
-      // Hack
       if (element) {
-        console.error(`We do have 'element'`)
+        console.error("We do have 'element'");
       }
-      return
+
+      return;
     }
 
     if (crowdhoundElement) {
-      state.crowdhoundElement = crowdhoundElement
-      state.anchor = anchor
+      state.crowdhoundElement = crowdhoundElement;
+      state.anchor = anchor;
     } else {
-      state.crowdhoundElement = null
-      state.anchor = null
+      state.crowdhoundElement = null;
+      state.anchor = null;
     }
 
     if (editable) {
-      state.editable = editable
+      state.editable = editable;
     } else {
-      state.editable = false
+      state.editable = false;
     }
   },
-
   // Set the element shown in the properties panel.
   // This *should* be an element in the current layout
-  setPropertyElement (state, { element } ) {
-    console.log('In Mutation contentLayout/setPropertyElement()', element)
-    //return
+  setPropertyElement: function setPropertyElement(state, _ref10) {
+    var element = _ref10.element;
+    console.log('In Mutation contentLayout/setPropertyElement()', element); //return
     // console.log('State is ', state)
     // Clone the element
     //let duplicate = JSON.parse(JSON.stringify(data.element));
     // console.log(`Before`)
     // state.propertyElement = element
     //console.log(`After`)
-
     // console.log(`LOOKING FOR ${element.id}`)
-    let path = trackDownElementInLayout(state, element.id)
-    //console.log(`path to selected element=`, path)
-    state.pathToSelectedElement = path ? path : [ ]
-    state.expandedElement = path ? path[path.length-1] : null
 
-    console.log(`Path to selected element=`, path)
-    path.forEach((element) => {
-      console.log(`  ${element.type}: ${element.id}`)
-    })
+    var path = trackDownElementInLayout(state, element.id); //console.log(`path to selected element=`, path)
+
+    state.pathToSelectedElement = path ? path : [];
+    state.expandedElement = path ? path[path.length - 1] : null;
+    console.log("Path to selected element=", path);
+    path.forEach(function (element) {
+      console.log("  ".concat(element.type, ": ").concat(element.id));
+    });
   },
-
   // Set the element currently expanded in the properties panel.
   // This *must* be an element in pathToSelectedElement.
-  setExpandedElement (state, { element } ) {
-    console.log('In Mutation contentLayout/setPropertyElement()', element)
-    //return
+  setExpandedElement: function setExpandedElement(state, _ref11) {
+    var element = _ref11.element;
+    console.log('In Mutation contentLayout/setPropertyElement()', element); //return
     // console.log('State is ', state)
     // Clone the element
     //let duplicate = JSON.parse(JSON.stringify(data.element));
     // console.log(`Before`)
-
     // Check this element is in the path to the current property element.
-    for (let i = 0; i < state.pathToSelectedElement.length; i++) {
+
+    for (var i = 0; i < state.pathToSelectedElement.length; i++) {
       if (state.pathToSelectedElement[i].id === element.id) {
         // Found it
-        state.expandedElement = element
-        return
+        state.expandedElement = element;
+        return;
       }
     }
-    console.error(`setExpandedElement: element not in pathToSelectedElement`)
-  },
 
+    console.error("setExpandedElement: element not in pathToSelectedElement");
+  },
   // Set the screen mode [view | edit | layout | debug]
-  setEditMode (state, { mode, previousEditMode }) {
+  setEditMode: function setEditMode(state, _ref12) {
+    var mode = _ref12.mode,
+        previousEditMode = _ref12.previousEditMode;
     //ZZZZ Check the parameters
     // console.log(`mutation contentLayout/setEditMode(${mode}, ${previousEditMode})`)
-    state.mode = mode
+    state.mode = mode;
+
     if (previousEditMode) {
-      state.previousEditMode = previousEditMode
+      state.previousEditMode = previousEditMode;
     }
   },
-
   // Start dragging. This should temporarily switch to layout mode.
-  dragStart (state, { }) {
-    // console.log(`mutation contentLayout/dragStart()`)
-    state.dragging = true
-  },
-  dragStop (state, { }) {
-    // console.log(`mutation contentLayout/dragStop()`)
-    state.dragging = false
-  },
+  dragStart: function dragStart(state, _ref13) {
+    _objectDestructuringEmpty(_ref13);
 
+    // console.log(`mutation contentLayout/dragStart()`)
+    state.dragging = true;
+  },
+  dragStop: function dragStop(state, _ref14) {
+    _objectDestructuringEmpty(_ref14);
+
+    // console.log(`mutation contentLayout/dragStop()`)
+    state.dragging = false;
+  },
   // Set the screen mode [view | edit | layout | debug]
   //ZZZZ deprecate this
-  setMode (state, { mode }) {
+  setMode: function setMode(state, _ref15) {
+    var mode = _ref15.mode;
     //ZZZZ Check the parameters
     // console.log(`mutation contentLayout/setMode(${mode})`)
-    state.mode = mode
+    state.mode = mode;
   },
-
   // Set the message shown above the page (CLEAN | DIRTY | SAVING, etc).
-  setSaveMsg (state, { msg }) {
+  setSaveMsg: function setSaveMsg(state, _ref16) {
+    var msg = _ref16.msg;
     //ZZZZ Check the parameters
     // console.log(`mutation contentLayout/setSaveMsg(${msg})`)
-    state.saveMsg = msg
+    state.saveMsg = msg;
   },
-
   // Set the value of a property in an element.
   // The element is not necessarily the 'propertyElement',
   // it *should* be an element in the current layout.
-  updateElementProperty (state, { vm, element, name, value }) {
+  updateElementProperty: function updateElementProperty(state, _ref17) {
+    var vm = _ref17.vm,
+        element = _ref17.element,
+        name = _ref17.name,
+        value = _ref17.value;
     //ZZZZ Check the parameters
-    console.log(`mutation contentLayout/updateElementProperty(${element.id}, ${name}, ${value})`, element)
-
-    // Do this such that a new reactive property is created.
+    console.log("mutation contentLayout/updateElementProperty(".concat(element.id, ", ").concat(name, ", ").concat(value, ")"), element); // Do this such that a new reactive property is created.
     // https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats
     // NOT: element[name] = value
-    vm.$set(element, name, value)
-  },
 
+    vm.$set(element, name, value);
+  },
   // Clone an element hierarchy and insert it as a child
   // into an element in the current layout.
   // insertChild(state, { vm, element, child, position}) {
@@ -24690,95 +25346,83 @@ const mutations = {
   //   }
   //   //console.log(`insertChild, parent after:`, safeJson(element));
   // },
-
-  insertLayoutMutation (state, { vm, parent, position, layout }) {
-    console.log('In Mutation contentLayout/insertLayoutMutation()', parent, position, layout)
-    //let toInsert = layout
-
+  insertLayoutMutation: function insertLayoutMutation(state, _ref18) {
+    var vm = _ref18.vm,
+        parent = _ref18.parent,
+        position = _ref18.position,
+        layout = _ref18.layout;
+    console.log('In Mutation contentLayout/insertLayoutMutation()', parent, position, layout); //let toInsert = layout
     // if (position === 'last' || position < 0) {
     //   position = parent.children.length
     // }
-
     // Clone the hierarchy (this is the cheat's way)
     //let newchild = JSON.parse(JSON.stringify(child));
-    let toInsert = JSON.parse(safeJson(layout));
 
-    // Before inserting, check we have unique IDs for all elements in the
+    var toInsert = JSON.parse(safeJson(layout)); // Before inserting, check we have unique IDs for all elements in the
     // layout. By preference we will retain the IDs, so when a user cuts and
     // pastes any existing references will be retained. However if they copy
     // and paste, we don't want duplicate IDs already in our parent's layout.
-    replaceIdsAlreadyInLayout(state, toInsert)
 
-    console.log(`ok 5`)
+    replaceIdsAlreadyInLayout(state, toInsert);
+    console.log("ok 5"); // Check it is sane
 
-    // Check it is sane
-    addAnyMissingValues(vm, toInsert)
+    addAnyMissingValues(vm, toInsert); // For other element types, we insert the actual element.
 
-    // For other element types, we insert the actual element.
     if (toInsert.type === 'layout') {
       // If an entire 'layout' is being inserted, we insert the children one by one.
-      console.log(`Inserting layout element. ${toInsert.children.length} items.`)
-
+      console.log("Inserting layout element. ".concat(toInsert.children.length, " items."));
     } else {
       // For non-layout elements, we insert the actual element
-      console.log(`Inserting non-layout element: ${toInsert.type} at position ${position}`)
+      console.log("Inserting non-layout element: ".concat(toInsert.type, " at position ").concat(position));
+
       if (position === 'last' || position < 0) {
         // Add to the end
-        parent.children.push(toInsert)
-        console.log(`ok 6a`)
+        parent.children.push(toInsert);
+        console.log("ok 6a");
       } else if (position <= parent.children.length) {
         // Insert at a specific position
         parent.children.splice(position, 0, toInsert);
-        console.log(`ok 6b`)
+        console.log("ok 6b");
       } else {
         // Invalid position
-        alert('insertLayoutMutation: Internal error #2963 (invalid position)')
-        return
+        alert('insertLayoutMutation: Internal error #2963 (invalid position)');
+        return;
       }
     }
   },
-
   // Delete an element from the current layout.
-  deleteElementMutation(state, { vm, element}) {
-    console.log(`In Mutation contentLayout/deleteElementMutation(${element.id} (${element.type}))`)
+  deleteElementMutation: function deleteElementMutation(state, _ref19) {
+    var vm = _ref19.vm,
+        element = _ref19.element;
+    console.log("In Mutation contentLayout/deleteElementMutation(".concat(element.id, " (").concat(element.type, "))")); // Find the path down to this element, so we know the parent.
 
-    // Find the path down to this element, so we know the parent.
-    let path = trackDownElementInLayout(state, element.id)
+    var path = trackDownElementInLayout(state, element.id);
+
     if (path && path.length >= 2) {
-      let parent = path[path.length - 2]
-      console.log(`Parent is ${parent.id} (${parent.type})`)
+      var parent = path[path.length - 2];
+      console.log("Parent is ".concat(parent.id, " (").concat(parent.type, ")"));
 
-      for (let index = 0; index < parent.children.length; index++) {
+      for (var index = 0; index < parent.children.length; index++) {
         if (parent.children[index].id == element.id) {
           // We've found it, so remove it
-          console.log(`Found item to delete in position ${index}`)
-          parent.children.splice(index, 1)
-          return
+          console.log("Found item to delete in position ".concat(index));
+          parent.children.splice(index, 1);
+          return;
         }
       }
     }
-
-  },
-
-  // Set the element shown in the properties panel.
-  // This *should* be an element in the current layout
-  setMode (state, { mode } ) {
-    console.log(`In Mutation setMode(${mode})`)
-    console.log('State is ', state)
-
-    state.mode = mode
-  },
-
-  // Call this method to trigger redrawing of components that monitor
-  // the value of 'refreshCounter'.
-  refreshMutation (state, { }) {
-    console.log('In Mutation refreshMutation()', state.refreshCounter)
-    state.refreshCounter++
   }
+}, _defineProperty(_mutations, "setMode", function setMode(state, _ref20) {
+  var mode = _ref20.mode;
+  console.log("In Mutation setMode(".concat(mode, ")"));
+  console.log('State is ', state);
+  state.mode = mode;
+}), _defineProperty(_mutations, "refreshMutation", function refreshMutation(state, _ref21) {
+  _objectDestructuringEmpty(_ref21);
 
-}//- mutations
-
-
+  console.log('In Mutation refreshMutation()', state.refreshCounter);
+  state.refreshCounter++;
+}), _mutations); //- mutations
 // function overwriteElementIDs(element) {
 //   element.id = Math.floor(Math.random() * 10000000000)
 //   console.log('New Id is ', element.id)
@@ -24787,28 +25431,26 @@ const mutations = {
 //     element.children.forEach((child) => overwriteElementIDs(child))
 //   }
 // }
-
-
 // Prepare a hierarchy of elements that will be used to lay out a page.
-function addAnyMissingValues (vm, element) {
 
+function addAnyMissingValues(vm, element) {
   // Create a new element ID, but do not modify an existing ID.
   if (!element.id) {
-    vm.$set(element, 'id', Math.floor(Math.random() * 10000000000))
-    // console.log('New Id is ', element.id)
-  }
+    vm.$set(element, 'id', Math.floor(Math.random() * 10000000000)); // console.log('New Id is ', element.id)
+  } // Make sure we have a 'children' element
 
-  // Make sure we have a 'children' element
+
   if (!element.children) {
-    vm.$set(element, 'children', [ ])
-  }
+    vm.$set(element, 'children', []);
+  } // Now sanitize any children
 
-  // Now sanitize any children
-  for (let i = 0; i < element.children.length; ) {
-    let child = element.children[i]
+
+  for (var i = 0; i < element.children.length;) {
+    var child = element.children[i];
+
     if (child) {
-      addAnyMissingValues(vm, child)
-      i++
+      addAnyMissingValues(vm, child);
+      i++;
     } else {
       // null child?
       // This should not happen, but it does on delete
@@ -24821,8 +25463,7 @@ function addAnyMissingValues (vm, element) {
       // console.log(`a2:`, a2)
       // console.log(`a3:`, a3)
       // console.log(`l1:`, l1)
-      element.children.splice(i, 1)
-      // let b1 = element.children[i-1]
+      element.children.splice(i, 1); // let b1 = element.children[i-1]
       // let b2 = element.children[i]
       // let b3 = element.children[i+1]
       // let l2 = element.children.length
@@ -24834,340 +25475,355 @@ function addAnyMissingValues (vm, element) {
     }
   }
 
-  return element
+  return element;
 }
 
-
-
-function safeJson (element, compressed/*boolean,optional*/) {
-  let spaces = (compressed ? 0 : 4)
-
-  // Custom replacer function - gets around "TypeError: Converting circular structure to JSON"
+function safeJson(element, compressed
+/*boolean,optional*/
+) {
+  var spaces = compressed ? 0 : 4; // Custom replacer function - gets around "TypeError: Converting circular structure to JSON"
   // Modified from http://www.johnantony.com/pretty-printing-javascript-objects-as-json/
-  var replacer = function(key, value) {
+
+  var replacer = function replacer(key, value) {
     // ignore any circular links (they are circular)
     // if (key === '_parent') {
     //   return
     // }
-    return value
-  }
-  // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-  let json = JSON.stringify(element, jsonReplacerCallback, spaces);
+    return value;
+  }; // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
 
+
+  var json = JSON.stringify(element, jsonReplacerCallback, spaces);
   return json;
-}
-
-
-//ZZKOP
+} //ZZKOP
 // function ZlayoutRoot (element) {
 //   while (element._parent) {
 //     element = element._parent
 //   }
 //   return element
 // }
-
 // function ZlayoutChanged (element) {
 //   let root = layoutRoot(element)
 //   root.tt_counter++
 // }
 
-function loadLayoutFromAnchor (commit, vm, anchor, editable) {
-  console.log(`store.loadlayout(${anchor})`)
 
-  // We select the content from crowdhound
+function loadLayoutFromAnchor(commit, vm, anchor, editable) {
+  console.log("store.loadlayout(".concat(anchor, ")")); // We select the content from crowdhound
   //console.log(`ContentTriplePane.loadLayout`)
-  if (typeof(vm.$content) === 'undefined') {
-    console.error('this.$content not defined. Remember to us Contentservice.use(Vue).')
-    return
+
+  if (typeof vm.$content === 'undefined') {
+    console.error('this.$content not defined. Remember to us Contentservice.use(Vue).');
+    return;
   }
+
   if (vm.$content.disabled) {
-    console.error('Contentservice disabled')
-    return
+    console.error('Contentservice disabled');
+    return;
   }
 
-  let canEdit = false
-  if (typeof(editable) === 'undefined') {
-    canEdit = true // Default to editable ZZZ
+  var canEdit = false;
+
+  if (typeof editable === 'undefined') {
+    canEdit = true; // Default to editable ZZZ
   } else if (editable) {
-    canEdit = true
-  }
-
-  //- let anchor = '$testpage.text1'
+    canEdit = true;
+  } //- let anchor = '$testpage.text1'
   //let shortAnchor = `$testpage.${this.anchorPrefix}.${this.anchorSuffix}`
-  let shortAnchor = anchor.startsWith('$') ? anchor.substring(1) : anchor
-  let fullAnchor = `$`  + shortAnchor
-  let elementType = 'layout'
-  console.error(`>>> anchor is ${anchor}.`)
 
-  //- let params = {
+
+  var shortAnchor = anchor.startsWith('$') ? anchor.substring(1) : anchor;
+  var fullAnchor = "$" + shortAnchor;
+  var elementType = 'layout';
+  console.error(">>> anchor is ".concat(anchor, ".")); //- let params = {
   //-   elementId: anchor,
   //-   withChildren: true
   //- }
-  vm.$content.select(this, fullAnchor, elementType)
-    //- this.$content.select(this, params)
-    .then(result => {
-      // Use the elements
-      // console.log(`>>> result=`, result)
-      if (result.elements.length < 1) {
-        // Should not be possible
-        console.error(`Selecting layout returned no element. How is this possible?`)
-        return
+
+  vm.$content.select(this, fullAnchor, elementType) //- this.$content.select(this, params)
+  .then(function (result) {
+    // Use the elements
+    // console.log(`>>> result=`, result)
+    if (result.elements.length < 1) {
+      // Should not be possible
+      console.error("Selecting layout returned no element. How is this possible?");
+      return;
+    } // See if the description contains a valid layout
+    // console.log(`result=`, result)
+
+
+    var elementContainingLayout = result.elements[0];
+    var json = elementContainingLayout.description; // console.log('json=', json)
+
+    var layout = null;
+
+    if (json === shortAnchor) {// console.error(`>>> NOT parsing json (it's the anchor)`)
+      // New element/layout
+    } else {
+      // console.error(`>>> parsing JSON`)
+      try {
+        layout = JSON.parse(json);
+      } catch (e) {
+        console.error("Broken JSON: ", e);
+        console.log("json=".concat(json));
+      } // console.log('parsed JSON layout=', layout)
+      // Check for errors
+
+    }
+
+    console.log(">>> layout=", layout); // If we don't already have a layout, create an initial layout now.
+
+    if (layout === null) {
+      console.error(">>> Creating default layout"); // Word out a heading, based on the anchor
+
+      var heading = anchor;
+
+      if (heading.startsWith('$')) {
+        heading = heading.substring(1);
       }
 
-      // See if the description contains a valid layout
-      // console.log(`result=`, result)
-      let elementContainingLayout = result.elements[0]
-      let json = elementContainingLayout.description
-      // console.log('json=', json)
-      let layout = null
-      if (json === shortAnchor) {
-        // console.error(`>>> NOT parsing json (it's the anchor)`)
-        // New element/layout
-      } else {
-        // console.error(`>>> parsing JSON`)
-        try {
-          layout = JSON.parse(json)
-        } catch (e) {
-          console.error(`Broken JSON: `, e)
-          console.log(`json=${json}`)
-        }
-        // console.log('parsed JSON layout=', layout)
-        // Check for errors
-      }
-      console.log(`>>> layout=`, layout)
-
-      // If we don't already have a layout, create an initial layout now.
-      if (layout === null) {
-
-        console.error(`>>> Creating default layout`)
-
-        // Word out a heading, based on the anchor
-        let heading = anchor
-        if (heading.startsWith('$')) {
-          heading = heading.substring(1)
-        }
-        if (heading.startsWith('page-')) {
-          heading = heading.substring(5)
-        }
-        let arr = heading.split('-')
-        heading = ''
-        arr.forEach((word, index) => {
-          if (index > 0) {
-            heading += ' '
-          }
-          switch (word.toLowerCase()) {
-            case 'the':
-            case 'to':
-            case 'by':
-            case 'of':
-            case '&':
-            case 'and':
-            case 'for':
-            case 'with':
-              // Do not capitalize the word
-              heading += word
-              break
-
-            default:
-              // Capitalise the word
-              heading += word.substring(0, 1).toUpperCase() + word.substring(1)
-          }
-        })
-
-        // Create an initial layout
-        layout = {
-          type: 'layout',
-          children: [
-            {
-              type: 'section',
-              children: [
-                {
-                  type: 'container',
-                  children: [
-                    {
-                        "type": "froala",
-                        "text": `<h1 style=\"text-align: center;\"><span style=\"font-size: 48px;\">${heading}</span></h1>`,
-                        "id": 2,
-                        "children": []
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-
+      if (heading.startsWith('page-')) {
+        heading = heading.substring(5);
       }
 
-      // Save the layout in our state store.
-      let sanitized = addAnyMissingValues(vm, layout)
-      commit('setLayout', {
-        vm,
-        anchor: fullAnchor,
-        layout: layout,
-        crowdhoundElement: elementContainingLayout, // NOT an element in the layout
-        // tenant: elementContainingLayout.tenant,
-        // elementId: elementContainingLayout.id,
-        editable: canEdit })
+      var arr = heading.split('-');
+      heading = '';
+      arr.forEach(function (word, index) {
+        if (index > 0) {
+          heading += ' ';
+        }
 
-    })
-    .catch(e => {
-      let desc = `Error loading comments`
-      console.log(`Dirty rotten error: `, e)
-      /* handleError(this, desc, params, e) */
-      state.selectError = true
-    })//- select
-}
+        switch (word.toLowerCase()) {
+          case 'the':
+          case 'to':
+          case 'by':
+          case 'of':
+          case '&':
+          case 'and':
+          case 'for':
+          case 'with':
+            // Do not capitalize the word
+            heading += word;
+            break;
 
-// If any of the IDs in the specified element or it's descendants exist
+          default:
+            // Capitalise the word
+            heading += word.substring(0, 1).toUpperCase() + word.substring(1);
+        }
+      }); // Create an initial layout
+
+      layout = {
+        type: 'layout',
+        children: [{
+          type: 'section',
+          children: [{
+            type: 'container',
+            children: [{
+              "type": "froala",
+              "text": "<h1 style=\"text-align: center;\"><span style=\"font-size: 48px;\">".concat(heading, "</span></h1>"),
+              "id": 2,
+              "children": []
+            }]
+          }]
+        }]
+      };
+    } // Save the layout in our state store.
+
+
+    var sanitized = addAnyMissingValues(vm, layout);
+    commit('setLayout', {
+      vm: vm,
+      anchor: fullAnchor,
+      layout: layout,
+      crowdhoundElement: elementContainingLayout,
+      // NOT an element in the layout
+      // tenant: elementContainingLayout.tenant,
+      // elementId: elementContainingLayout.id,
+      editable: canEdit
+    });
+  }).catch(function (e) {
+    var desc = "Error loading comments";
+    console.log("Dirty rotten error: ", e);
+    /* handleError(this, desc, params, e) */
+
+    contentLayoutStore_state.selectError = true;
+  }); //- select
+} // If any of the IDs in the specified element or it's descendants exist
 // in our currently-being-edited layout, replace them. This is
 // typically used before pasting stuff into the current layout.
+
+
 function replaceIdsAlreadyInLayout(state, layoutToInsert) {
-  console.log(`replaceIdsAlreadyInLayout(element: ${layoutToInsert.id}, elementType: ${layoutToInsert.type})`)
+  console.log("replaceIdsAlreadyInLayout(element: ".concat(layoutToInsert.id, ", elementType: ").concat(layoutToInsert.type, ")")); // Create a hash of all the element IDs already in use
 
-  // Create a hash of all the element IDs already in use
-  let ids = getCurrentlyUsedIds(state)
-  // console.log(`ids=`, ids)
-
+  var ids = getCurrentlyUsedIds(state); // console.log(`ids=`, ids)
   // Recursively look at every element and it's children,
   // replacing element Ids that are already used.
-  let recurse = (element) => {
+
+  var recurse = function recurse(element) {
     // console.log(`  - check element ${element.id}`)
-    let initialId = element.id
+    var initialId = element.id;
+
     while (ids[element.id]) {
-      element.id = Math.floor(Math.random() * 10000000000)
-      console.log(`  replacing id of element ${initialId} (${element.type}) -> ${element.id}`)
+      element.id = Math.floor(Math.random() * 10000000000);
+      console.log("  replacing id of element ".concat(initialId, " (").concat(element.type, ") -> ").concat(element.id));
     }
+
     if (element.children) {
-      element.children.forEach(child => recurse(child))
+      element.children.forEach(function (child) {
+        return recurse(child);
+      });
     }
-  }
+  }; // Check, from the top down.
 
-  // Check, from the top down.
-  recurse(layoutToInsert)
+
+  recurse(layoutToInsert);
 }
-
 /*
  *  Create a has of all the element IDs in the current layout.
  *  returns [] of Id -> true
  */
+
+
 function getCurrentlyUsedIds(state) {
   // console.log(`getCurrentlyUsedIds()`)
   // Recursive through the layout hierarchy, remembering the ids
-  let hash = [ ] // id -> true
-  let recurse = (element) => {
-    // console.log(` - ${element.id}`)
-    hash[element.id] = true
-    if (element.children) {
-      element.children.forEach(child => recurse(child))
-    }
-  }
-  recurse(state.layout)
-  return hash
-}
+  var hash = []; // id -> true
 
+  var recurse = function recurse(element) {
+    // console.log(` - ${element.id}`)
+    hash[element.id] = true;
+
+    if (element.children) {
+      element.children.forEach(function (child) {
+        return recurse(child);
+      });
+    }
+  };
+
+  recurse(state.layout);
+  return hash;
+}
 /*
  *  We have changes, but we don't want to save every little keystroke.
  *  Delay a few seconds and then save.
  */
-function rememberToSave (commit, state, vm) {
 
+
+function rememberToSave(commit, state, vm) {
   // We'll need to save changes to Crowdhound. Don't save every
   // change, but rather wait a few seconds to batch up changes.
-  console.log( `save to Crowdhound (not yet)`)
-  //this.crowdhoundElement.description = value
-  if (saveTimer) {
-    // Already set the timeout to save
+  console.log("save to Crowdhound (not yet)"); //this.crowdhoundElement.description = value
+
+  if (saveTimer) {// Already set the timeout to save
   } else {
     // Save after five seconds
-    commit('setSaveMsg', { msg: contentLayoutStore_DIRTY })
-    //state.saveMsg = DIRTY
-    saveTimer = setTimeout(() => {
-      // Save the changes
-      saveTimer = null
-      //state.saveMsg = SAVING
-      commit('setSaveMsg', { msg: contentLayoutStore_SAVING })
-      //saveToCrowdhound(vm)
+    commit('setSaveMsg', {
+      msg: contentLayoutStore_DIRTY
+    }); //state.saveMsg = DIRTY
 
+    saveTimer = setTimeout(function () {
+      // Save the changes
+      saveTimer = null; //state.saveMsg = SAVING
+
+      commit('setSaveMsg', {
+        msg: contentLayoutStore_SAVING
+      }); //saveToCrowdhound(vm)
       // Squeeze the layout into a single Crowdhound element
-      let crowdhoundElement = {
+
+      var crowdhoundElement = {
         tenant: state.crowdhoundElement.tenant,
         rootId: state.crowdhoundElement.rootId,
         parentId: state.crowdhoundElement.parentId,
         id: state.crowdhoundElement.id,
-        description: safeJson(state.layout, true/*compressed*/)
-      }
-      console.log(`saveToCrowdhound() in Store`, crowdhoundElement)
-      console.log( `safeJson length is ${safeJson(state.layout, true/*compressed*/).length}`)
+        description: safeJson(state.layout, true
+        /*compressed*/
+        )
+      };
+      console.log("saveToCrowdhound() in Store", crowdhoundElement);
+      console.log("safeJson length is ".concat(safeJson(state.layout, true
+      /*compressed*/
+      ).length)); // Update the element (should already exist)
 
-      // Update the element (should already exist)
-      commit('setSaveMsg', { msg: contentLayoutStore_SAVED })
+      commit('setSaveMsg', {
+        msg: contentLayoutStore_SAVED
+      });
+      vm.$content.update(vm, crowdhoundElement).then(function (result) {
+        setTimeout(function () {
+          if (state.saveMsg === contentLayoutStore_DIRTY) {
+            commit('setSaveMsg', {
+              msg: contentLayoutStore_CLEAN
+            });
+          }
+        }, 1700);
+        console.log("result of save:", result);
+        console.log("result of save:", result.data);
+      }).catch(function (e) {
+        var desc = "Error saving html content";
+        console.log(desc, e); //state.saveMsg = ERROR
 
-      vm.$content.update(vm, crowdhoundElement)
-        .then(result => {
-          setTimeout(() => {
-            if (state.saveMsg === contentLayoutStore_DIRTY) {
-              commit('setSaveMsg', { msg: contentLayoutStore_CLEAN })
-            }
-          }, 1700)
-          console.log(`result of save:`, result)
-          console.log(`result of save:`, result.data)
-        })
-        .catch(e => {
-          let desc = `Error saving html content`
-          console.log(desc, e)
-          //state.saveMsg = ERROR
-          commit('setSaveMsg', { msg: contentLayoutStore_ERROR })
-          /* handleError(this, desc, params, e) */
-          //this.selectError = true
-        })//- axios
-    }, contentLayoutStore_SAVE_INTERVAL)
+        commit('setSaveMsg', {
+          msg: contentLayoutStore_ERROR
+        });
+        /* handleError(this, desc, params, e) */
+        //this.selectError = true
+      }); //- axios
+    }, contentLayoutStore_SAVE_INTERVAL);
   }
 }
-
 /*
  *  Display an error message, by whatever means is possible.
  */
+
+
 function contentLayoutStore_handleError(vm, msg) {
   // alert(msg)
   if (vm && vm.$toast) {
-    vm.$toast.open({ message: `${msg}`, type: 'is-danger' })
+    vm.$toast.open({
+      message: "".concat(msg),
+      type: 'is-danger'
+    });
   } else {
-    alert(msg)
+    alert(msg);
   }
-  return false
-}
 
+  return false;
+}
 /*
  *  Recursively find this element within the current layout.
  *  (We don't use parent links, because it's simpler
  *  if we avoid cyclic links in the hierarchy)
  */
-function trackDownElementInLayout(state, requiredID) {
-  console.log(`trackDownElementInLayout(state, requiredID:${requiredID})`)
-  console.log(`state=`, state)
-  console.log(`state.layout=`, state.layout)
 
-  let recurse = (elementInLayout) => {
-    console.log(`  - ${elementInLayout.id} (${elementInLayout.type})`)
+
+function trackDownElementInLayout(state, requiredID) {
+  console.log("trackDownElementInLayout(state, requiredID:".concat(requiredID, ")"));
+  console.log("state=", state);
+  console.log("state.layout=", state.layout);
+
+  var recurse = function recurse(elementInLayout) {
+    console.log("  - ".concat(elementInLayout.id, " (").concat(elementInLayout.type, ")"));
+
     if (elementInLayout.id === requiredID) {
-      return [ elementInLayout ]
+      return [elementInLayout];
     }
+
     if (elementInLayout.children) {
-      for (let i = 0; i < elementInLayout.children.length; i++) {
-        let child = elementInLayout.children[i]
-        let path = recurse(child)
+      for (var i = 0; i < elementInLayout.children.length; i++) {
+        var child = elementInLayout.children[i];
+        var path = recurse(child);
+
         if (path) {
-          return [ elementInLayout, ...path]
+          return [elementInLayout].concat(_toConsumableArray(path));
         }
       }
     }
-    return null
-  }
-  return recurse(state.layout)
-}
 
-// function trackDownElement_recursive(elementInLayout, requiredID) {
+    return null;
+  };
+
+  return recurse(state.layout);
+} // function trackDownElement_recursive(elementInLayout, requiredID) {
 //   console.log(`  trackDownElement_recursive(${elementInLayout.id}, ${requiredID})`)
 //   if (elementInLayout.id === requiredID) {
 //     // console.log(`found leaf`, element)
@@ -25183,48 +25839,38 @@ function trackDownElementInLayout(state, requiredID) {
 //   }
 //   return null
 // }
-
 // Function to avoid circular dependencies while "stringify"ing objects to JSON.
 // Gets around "TypeError: Converting circular structure to JSON"
 // See http://www.johnantony.com/pretty-printing-javascript-objects-as-json/
-function jsonReplacerCallback (key, value) {
+
+
+function jsonReplacerCallback(key, value) {
   // ignore any circular links
   // if (key === '_parent') {
   //   return
   // }
-  return value
+  return value;
 }
 
-
-const namespaced = true
-
-
-
-
+var namespaced = true;
 /* harmony default export */ var contentLayoutStore = ({
   "namespaced": true,
-  state,
-  mutations,
-  getters,
-  actions,
+  state: contentLayoutStore_state,
+  mutations: mutations,
+  getters: getters,
+  actions: actions
 });
-
 // CONCATENATED MODULE: ./src/components/index.js
-
 // External libraries
 
 
 
 
 
-
-
-// Our main class
+ // Our main class
 //import { ContentService }  from '../lib/ContentService.js'
 
-
-// Editing-related stuff.
-
+ // Editing-related stuff.
 
 
 
@@ -25234,8 +25880,7 @@ const namespaced = true
 
 
 
-
-// Widgets
+ // Widgets
 
 
 
@@ -25256,10 +25901,7 @@ const namespaced = true
 
 
 
-
-
-// Video widgets
-
+ // Video widgets
 
 
 
@@ -25267,68 +25909,58 @@ const namespaced = true
 
 
 
+ // Property Types
 
-
-
-// Property Types
-
-
-
-// import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
-
+ // import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
 // Our store
 
 
+var _Vue = null;
+var _content = null;
+var _store = null;
 
-let _Vue = null
-let _content = null
-let _store = null
-
-
-function components_install (Vue, options) {
-  console.log('Contentservice.install()', options)
+function components_install(Vue, options) {
+  console.log('Contentservice.install()', options);
 
   if (_content) {
-    console.error("Vue.use(ContentService) has already been called.")
-    return
+    console.error("Vue.use(ContentService) has already been called.");
+    return;
   }
-  _Vue = Vue
 
-  // Create ourselves a ContentService Object
-  console.log('Getting our _content')
-  _content = new ContentService(options)
-  console.log('Have our _content', _content)
-  //_content.checkInitialLoginStatus(false)
+  _Vue = Vue; // Create ourselves a ContentService Object
+
+  console.log('Getting our _content');
+  _content = new ContentService(options);
+  console.log('Have our _content', _content); //_content.checkInitialLoginStatus(false)
   //console.log('Finished checking status')
 
-  const isDef = v => v !== undefined
-
-  // Vue.mixin adds an additional 'beforeCreate' function to it's
+  var isDef = function isDef(v) {
+    return v !== undefined;
+  }; // Vue.mixin adds an additional 'beforeCreate' function to it's
   // list of functions to be called when new Vue is created. We'll
   // use it to look for new Vue({ ContentService }). If found, we'll
   // consider this to be the root. If it is not found, then we will
   // assume this is a child of the root, and create pointers back
   // to the root.
   //Vue.mixin({
-  Vue.mixin({
-    beforeCreate () {
-      // console.log('vue-contentservice: index.js - beforeCreate()')
 
+
+  Vue.mixin({
+    beforeCreate: function beforeCreate() {
+      // console.log('vue-contentservice: index.js - beforeCreate()')
       if (!this.$parent) {
-      //if (isDef(this.$options.contentservice)) {
+        //if (isDef(this.$options.contentservice)) {
         // console.error('Initializing ROOT *********')
         // This must be the root, since we found contentservice in it's options.
-        this._contentRoot = this
-        this._content = _content
-        // this._content.init(this)
-        Vue.util.defineReactive(this, '_content', this.$content)
-        // Vue.util.defineReactive(this, '_content', this._content.jwt)
+        this._contentRoot = this;
+        this._content = _content; // this._content.init(this)
+
+        Vue.util.defineReactive(this, '_content', this.$content); // Vue.util.defineReactive(this, '_content', this._content.jwt)
         // Vue.util.defineReactive(this, '_content', this._content.fromCache)
       } else {
         //console.log('Initialise new child')
-        this._contentRoot = this.$parent._contentRoot
+        this._contentRoot = this.$parent._contentRoot;
       }
-
       /*
       // this.$options is the options passed to new Vue({ })
       if (isDef(this.$options.contentservice)) {
@@ -25340,8 +25972,7 @@ function components_install (Vue, options) {
         Vue.util.defineReactive(this, '_content', this.$content)
         // Vue.util.defineReactive(this, '_content', this._content.jwt)
         // Vue.util.defineReactive(this, '_content', this._content.fromCache)
-
-        console.log('Checking login status from beforeCreate()')
+         console.log('Checking login status from beforeCreate()')
         this._content.checkInitialLoginStatus(false)
       } else {
         console.log('Initialise new child')
@@ -25349,45 +25980,39 @@ function components_install (Vue, options) {
       }
       // registerInstance(this, this)
       */
-    },
-    destroyed () {
-      // registerInstance(this)
-    }
-  })
 
-  // As described above, the Vue instances form a hierachy. The mixin
+    },
+    destroyed: function destroyed() {// registerInstance(this)
+    }
+  }); // As described above, the Vue instances form a hierachy. The mixin
   // above ensures that each instance has an '_contentRoot' field
   // that points to the instance where 'contentservice' was passed to new Vue({  }).
   // Note that it's _contentRoot might actually point to itself.
+
   Object.defineProperty(Vue.prototype, '$content', {
-    get () { return this._contentRoot._content }
-  })
-
-
+    get: function get() {
+      return this._contentRoot._content;
+    }
+  });
   /*
    *  Define the components
    */
-  Vue.component('crowdhound-minimal', CrowdhoundMinimal)
 
-  // Vue.component('content-triple-pane', ContentTriplePane)
-  Vue.component('content-layout-editor', ContentLayoutEditor)
-  Vue.component('content-toolbox', ContentToolbox)
+  Vue.component('crowdhound-minimal', CrowdhoundMinimal); // Vue.component('content-triple-pane', ContentTriplePane)
 
-  Vue.component('content-pane', ContentPane)//ZZZZZ ???
+  Vue.component('content-layout-editor', ContentLayoutEditor);
+  Vue.component('content-toolbox', ContentToolbox);
+  Vue.component('content-pane', ContentPane); //ZZZZZ ???
 
-  Vue.component('content-content', ContentContent)
-  Vue.component('content-content-props', ContentContentProps)
-  Vue.component('content-children', ContentChildren)
-
-  Vue.component('content-admin-blog-list', ContentAdminBlogList)
-  Vue.component('content-admin-blog-details', ContentAdminBlogDetails)
-
-  Vue.component('edit-bar-icons', EditBarIcons)
-
-  // Register the layout element types
+  Vue.component('content-content', ContentContent);
+  Vue.component('content-content-props', ContentContentProps);
+  Vue.component('content-children', ContentChildren);
+  Vue.component('content-admin-blog-list', ContentAdminBlogList);
+  Vue.component('content-admin-blog-details', ContentAdminBlogDetails);
+  Vue.component('edit-bar-icons', EditBarIcons); // Register the layout element types
   // _content.registerLayoutType(Vue, 'section', 'content-section', ContentSection, ContentSectionProps)
-
   // Section Widget
+
   _content.registerWidget(Vue, {
     name: 'section',
     label: 'Section',
@@ -25395,24 +26020,22 @@ function components_install (Vue, options) {
     iconClass: 'fa-arrows-v fa',
     iconClass5: 'fas fa-arrows-alt-v',
     dragtype: 'component',
-
     // Registering for native Vue templates
     componentName: 'content-section',
     component: ContentSection,
     propertyComponent: ContentSectionProps,
-
     // Identical structure to a CUT or COPY from edit mode.
     data: {
       type: "contentservice.io",
       version: "1.0",
       source: "toolbox",
       layout: {
-        type: 'section',
+        type: 'section'
       }
     }
-  })
+  }); // Container Widget
 
-  // Container Widget
+
   _content.registerWidget(Vue, {
     name: 'container',
     label: 'Container',
@@ -25420,25 +26043,22 @@ function components_install (Vue, options) {
     iconClass: 'fa-arrows-h fa',
     iconClass5: 'fas fa-arrows-alt-h',
     dragtype: 'component',
-
     // Register native Vue templates
     componentName: 'content-container',
     component: ContentContainer,
     propertyComponent: ContentContainerProps,
-
     // Identical structure to a CUT or COPY from edit mode.
     data: {
       type: "contentservice.io",
       version: "1.0",
       source: "toolbox",
       layout: {
-        type: 'container',
+        type: 'container'
       }
     }
-  })
+  }); // Columns Widget
 
 
-  // Columns Widget
   _content.registerWidget(Vue, {
     name: 'columns',
     label: 'Columns',
@@ -25446,12 +26066,10 @@ function components_install (Vue, options) {
     iconClass: 'fa-columns fa',
     iconClass5: 'fas fa-columns',
     dragtype: 'component',
-
     // Register native Vue templates
     componentName: 'content-columns',
     component: ContentColumns,
     propertyComponent: ContentColumnsProps,
-
     // Identical structure to a CUT or COPY from edit mode.
     data: {
       type: "contentservice.io",
@@ -25459,22 +26077,18 @@ function components_install (Vue, options) {
       source: "toolbox",
       layout: {
         type: 'columns',
-        children: [
-          {
-            // Column 1
-            children: [ ]
-          },
-          {
-            // Column 2
-            children: [ ]
-          }
-        ]
+        children: [{
+          // Column 1
+          children: []
+        }, {
+          // Column 2
+          children: []
+        }]
       }
     }
-  })
+  }); // Text Widget
 
 
-  // Text Widget
   _content.registerWidget(Vue, {
     name: 'text',
     label: 'Text',
@@ -25482,12 +26096,10 @@ function components_install (Vue, options) {
     iconClass: 'fa-font fa',
     iconClass5: 'fas fa-font',
     dragtype: 'component',
-
     // Register native Vue templates
     componentName: 'content-text',
     component: ContentText,
     propertyComponent: ContentTextProps,
-
     // Identical structure to a CUT or COPY from edit mode.
     data: {
       type: "contentservice.io",
@@ -25495,13 +26107,12 @@ function components_install (Vue, options) {
       source: "toolbox",
       layout: {
         type: 'froala',
-        text: 'Lorem ipsum dolor sit amet, purus metus congue morbi hac elit id.',
+        text: 'Lorem ipsum dolor sit amet, purus metus congue morbi hac elit id.'
       }
     }
-  })
+  }); // Youtube Widget
 
 
-  // Youtube Widget
   _content.registerWidget(Vue, {
     name: 'Youtube',
     label: 'Youtube',
@@ -25509,26 +26120,23 @@ function components_install (Vue, options) {
     iconClass: 'fa fa-youtube',
     iconClass5: 'fab fa-youtube',
     dragtype: 'component',
-
     // Register native Vue templates
     componentName: 'content-youtube',
     component: ContentYoutube,
     propertyComponent: ContentYoutubeProps,
-
     // Identical structure to a CUT or COPY from edit mode.
     data: {
       type: "contentservice.io",
       version: "1.0",
       source: "toolbox",
       layout: {
-        type: 'youtube',
-        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+        type: 'youtube' //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+
       }
     }
-  })
+  }); // Vimeo Widget
 
 
-  // Vimeo Widget
   _content.registerWidget(Vue, {
     name: 'Vimeo',
     label: 'Vimeo',
@@ -25536,133 +26144,128 @@ function components_install (Vue, options) {
     iconClass: 'fa fa-vimeo',
     iconClass5: 'fab fa-vimeo',
     dragtype: 'component',
-
     // Register native Vue templates
     componentName: 'content-youtube',
     component: ContentVimeo,
     propertyComponent: ContentVimeoProps,
-
     // Identical structure to a CUT or COPY from edit mode.
     data: {
       type: "contentservice.io",
       version: "1.0",
       source: "toolbox",
       layout: {
-        type: 'vimeo',
-        //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+        type: 'vimeo' //docId: '2PACX-1vT14-yIpiY4EbQN0XscNBhMuJDZ-k4n03-cWPEgK_kyCTP35ehchuWiPDrTq2TIGYl6nFToRGQRJXZl'
+
       }
     }
-  })
-
-
-
-
+  }); // _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
   // _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
-  // _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
-  _content.registerLayoutType(Vue, 'element', 'content-element', ContentElement, ContentElementProps)
-  // _content.registerLayoutType(Vue, 'text', 'content-text', ContentText, ContentTextProps)
-  _content.registerLayoutType(Vue, 'froala', 'content-froala', ContentFroala, ContentFroalaProps)
-  _content.registerLayoutType(Vue, 'html', 'content-html', ContentFroala, ContentFroalaProps)
-  _content.registerLayoutType(Vue, 'field', 'content-field', ContentField, ContentFieldProps)
-  _content.registerLayoutType(Vue, 'form', 'content-form', ContentForm, ContentFormProps)
-  _content.registerLayoutType(Vue, 'fixed-position-container', 'content-fixed-position-container', ContentFixedPositionContainer, ContentFixedPositionContainerProps)
-  // _content.registerLayoutType(Vue, 'columns', 'content-columns', ContentColumns, ContentColumnsProps)
-  _content.registerLayoutType(Vue, 'layout', 'content-layout', ContentLayout, ContentLayoutProps)
-  _content.registerLayoutType(Vue, 'card', 'card', ContentCardProps, ContentCardProps)
 
 
-  Vue.component('edit-bar-icons', EditBarIcons)
+  _content.registerLayoutType(Vue, 'element', 'content-element', ContentElement, ContentElementProps); // _content.registerLayoutType(Vue, 'text', 'content-text', ContentText, ContentTextProps)
 
 
-  // Set up external libraries
+  _content.registerLayoutType(Vue, 'froala', 'content-froala', ContentFroala, ContentFroalaProps);
+
+  _content.registerLayoutType(Vue, 'html', 'content-html', ContentFroala, ContentFroalaProps);
+
+  _content.registerLayoutType(Vue, 'field', 'content-field', ContentField, ContentFieldProps);
+
+  _content.registerLayoutType(Vue, 'form', 'content-form', ContentForm, ContentFormProps);
+
+  _content.registerLayoutType(Vue, 'fixed-position-container', 'content-fixed-position-container', ContentFixedPositionContainer, ContentFixedPositionContainerProps); // _content.registerLayoutType(Vue, 'columns', 'content-columns', ContentColumns, ContentColumnsProps)
+
+
+  _content.registerLayoutType(Vue, 'layout', 'content-layout', ContentLayout, ContentLayoutProps);
+
+  _content.registerLayoutType(Vue, 'card', 'card', ContentCardProps, ContentCardProps);
+
+  Vue.component('edit-bar-icons', EditBarIcons); // Set up external libraries
   // hotkey
-  Vue.use(v_hotkey_default.a)
 
-  // Vue-split-panel
-  Vue.use(vue_split_panel_default.a)
+  Vue.use(v_hotkey_default.a); // Vue-split-panel
 
-  // Froala. Unfortunately requires jQuery.
+  Vue.use(vue_split_panel_default.a); // Froala. Unfortunately requires jQuery.
   // https://github.com/froala/vue-froala-wysiwyg
+
   if (typeof window != 'undefined') {
     window.$ = __webpack_require__("1157");
   }
-  __webpack_require__("7b23")
-  __webpack_require__("399e")
-  __webpack_require__("7f10")
-  __webpack_require__("50a2")
-  Vue.use(es_default.a)
 
-  // vue-drag-drop
-  Vue.use(vue_drag_drop_common_default.a);
+  __webpack_require__("7b23");
 
-  // v-clipboard
-  Vue.use(index_min_default.a)
+  __webpack_require__("399e");
 
+  __webpack_require__("7f10");
 
-  return _content
+  __webpack_require__("50a2");
+
+  Vue.use(es_default.a); // vue-drag-drop
+
+  Vue.use(vue_drag_drop_common_default.a); // v-clipboard
+
+  Vue.use(index_min_default.a);
+  return _content;
 } //- install()
 
-const obj = {
-  install: components_install,
-}
 
-Object.defineProperty(obj, '_content', {
-  get: function() {
-      return _content
+var ContentServiceLib = {
+  install: components_install
+};
+Object.defineProperty(ContentServiceLib, '_content', {
+  get: function get() {
+    return _content;
   }
 });
-
-Object.defineProperty(obj, 'storeDefinition', {
-  get: function() {
-    return contentLayoutStore
+Object.defineProperty(ContentServiceLib, 'storeDefinition', {
+  get: function get() {
+    return contentLayoutStore;
   }
 });
-
-
-Object.defineProperty(obj, 'store', {
-  get: function() {
+Object.defineProperty(ContentServiceLib, 'store', {
+  get: function get() {
     if (_store) {
-      return _store
-    }
+      return _store;
+    } // Create a new store object
 
-    // Create a new store object
-    _Vue.use(vuex_esm)
+
+    _Vue.use(vuex_esm);
+
     _store = new vuex_esm.Store({
       modules: {
-        contentLayout: contentLayoutStore,
+        contentLayout: contentLayoutStore
       }
     });
     return _store;
   }
-});
-
-// Version 1:
+}); // Version 1:
 // Works for full npm publish and import, but not for npm link because the
 // ECM cannot import default exports, so results in errors when including
 // this module in a Nuxt project:
 //
 //    "export 'default' (imported as 'ContentService') was not found in 'vue-contentservice'""
-/* harmony default export */ var components = (obj);
 
-// Version 2:
+/* harmony default export */ var components = (ContentServiceLib); // Version 2:
 // This makes the build here decide this is ECM, which prevents
 // it from importing defaults while compiling this module:
 //
 //    "export 'default' (imported as 'mod') was not found in '~entry'
-// export const ContentServiceModule = obj
+// export const ContentServiceModule = ContentServiceLib
 // export const yipyip = `yahoo`
-
 // Version 3:
 // Error :
 //
 //    "export 'ContentServiceModule3' was not found in 'vue-contentservice'"
-// let ContentServiceModule3 = obj
+// let ContentServiceModule3 = ContentServiceLib
 //export default ContentServiceModule3
-
 // Version 4
 // Export as an object, containing our object.
-// export default { ContentServiceModule4: obj }
+// export default { ContentServiceModule4: ContentServiceLib }
+// This is used when the npm package is included into an HTML page
 
+if (typeof window !== "undefined" && window.Vue) {
+  window.ContentService = ContentServiceLib;
+}
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib.js
 
 
