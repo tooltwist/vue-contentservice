@@ -21,7 +21,6 @@ import ContentPane from './ContentPane.vue'
 import ContentElement from './ContentElement.vue'
 import ContentElementProps from './ContentElementProps.vue'
 import ContentChildren from './ContentChildren.vue'
-//import ContentChildrenProps from './ContentChildrenProps.vue'
 import ContentContentProps from './ContentContentProps.vue'
 
 // Widgets
@@ -47,7 +46,7 @@ import ContentColumnsProps from './widgets/ContentColumnsProps.vue'
 import ContentCard from './widgets/ContentCardProps.vue'
 import ContentCardProps from './widgets/ContentCardProps.vue'
 
-
+// Video widgets
 import ContentYoutube from './widgets/ContentYoutube.vue'
 import ContentYoutubeProps from './widgets/ContentYoutubeProps.vue'
 import ContentVimeo from './widgets/ContentVimeo.vue'
@@ -67,9 +66,6 @@ import StringProperty from './propertyTypes/StringProperty.vue'
 
 // Our store
 import ContentLayoutStore from '../store/contentLayoutStore.js'
-import DocserviceStore from '../store/docserviceStore.js'
-
-
 
 
 let _Vue = null
@@ -173,6 +169,8 @@ function install (Vue, options) {
 
   Vue.component('content-admin-blog-list', ContentAdminBlogList)
   Vue.component('content-admin-blog-details', ContentAdminBlogDetails)
+
+  Vue.component('edit-bar-icons', EditBarIcons)
 
   // Register the layout element types
   // _content.registerLayoutType(Vue, 'section', 'content-section', ContentSection, ContentSectionProps)
@@ -394,13 +392,6 @@ function install (Vue, options) {
 
 const obj = {
   install: install,
-//  layoutStore,
-
-  // hierarchy manipulation
-  // sanitizeLayout,
-  // safeJson,
-  // layoutRoot,
-  // layoutChanged,
 }
 
 Object.defineProperty(obj, '_content', {
@@ -411,36 +402,22 @@ Object.defineProperty(obj, '_content', {
 
 Object.defineProperty(obj, 'storeDefinition', {
   get: function() {
-    console.error('storeDefinition getter')
     return ContentLayoutStore
   }
 });
 
-//DSZZ
-Object.defineProperty(obj, 'docserviceStoreDefinition', {
-  get: function() {
-    console.error('docserviceStoreDefinition getter')
-    return DocserviceStore
-  }
-});
 
 Object.defineProperty(obj, 'store', {
   get: function() {
-    console.error('store getter')
     if (_store) {
-      console.error('already have store')
       return _store
     }
 
     // Create a new store object
-    console.error('creating new store')
     _Vue.use(Vuex)
     _store = new Vuex.Store({
       modules: {
         contentLayout: ContentLayoutStore,
-
-        //DSZZ
-        docservice: DocserviceStore
       }
     });
     return _store;
