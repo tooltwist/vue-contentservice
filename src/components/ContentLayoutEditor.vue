@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+div(v-if="sane")
   //
   // See https://www.npmjs.com/package/vue-split-panel
   //
@@ -121,6 +121,9 @@ export default {
 
       // Do we have a layout, or are we using the slot provided by the host?
       haveLayout: false,
+
+      // Did we pass sanity checks?
+      sane: true
     }
   },
   mixins : [
@@ -365,6 +368,12 @@ export default {
     console.log(`ContentLayoutEditor.created(): this.$content.store=`, this.$content.store);
     // console.log(`ContentLayoutEditor.created(): this=`, this);
 
+    // Sanity check
+    if (!this.$content) {
+      console.error(`ContentLayoutEditor.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
 
     // If the user has not defined the required options, do so now.
     if (this.rightPane) {
@@ -399,7 +408,6 @@ export default {
       // Incorrect props
       console.error(`content-content must be provided prop 'layout' or prop 'anchor'`)
     }
-  }
   } // created()
 }
 </script>

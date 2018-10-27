@@ -1,5 +1,5 @@
 <template lang="pug">
-.crowdhound-comment
+.crowdhound-comment(v-if="sane")
 
   .surround(v-if="element")
     // Element details
@@ -82,7 +82,10 @@ export default {
       filterKey: '',
       ourColumns,
       locallySelectedUsers: [ ],
-      selectStatus: 'loaded'
+      selectStatus: 'loaded',
+
+      // Did we pass sanity checks?
+      sane: true
     }
   },
   filters: {
@@ -120,6 +123,15 @@ export default {
         }
       }
     },
+  },
+  created: function () {
+
+    // Sanity check
+    if (!this.$content) {
+      console.error(`ContentLayoutEditor.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
   }
 }
 

@@ -29,8 +29,6 @@
     //content-intellidox(v-else-if="element.type=='ix'", :editcontext="editcontext", :element="element")
     div(v-else)
       | Unknown element type '{{element.type}}'
-
-
 </template>
 
 <script>

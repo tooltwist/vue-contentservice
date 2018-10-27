@@ -1,5 +1,5 @@
 <template lang="pug">
-  .c-heading-icons
+  .c-heading-icons(v-if="sane")
     span(v-clipboard="myElementCutToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
       | &nbsp;
       i.fa.fa-cut.fas.fa-cut
@@ -38,6 +38,9 @@ export default {
   mixins: [ ContentMixins, CutAndPasteMixins ],
   data: function () {
     return {
+
+      // Did we pass sanity checks?
+      sane: true
     }
   },
 
@@ -52,6 +55,15 @@ export default {
   methods: {
 
   },
+  created: function () {
+
+    // Sanity check
+    if (!this.$content) {
+      console.error(`ContentLayoutEditor.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
+  }
 }
 </script>
 

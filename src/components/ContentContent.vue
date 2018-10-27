@@ -1,4 +1,5 @@
 <template lang="pug">
+div(v-if="sane")
 
   .tt-content(:zclass="pageEditMode === 'view' ? 'tt-mode-view' : ''", :class="classForMode")
     | &lt;content-content(
@@ -56,7 +57,9 @@ export default {
   },
   data: function () {
     return {
-        //sanitizedContent: { }
+
+      // Did we pass sanity checks?
+      sane: true
     }
   },
   computed: {
@@ -103,6 +106,13 @@ export default {
     console.error(`------------------------------`)
     console.log(`anchor=`, this.anchor)
     console.log(`layout=`, this.layout)
+
+    // Sanity check
+    if (!this.$content) {
+      console.error(`ContentLayoutEditor.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
 
     if (this.anchor) {
 

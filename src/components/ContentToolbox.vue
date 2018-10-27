@@ -1,6 +1,5 @@
 <template lang="pug">
-
-  .toolbox-pane
+  .toolbox-pane(v-if="sane")
     .my-components
       div(v-for="cat in this.$content.toolboxCategories()")
         .my-category-name {{cat.name}}
@@ -42,7 +41,10 @@ export default {
   },
   data: function () {
     return {
-      theToolbox: { }
+      theToolbox: { },
+
+      // Did we pass sanity checks?
+      sane: true
     }
   },
   methods: {
@@ -118,6 +120,14 @@ export default {
     }
   },
   created: function () {
+
+    // Sanity check
+    if (!this.$content) {
+      console.error(`ContentToolbox.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
+
     if (this.toolbox) {
       this.theToolbox = this.toolbox
     } else {

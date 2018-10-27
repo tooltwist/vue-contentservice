@@ -1,7 +1,7 @@
 <template lang="pug">
-.content-dummy
 
-  crowdhound-minimal-element(:element="element" v-bind:level="0")
+  .content-dummy(v-if="sane")
+    crowdhound-minimal-element(:element="element" v-bind:level="0")
 
 </template>
 
@@ -22,7 +22,10 @@ export default {
     return {
       element: null,
 
-      selectError: false
+      selectError: false,
+
+      // Did we pass sanity checks?
+      sane: true
     }
   },
   watch: {
@@ -61,6 +64,14 @@ export default {
     }
   },
   created () {
+
+    // Sanity check
+    if (!this.$content) {
+      console.error(`CrowdhoundMinimal.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
+
     this.load()
   }
 }

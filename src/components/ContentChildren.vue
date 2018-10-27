@@ -1,4 +1,5 @@
 <template lang="pug">
+div(v-if="sane")
 
   // Display the children of this element
   .content-children(v-if="element && element.children", :class="showDropAreas ? 'c-show-drop-areas' : ''")
@@ -51,6 +52,13 @@ export default {
   props: {
     editcontext: Object,
     element: Object
+  },
+  data () {
+    return {
+
+      // Did we pass sanity checks?
+      sane: true
+    }
   },
   mixins: [
     ContentMixins
@@ -162,7 +170,15 @@ export default {
       }
     }
   },
+  created: function () {
 
+    // Sanity check
+    if (!this.$content) {
+      console.error(`ContentLayoutEditor.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
+  }
 }
 </script>
 

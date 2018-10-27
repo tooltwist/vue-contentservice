@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+div(v-if="sane")
   div(v-if="selectError")
     .notification.is-danger
       p Error: We were unable to select the user details.
@@ -69,7 +69,10 @@ export default {
       saveMsg: '',
       saveTimeout: null,
 
-      selectError: false
+      selectError: false,
+
+      // Did we pass sanity checks?
+      sane: true
     }
   },
   mixins: [
@@ -132,6 +135,14 @@ export default {
     }
   },
   created () {
+
+    // Sanity check
+    if (!this.$content) {
+      console.error(`ContentLayoutEditor.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
+
     // We select the content from crowdhound
     if (this.useCrowdhound) {
       console.log(`Selecting text from Crowdhound`)

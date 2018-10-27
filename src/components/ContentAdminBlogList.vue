@@ -1,5 +1,5 @@
 <template lang="pug">
-.content-dummy
+div(v-if="sane")
 
   content-admin-blog-list-element(:element="element", v-bind:level="0", :tenant="tenant" path-for-details="/app-settings/{TENANT}/blog/{BLOGID}")
   //- .list(v-show="selectStatus == 'loaded'")
@@ -43,7 +43,10 @@
       return {
         element: null,
 
-        selectError: false
+        selectError: false,
+
+        // Did we pass sanity checks?
+        sane: true
       }
     },
     watch: {
@@ -81,6 +84,14 @@
       }
     },
     created () {
+
+      // Sanity check
+      if (!this.$content) {
+        console.error(`ContentLayoutEditor.created(): this.$content not defined: has ContentService been initialised?`);
+        this.sane = false
+        return
+      }
+
       this.load()
       console.log(this)
     }

@@ -1,5 +1,5 @@
 <template lang="pug">
-.my-content-pane.container.is-fluid.is-fullheight(v-hotkey="keymap")
+.my-content-pane.container.is-fluid.is-fullheight(v-if="sane", v-hotkey="keymap")
   .has-text-centered(v-if="extraDebug")
     | &lt;content-pane&gt;
     br
@@ -9,8 +9,6 @@
     .tt-editable-header(v-if="pageEditMode !== 'view'" @click.stop="cycleEditMode")
       .tt-editable-mode {{pageEditMode}} mode
     slot
-
-
 </template>
 
 <script>
@@ -28,6 +26,13 @@ export default {
   mixins: [
     ContentMixins
   ],
+  data: function () {
+    return {
+
+      // Did we pass sanity checks?
+      sane: true
+    }
+  },
   computed: {
     keymap () {
       let self = this
@@ -81,6 +86,13 @@ export default {
     },
   },
   created: function () {
+
+    // Sanity check
+    if (!this.$content) {
+      console.error(`ContentLayoutEditor.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
   }
 }
 </script>

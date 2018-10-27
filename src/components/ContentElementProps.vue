@@ -1,6 +1,5 @@
 <template lang="pug">
-
-  .ch-elem
+  .ch-elem(v-if="sane")
     div(v-if="element")
       //| {{element.type}} {{element.id}}
       // | [type:{{element.type}} children:{{element.children && element.children.length}}]
@@ -31,7 +30,6 @@
 
       // Now show the next level
       content-element-props(v-if="haveMore" :level="level+1")
-
 </template>
 
 <script>
@@ -46,6 +44,13 @@ export default {
     // Last element in array = our currently selected element
     level: Number,
   },
+  data: function () {
+    return {
+
+      // Did we pass sanity checks?
+      sane: true
+    }
+  },
   computed: {
     element: function ( ) {
       let path = this.$content.store.state.pathToSelectedElement
@@ -57,6 +62,15 @@ export default {
       let path = this.$content.store.state.pathToSelectedElement
       return path.length > (this.level + 1)
     },
+  },
+  created: function () {
+
+    // Sanity check
+    if (!this.$content) {
+      console.error(`ContentLayoutEditor.created(): this.$content not defined: has ContentService been initialised?`);
+      this.sane = false
+      return
+    }
   }
 }
 </script>
