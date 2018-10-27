@@ -26,8 +26,6 @@
     // Live mode
     template(v-else)
       froala-view(:tag="'div'", v-model="protectedText")
-
-
 </template>
 
 <script>
@@ -55,7 +53,7 @@ export default {
     /*
      *  Must provide either contentId or an element.
      *  If contentId is provided, we'll select the content from Crowdhound.
-     *  If an element is provided, we'll update it via $store.
+     *  If an element is provided, we'll update it via $content.store.
      */
     //editcontext: Object,
     contentId: String,
@@ -113,7 +111,7 @@ export default {
     },
 
     // We cannot update the element directly - it is stored
-    // in this.$store and must be updated with a 'commit'.
+    // in this.$content.store and must be updated with a 'commit'.
     // See https://vuex.vuejs.org/en/forms.html
     protectedText: {
       get () {
@@ -135,23 +133,12 @@ export default {
         } else {
           // Use text from the element
           let name = 'text'
-          this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: name, value })
-          //this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: name, value })
+          this.$content.setProperty({ vm: this, element: this.element, name: name, value })
         }
       }
     },
   },
   methods: {
-
-
-    // Select this element
-    //- select (element) {
-    //-   console.log('Froala.select()')
-    //-
-    //-   if (this.pageEditMode != 'view') {
-    //-     this.$store.commit('contentLayout/setPropertyElement', { element })
-    //-   }
-    //- },
 
     rememberToSave () {
 

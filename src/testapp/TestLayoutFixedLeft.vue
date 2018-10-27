@@ -100,7 +100,7 @@ export default {
     }
   },
   created() {
-    console.log('this.$store: ', this.$store);
+    console.log('this.$content.store: ', this.$content.store);
   },
 }
 </script>

@@ -4,8 +4,6 @@
  *  Client API for Contentservice.io
  *  See https://contentservice.io
  */
-//import { install } from './install'
-import jwtDecode from 'jwt-decode'
 import axios from 'axios'
 import axiosError from './axiosError.js'
 import QueryString from 'query-string'
@@ -32,12 +30,12 @@ class Contentservice {
 
   constructor (options) {
 
-      if (!options) {
-        console.error(`Contentservice was passed null options, so will be disabled.`)
-        this.disabled = true
-        return
-      }
-      this.disabled = false
+    if (!options) {
+      console.error(`Contentservice was passed null options, so will be disabled.`)
+      this.disabled = true
+      return
+    }
+    this.disabled = false
 
     console.log('&&& Contentservice constructor', options)
     this.host = options.host ? options.host : 'api.contentservice.io'
@@ -209,9 +207,83 @@ class Contentservice {
   }
 
 
-  // safeJSON (json) {
-  //   return util.safeJson(json)
-  // }
+  //----------------------------------------------------------------------------//
+  //                  WRAPPERS FOR STORE ACTIONS AND MUTATIONS                  //
+  //----------------------------------------------------------------------------//
+  // Same parameters as contentLayoutStore.setContent
+  // Action
+  setContent(params) {
+    this.store.dispatch('setContentAction', params)
+  }
+  // Same parameters as contentLayoutStore.deleteElementAction
+  // Action
+  deleteElement(params) {
+    this.store.dispatch('deleteElementAction', params)
+  }
+  // Same parameters as contentLayoutStore.insertLayoutAction
+  // Action
+  insertLayout(params) {
+    this.store.dispatch('insertLayoutAction', params)
+  }
+  // Same parameters as contentLayoutStore.setProperty
+  // Action
+  setProperty(params) {
+    this.store.dispatch('setPropertyAction', params)
+  }
+
+  // Same parameters as contentLayoutStore.setLayout
+  // Mutation
+  setLayout (params) {
+    this.store.commit('setLayout', params)
+  }
+
+  // Same parameters as contentLayoutStore.setPropertyElement
+  // Mutation
+  setPropertyElement(params) {
+    this.store.commit('setPropertyElementMutation', params)
+  }
+
+  // Same parameters as contentLayoutStore.setExpandedElement
+  // Mutation
+  setExpandedElement (state, { element } ) {
+    this.store.commit('setEditMode', params)
+  }
+
+  // Same parameters as contentLayoutStore.setEditMode
+  // Mutation
+  setEditMode(params) {
+    this.store.commit('setEditMode', params)
+  }
+
+  // Same parameters as contentLayoutStore.setSaveMsg
+  // Mutation
+  setSaveMsg(params) {
+    this.store.commit('setSaveMsg', params)
+  }
+
+  // Same parameters as contentLayoutStore.updateElementPropertyMutation
+  // Mutation
+  updateElementProperty(params) {
+    this.store.commit('updateElementProperty', params)
+  }
+
+  // Same parameters as contentLayoutStore.insertLayoutMutation
+  // Mutation
+  insertLayoutMutation(params) {
+    this.store.commit('insertLayoutMutation', params)
+  }
+
+  // Same parameters as contentLayoutStore.deleteElement
+  // Mutation
+  deleteElementMutation(params) {
+    this.store.commit('deleteElementMutation', params)
+  }
+
+  // Same parameters as contentLayoutStore.refresh
+  // Mutation
+  refresh(params) {
+    this.store.commit('refreshMutation', params)
+  }
 
   //----------------------------------------------------------------------------//
   //                          NEW STUFF FROM CROWDHOUND                         //
@@ -393,41 +465,9 @@ class Contentservice {
           axiosError(vm, url, element, e)
           reject(e)
         })
-
-
-    	// var API_URL = '//' + CROWDHOUND_HOST + ':' + CROWDHOUND_PORT + '/api/' + CROWDHOUND_VERSION + '/' + CROWDHOUND_TENANT;
-    	// var url = API_URL + '/element';
-    	// var url = Curia.addAuthenticationToken(url);
-      //
-    	// console.log('url   =' + url);
-    	// console.log('element=', element);
-      //
-    	// $.ajax({
-    	// 	type : 'PUT',
-    	// 	url : url,
-    	// 	data : element,
-    	// 	success : function(response) {
-      //
-    	// 		return callback(null);
-    	// 	},
-    	// 	error : function(jqxhr, textStatus, errorThrown) {
-    	// 		// Failed AJAX call
-    	// 		console.log('An error occurred while updating an element.\n  status: ' + jqxhr.status + "\n  responseText: ", qXHR.responseText);
-    	// 		return callback(niceError(jqxhr, textStatus, errorThrown));
-    	// 	}
-    	// });
-
     })//- promise
   }// update()
 
-}
-
-// Add the hierarchy manipulation functions
-// Contentservice.prototype.util = util
-
-Contentservice.version = '__VERSION__'
-if (inBrowser && window.Vue) {
-  window.Vue.use(Contentservice)
 }
 
 export default Contentservice

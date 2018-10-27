@@ -111,10 +111,10 @@ export default {
       return [ 'fa', 'fa-2x', 'fa-word-file-o' ]
     },
     dragStart () {
-      this.$store.commit('contentLayout/dragStart', { })
+      this.$content.store.commit('dragStart', { })
     },
     dragStop () {
-      this.$store.commit('contentLayout/dragStop', { })
+      this.$content.store.commit('dragStop', { })
     }
   },
   created: function () {

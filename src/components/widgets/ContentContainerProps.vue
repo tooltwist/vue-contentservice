@@ -36,7 +36,7 @@ export default {
   computed: {
 
     // We cannot update the element directly - it is stored
-    // in this.$store and must be updated with a 'commit'.
+    // in this.$content.store and must be updated with a 'commit'.
     // See https://vuex.vuejs.org/en/forms.html
     protectedMode: {
       get () {
@@ -44,7 +44,7 @@ export default {
         return value ? value : '-'
       },
       set (value) {
-        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: 'mode', value })
+        this.$content.setProperty({ vm: this, element: this.element, name: 'mode', value })
       }
     },
     protectedIsFluid: {
@@ -53,7 +53,7 @@ export default {
         return value ? value : '-'
       },
       set (value) {
-        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: 'is-fluid', value })
+        this.$content.setProperty({ vm: this, element: this.element, name: 'is-fluid', value })
       }
     },
     protectedBgColor: {
@@ -62,7 +62,7 @@ export default {
         return value ? value : '-'
       },
       set (value) {
-        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: 'background-color', value })
+        this.$content.setProperty({ vm: this, element: this.element, name: 'background-color', value })
       }
     }
   }

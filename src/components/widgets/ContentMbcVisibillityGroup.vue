@@ -9,7 +9,7 @@
         iframe.my-iframe(v-bind:src="src" frameborder="0" zwidth="640" zheight="389" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true")
 
     // Debug mode
-    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
+    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="selectThisElement")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | google slides
@@ -19,7 +19,7 @@
           .my-dummy-iframe
 
     // Edit, layout modes
-    .container(v-else, v-on:click.stop="select(element)")
+    .container(v-else, v-on:click.stop="selectThisElement")
       .content-google-slides-embed-container
         .my-dummy-iframe
 
@@ -64,14 +64,6 @@ export default {
       copyStyle(this.element, style, 'padding-right')
       return style
     }
-  },
-  methods: {
-    select (element) {
-      console.log(`select()`, element)
-      if (this.pageEditMode != 'view') {
-        this.$store.commit('contentLayout/setPropertyElement', { element })
-      }
-    },
   }
 }
 

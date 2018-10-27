@@ -4,15 +4,15 @@ export default {
   computed: {
 
     extraDebug: function () {
-      if (this.$store && this.$store.state && this.$store.state.contentLayout) {
-        return this.$store.state.contentLayout.extraDebug
+      if (this.$content && this.$content.store.state.extraDebug) {
+        return this.$content.store.state.extraDebug
       }
-      console.error('this.$store.state.contentLayout.extraDebug not defined');
+      console.error('this.$content.store.state.extraDebug not defined');
       return true
     },
 
     isEditing: function () {
-      switch (this.$store.state.contentLayout.mode) {
+      switch (this.$content.store.state.mode) {
         case 'view':
         case 'live':
           return false
@@ -21,27 +21,27 @@ export default {
     },
 
     pageEditMode: function () {
-      if (this.$store && this.$store.state && this.$store.state.contentLayout && this.$store.state.contentLayout.mode) {
-        return this.$store.state.contentLayout.mode
+      if (this.$content && this.$content.store.state.mode) {
+        return this.$content.store.state.mode
       }
       return 'view'
     },
 
     editModeClass: function () {
-      if (this.$store && this.$store.state && this.$store.state.contentLayout && this.$store.state.contentLayout.mode) {
+      if (this.$content && this.$content.store.state.mode) {
 
         // Add a class for the current editing mode
-        let mode = this.$store.state.contentLayout.mode
+        let mode = this.$content.store.state.mode
         let cls = `c-edit-mode-${mode}`
 
         // Add property-editing-related classes, for the currently selected
         // element, and the element expanded in the properties editor.
         if (this.element) {
-          if (this.element === this.$store.state.contentLayout.propertyElement) {
+          if (this.element === this.$content.store.state.propertyElement) {
             console.log(`HEY THATS ME!!! ${this.element.id} (${this.element.type})`)
             cls += ` c-selected`
           }
-          if (this.element === this.$store.state.contentLayout.expandedElement) {
+          if (this.element === this.$content.store.state.expandedElement) {
             cls += ` c-expanded`
           }
         }
@@ -61,7 +61,7 @@ export default {
       if (this.pageEditMode === 'layout' || this.pageEditMode === 'debug') {
         return true
       }
-      if (this.pageEditMode === 'edit' && this.$store.state.contentLayout.dragging) {
+      if (this.pageEditMode === 'edit' && this.$content.store.state.dragging) {
         return true
       }
       return false
@@ -80,7 +80,7 @@ export default {
       console.log(`selectThisElement()`)
       if (this.pageEditMode != 'view') {
         let element = this.element
-        this.$store.commit('contentLayout/setPropertyElement', { element })
+        this.$content.setPropertyElement({ element })
       }
     },
 

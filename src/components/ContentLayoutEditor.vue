@@ -3,8 +3,6 @@ div
   //
   // See https://www.npmjs.com/package/vue-split-panel
   //
-
-  //Split.c-triple-pane(:style="splitStyle", :gutterSize="gutterSize", @onDragEnd="onDragEnd", :class="isEditing ? 'c-editing-layout' : 'c-not-editing-layout' ", v-hotkey="keymap")
   Split.c-triple-pane(:style="splitStyle", :gutterSize="gutterSize", @onDragEnd="onDragEnd", :class="[ { 'c-editing-layout': isEditing }, {'c-not-editing-layout': !isEditing}, {'c-has-left-pane': hasLeftSlot}, {'c-no-left-pane': !hasLeftSlot} ]", v-hotkey="keymap")
 
     // Left pane
@@ -22,7 +20,7 @@ div
 
         // right end of bar
         .c-editbar-right
-          | {{ $store.state.contentLayout.saveMsg }}
+          | {{ $content.store.state.saveMsg }}
 
           //- .c-editbar-dump-button(zv-if="pageEditMode === 'layout'")
           //-   | &nbsp;&nbsp;
@@ -38,7 +36,7 @@ div
 
       // Actual content
       .c-middle-pane-content
-        content-children(v-if="haveLayout", :editcontext="{}", :element="$store.state.contentLayout.layout")
+        content-children(v-if="haveLayout", :editcontext="{}", :element="$content.store.state.layout")
 
         div(v-else)
           slot(name="middle-pane")
@@ -59,8 +57,6 @@ div
         SplitArea.c-components-pane(:size="60", :minSize="150")
           h1.title Toolbox
           content-toolbox
-
-
 </template>
 
 <script>
@@ -134,7 +130,7 @@ export default {
     // whenever anchor changes, this function will run
     anchor: function (newAnchor, oldAnchor) {
       //console.error(`anchor changed from ${oldAnchor} to ${newAnchor}`)
-      this.$store.dispatch('contentLayout/setContent', { vm: this, type: 'crowdhound', anchor: newAnchor })
+      this.$content.setContent({ vm: this, type: 'crowdhound', anchor: newAnchor })
     }
   },
   computed: {
@@ -163,18 +159,17 @@ export default {
       if (process.browser) {
         /*
         */
-        console.log('^^^ 1', this.$store)
-        console.log('^^^ 2', this.$store.state)
-        console.log('^^^ 3', this.$store.state.contentLayout)
-        console.log('^^^ 4', this.$store.state.contentLayout.layoutAsJson)
-        return this.$content.util.safeJson(this.$store.state.contentLayout.layout)
+        console.log('^^^ 1', this.$content.store)
+        console.log('^^^ 2', this.$content.store.state)
+        console.log('^^^ 3', this.$content.store.state.layoutAsJson)
+        return this.$content.util.safeJson(this.$content.store.state.layout)
       }
       return '-server side-'
     },
 
     propertyElementAsJson: function () {
       if (process.browser) {
-        return this.$content.util.safeJson(this.$store.state.contentLayout.propertyElement)
+        return this.$content.util.safeJson(this.$content.store.state.propertyElement)
       }
       return '-server side-'
     },
@@ -264,11 +259,11 @@ export default {
 
     thePropertyElement () {
       if (process.browser) {
-        if (this.$store.state.contentLayout) {
-          return this.$store.state.contentLayout.propertyElement
+        if (this.$content.store.state) {
+          return this.$content.store.state.propertyElement
         } else {
           // Has contentservice been installed?
-          console.error(`ContentLayoutEditor: this.$store.state.contentLayout is not defined`)
+          console.error(`ContentLayoutEditor: this.$content.store.state is not defined`)
           return null
         }
       }
@@ -290,17 +285,17 @@ export default {
       // Toggle between view and {edit|layout|debug}
       // When we switch to view mode, we remember which of the edit modes
       // we were in, so we can toggle back to the same mode.
-      let mode = this.$store.state.contentLayout.mode
-      let previousEditMode = this.$store.state.contentLayout.previousEditMode
+      let mode = this.$content.store.state.mode
+      let previousEditMode = this.$content.store.state.previousEditMode
       if (mode === 'view') {
         // Switch to one of the edit modes
         //console.log(` - switch to ${previousEditMode}`)
-        this.$store.commit('contentLayout/setEditMode', { mode: previousEditMode })
+        this.$content.setEditMode({ mode: previousEditMode })
 
       } else {
         // Switch back to view mode
         //console.log(` - switch to view mode`)
-        this.$store.commit('contentLayout/setEditMode', { mode: 'view', previousEditMode: mode })
+        this.$content.setEditMode({ mode: 'view', previousEditMode: mode })
       }
     },
 
@@ -309,7 +304,7 @@ export default {
       // If the new mode is not specified, cycle through the editing options.
       if (!newMode) {
         // Switch based on existing mode
-        let currentMode = this.$store.state.contentLayout.mode
+        let currentMode = this.$content.store.state.mode
         switch (currentMode) {
           case 'edit':
             newMode = 'debug'
@@ -324,7 +319,7 @@ export default {
             break;
         }
       }
-      this.$store.commit('contentLayout/setEditMode', { mode: newMode, previousEditMode: newMode })
+      this.$content.setEditMode({ mode: newMode, previousEditMode: newMode })
     },
 
     onDragEnd (size) {
@@ -367,6 +362,9 @@ export default {
     },
   },
   created: function () {
+    console.log(`ContentLayoutEditor.created(): this.$content.store=`, this.$content.store);
+    // console.log(`ContentLayoutEditor.created(): this=`, this);
+
 
     // If the user has not defined the required options, do so now.
     if (this.rightPane) {
@@ -390,18 +388,19 @@ export default {
     if (this.anchor) {
 
       // Have an anchor - load the content from Crowdhound
-      this.$store.dispatch('contentLayout/setContent', { vm: this, type: 'crowdhound', anchor: this.anchor })
+      this.$content.setContent({ vm: this, type: 'crowdhound', anchor: this.anchor })
       this.haveLayout = true
     } else if (this.layout) {
 
       // Layout is provided. The store will not load or save this layout.
-      this.$store.dispatch('contentLayout/setContent', { vm: this, type: 'fixed', layout: this.layout })
+      this.$content.setContent({ vm: this, type: 'fixed', layout: this.layout })
       this.haveLayout = true
     } else {
       // Incorrect props
       console.error(`content-content must be provided prop 'layout' or prop 'anchor'`)
     }
   }
+  } // created()
 }
 </script>
 

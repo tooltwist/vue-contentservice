@@ -19,7 +19,7 @@
       split-area.pane.middlepane(:size="middleSize", :minSize="300")
         .tt-editable-header(v-if="pageEditMode !== 'view'" @click.stop="cycleEditMode")
           .tt-editable-mode mode is {{pageEditMode}}
-          | &nbsp;{{ $store.state.contentLayout.saveMsg }}
+          | &nbsp;{{ $content.store.state.saveMsg }}
           .tt-dump-button(zv-if="pageEditMode === 'layout'")
             | &nbsp;&nbsp;
             a(@click.stop="dump") dump
@@ -35,7 +35,7 @@
           // Properties Pane
           split-area.pane.properties-pane(:size="50", :minSize="150")
             h1.title Properties
-            //content-element-props(:element="this.$store.state.contentLayout.propertyElement")
+            //content-element-props(:element="$content.store.state.propertyElement")
             content-element-props(:element="thePropertyElement", :level="0")
 
           // Components pane
@@ -52,7 +52,7 @@
       split-area.pane.middlepane(:size="middleSize", :minSize="300")
         .tt-editable-header(v-if="pageEditMode !== 'view'" @click.stop="cycleEditMode")
           .tt-editable-mode mode is {{pageEditMode}}
-          | &nbsp;{{ $store.state.contentLayout.saveMsg }}
+          | &nbsp;{{ $content.store.state.saveMsg }}
           .tt-dump-button(zv-if="pageEditMode === 'layout'")
             | &nbsp;&nbsp;
             a(@click.stop="dump") dump
@@ -68,15 +68,13 @@
           // Properties Pane
           split-area.pane.properties-pane(:size="50", :minSize="150")
             h1.title Properties
-            //content-element-props(:element="this.$store.state.contentLayout.propertyElement")
+            //content-element-props(:element="$content.store.state.propertyElement")
             content-element-props(:element="thePropertyElement")
 
           // Components pane
           split-area.pane.components-pane(:size="50", :minSize="150")
             h1.title Toolbox
             content-toolbox
-
-
 </template>
 
 <script>
@@ -170,18 +168,17 @@ export default {
       if (process.browser) {
         /*
         */
-        console.log('^^^ 1', this.$store)
-        console.log('^^^ 2', this.$store.state)
-        console.log('^^^ 3', this.$store.state.contentLayout)
-        console.log('^^^ 4', this.$store.state.contentLayout.layoutAsJson)
-        return this.$content.util.safeJson(this.$store.state.contentLayout.layout)
+        console.log('^^^ 1', this.$content.store)
+        console.log('^^^ 2', this.$content.store.state)
+        console.log('^^^ 3', this.$content.store.state.layoutAsJson)
+        return this.$content.util.safeJson(this.$content.store.state.layout)
       }
       return '-server side-'
     },
 
     propertyElementAsJson: function () {
       if (process.browser) {
-        return this.$content.util.safeJson(this.$store.state.contentLayout.propertyElement)
+        return this.$content.util.safeJson(this.$content.store.state.propertyElement)
       }
       return '-server side-'
     },
@@ -230,11 +227,11 @@ export default {
 
     thePropertyElement () {
       if (process.browser) {
-        if (this.$store.state.contentLayout) {
-          return this.$store.state.contentLayout.propertyElement
+        if (this.$content) {
+          return this.$content.store.state.propertyElement
         } else {
           // Has contentservice been installed?
-          console.error(`ContentTriplePane: this.$store.state.contentLayout is not defined`)
+          console.error(`ContentTriplePane: this.$content is not defined`)
           return null
         }
       }
@@ -256,33 +253,32 @@ export default {
       // Toggle between view and {edit|layout|debug}
       // When we switch to view mode, we remember which of the edit modes
       // we were in, so we can toggle back to the same mode.
-      let mode = this.$store.state.contentLayout.mode
-      let previousEditMode = this.$store.state.contentLayout.previousEditMode
+      let mode = this.$content.store.state.mode
+      let previousEditMode = this.$content.store.state.previousEditMode
       if (mode === 'view') {
         // Switch to one of the edit modes
         //console.log(` - switch to ${previousEditMode}`)
-        this.$store.commit('contentLayout/setEditMode', { mode: previousEditMode })
-
+        this.$content.setEditMode({ mode: previousEditMode })
       } else {
         // Switch back to view mode
         //console.log(` - switch to view mode`)
-        this.$store.commit('contentLayout/setEditMode', { mode: 'view', previousEditMode: mode })
+        this.$content.setEditMode({ mode: 'view', previousEditMode: mode })
       }
     },
 
     cycleEditMode () {
-      let mode = this.$store.state.contentLayout.mode
+      let mode = this.$content.store.state.mode
       switch (mode) {
         case 'edit':
-          this.$store.commit('contentLayout/setEditMode', { mode: 'layout', previousEditMode: 'layout' })
+          this.$content.setEditMode({ mode: 'layout', previousEditMode: 'layout' })
           break;
 
         case 'layout':
-          this.$store.commit('contentLayout/setEditMode', { mode: 'debug', previousEditMode: 'debug' })
+          this.$content.setEditMode({ mode: 'debug', previousEditMode: 'debug' })
           break;
 
         case 'debug':
-          this.$store.commit('contentLayout/setEditMode', { mode: 'edit', previousEditMode: 'edit' })
+          this.$content.setEditMode({ mode: 'edit', previousEditMode: 'edit' })
           break;
       }
     },

@@ -9,7 +9,7 @@ export default function (name) {
       },
       set (value) {
         // console.log('-->' + protectedName)
-        this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: name, value })
+        this.$content.setProperty({ vm: this, element: this.element, name: name, value })
       }
     }
   }

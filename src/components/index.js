@@ -70,7 +70,6 @@ import ContentLayoutStore from '../store/contentLayoutStore.js'
 
 let _Vue = null
 let _content = null
-let _store = null
 
 
 function install (Vue, options) {
@@ -291,7 +290,7 @@ function install (Vue, options) {
 
   // Youtube Widget
   _content.registerWidget(Vue, {
-    name: 'Youtube',
+    name: 'youtube',
     label: 'Youtube',
     category: 'Video',
     iconClass: 'fa fa-youtube',
@@ -318,7 +317,7 @@ function install (Vue, options) {
 
   // Vimeo Widget
   _content.registerWidget(Vue, {
-    name: 'Vimeo',
+    name: 'vimeo',
     label: 'Vimeo',
     category: 'Video',
     iconClass: 'fa fa-vimeo',
@@ -326,7 +325,7 @@ function install (Vue, options) {
     dragtype: 'component',
 
     // Register native Vue templates
-    componentName: 'content-youtube',
+    componentName: 'content-vimeo',
     component: ContentVimeo,
     propertyComponent: ContentVimeoProps,
 
@@ -386,6 +385,12 @@ function install (Vue, options) {
   // v-clipboard
   Vue.use(Clipboard)
 
+  // Initialise the store
+  Vue.use(Vuex)
+  let store = new Vuex.Store(ContentLayoutStore);
+  _content.store = store
+  console.log(`YARP have a new store`, store);
+
 
   return _content
 } //- install()
@@ -394,35 +399,13 @@ const ContentServiceLib = {
   install: install,
 }
 
+//ZZZ Is this used?
 Object.defineProperty(ContentServiceLib, '_content', {
   get: function() {
       return _content
   }
 });
 
-Object.defineProperty(ContentServiceLib, 'storeDefinition', {
-  get: function() {
-    return ContentLayoutStore
-  }
-});
-
-
-Object.defineProperty(ContentServiceLib, 'store', {
-  get: function() {
-    if (_store) {
-      return _store
-    }
-
-    // Create a new store object
-    _Vue.use(Vuex)
-    _store = new Vuex.Store({
-      modules: {
-        contentLayout: ContentLayoutStore,
-      }
-    });
-    return _store;
-  }
-});
 
 // Version 1:
 // Works for full npm publish and import, but not for npm link because the

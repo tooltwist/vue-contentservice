@@ -104,14 +104,14 @@ export const getters = {
 // see https://vuex.vuejs.org/guide/actions.html
 export const actions = {
 
-  setContent ({ commit, state }, { vm, type, layout, anchor}) {
-    console.log(`In Action contentLayout/setContent(type=${type}, layout=${layout?'yes':'no'}, anchor=${anchor})`)
+  setContentAction ({ commit, state }, { vm, type, layout, anchor}) {
+    console.log(`In Action contentLayout/setContentAction(type=${type}, layout=${layout?'yes':'no'}, anchor=${anchor})`)
     if (layout) {
       commit('setLayout', { vm, layout: layout, crowdhoundElement: null, editable: false })
     } else if (anchor) {
       loadLayoutFromAnchor(commit, vm, anchor)
     } else {
-      console.error(`Action contentLayout/setContent should be passed either anchor or layout`)
+      console.error(`setContent should be passed either anchor or layout`)
     }
   },
 
@@ -194,13 +194,8 @@ console.log(`ok 1`)
     rememberToSave(commit, state, vm)
   },
 
-
-  // setPropertyElement ({ commit }, { element }) {
-  //   console.log(`setPropertyElement(${element.id})`)
-  //   commit(types.SET_PROPERTY_ELEMENT, { element })
-  // },
-  setProperty ({ commit, state }, { vm, element, name, value }) {
-    console.log(`action setProperty(${element.id}, ${name}, ${value})`)
+  setPropertyAction ({ commit, state }, { vm, element, name, value }) {
+    console.log(`action setPropertyAction(${element.id}, ${name}, ${value})`)
 
     /*
      *  Two possibilities here:
@@ -212,7 +207,7 @@ console.log(`ok 1`)
       // Should not be trying to update this.
     }
 
-    commit('updateElementProperty', { vm, element, name, value })
+    commit('updateElementPropertyMutation', { vm, element, name, value })
 
     //ZZZZ Timer should probably be set in the mutation?
     // There is a potential timing problem.
@@ -276,8 +271,8 @@ export const mutations = {
 
   // Set the element shown in the properties panel.
   // This *should* be an element in the current layout
-  setPropertyElement (state, { element } ) {
-    console.log('In Mutation contentLayout/setPropertyElement()', element)
+  setPropertyElementMutation (state, { element } ) {
+    console.log('In Mutation contentLayout/setPropertyElementMutation()', element)
     //return
     // console.log('State is ', state)
     // Clone the element
@@ -301,7 +296,7 @@ export const mutations = {
   // Set the element currently expanded in the properties panel.
   // This *must* be an element in pathToSelectedElement.
   setExpandedElement (state, { element } ) {
-    console.log('In Mutation contentLayout/setPropertyElement()', element)
+    console.log('In Mutation contentLayout/setExpandedElement()', element)
     //return
     // console.log('State is ', state)
     // Clone the element
@@ -339,14 +334,6 @@ export const mutations = {
     state.dragging = false
   },
 
-  // Set the screen mode [view | edit | layout | debug]
-  //ZZZZ deprecate this
-  setMode (state, { mode }) {
-    //ZZZZ Check the parameters
-    // console.log(`mutation contentLayout/setMode(${mode})`)
-    state.mode = mode
-  },
-
   // Set the message shown above the page (CLEAN | DIRTY | SAVING, etc).
   setSaveMsg (state, { msg }) {
     //ZZZZ Check the parameters
@@ -357,9 +344,9 @@ export const mutations = {
   // Set the value of a property in an element.
   // The element is not necessarily the 'propertyElement',
   // it *should* be an element in the current layout.
-  updateElementProperty (state, { vm, element, name, value }) {
+  updateElementPropertyMutation (state, { vm, element, name, value }) {
     //ZZZZ Check the parameters
-    console.log(`mutation contentLayout/updateElementProperty(${element.id}, ${name}, ${value})`, element)
+    console.log(`mutation contentLayout/updateElementPropertyMutation(${element.id}, ${name}, ${value})`, element)
 
     // Do this such that a new reactive property is created.
     // https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats
@@ -467,14 +454,14 @@ export const mutations = {
 
   },
 
-  // Set the element shown in the properties panel.
-  // This *should* be an element in the current layout
-  setMode (state, { mode } ) {
-    console.log(`In Mutation setMode(${mode})`)
-    console.log('State is ', state)
-
-    state.mode = mode
-  },
+  // // Set the element shown in the properties panel.
+  // // This *should* be an element in the current layout
+  // setMode (state, { mode } ) {
+  //   console.log(`In Mutation setMode(${mode})`)
+  //   console.log('State is ', state)
+  //
+  //   state.mode = mode
+  // },
 
   // Call this method to trigger redrawing of components that monitor
   // the value of 'refreshCounter'.

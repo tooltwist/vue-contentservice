@@ -10,7 +10,7 @@
         iframe(:src="src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen)
 
     // Debug mode
-    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
+    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="selectThisElement")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | vimeo
@@ -18,7 +18,7 @@
         .vimeo-container.my-dummy-iframe
 
     // Edit, layout modes
-    .container(v-else, v-on:click.stop="select(element)")
+    .container(v-else, v-on:click.stop="selectThisElement")
       .vimeo-container.my-dummy-iframe
 </template>
 
@@ -62,14 +62,6 @@ export default {
     //   copyStyle(this.element, style, 'padding-right')
     //   return style
     // }
-  },
-  methods: {
-    select (element) {
-      console.log(`select()`, element)
-      if (this.pageEditMode != 'view') {
-        this.$store.commit('contentLayout/setPropertyElement', { element })
-      }
-    },
   }
 }
 

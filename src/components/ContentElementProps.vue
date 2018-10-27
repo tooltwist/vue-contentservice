@@ -48,13 +48,13 @@ export default {
   },
   computed: {
     element: function ( ) {
-      let path = this.$store.state.contentLayout.pathToSelectedElement
+      let path = this.$content.store.state.pathToSelectedElement
       return (path.length > this.level) ? path[this.level] : null
     },
 
     // Is there another property below this one?
     haveMore: function ( ) {
-      let path = this.$store.state.contentLayout.pathToSelectedElement
+      let path = this.$content.store.state.pathToSelectedElement
       return path.length > (this.level + 1)
     },
   }

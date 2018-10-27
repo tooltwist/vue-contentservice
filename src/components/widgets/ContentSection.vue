@@ -3,7 +3,7 @@
   .content-section(v-bind:class="[(pageEditMode=='debug') ? 'my-outline' : '']")
 
     // Debug mode
-    template(v-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
+    template(v-if="pageEditMode==='debug'", v-on:click.stop="selectThisElement")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | section
@@ -11,7 +11,7 @@
         content-children.my-content(:editcontext="editcontext", :element="element")
 
     // Edit mode
-    .section.section(v-else-if="pageEditMode==='edit'", v-on:click.stop="select(element)")
+    .section.section(v-else-if="pageEditMode==='edit'", v-on:click.stop="selectThisElement")
       content-children(:editcontext="editcontext", :element="element")
 
     // Live
@@ -46,14 +46,6 @@ export default {
     //-   this.copyStyle(this.element, style, 'padding-right')
     //-   return style
     //- }
-  },
-  methods: {
-    select (element) {
-      console.log('Section.select()')
-      if (this.pageEditMode != 'view') {
-        this.$store.commit('contentLayout/setPropertyElement', { element })
-      }
-    }
   }
 }
 </script>

@@ -51,31 +51,31 @@ export default {
       // Toggle between view and {edit|debug}
       // When we switch to view mode, we remember which of the edit modes
       // we were in, so we can toggle back to the same mode.
-      let mode = this.$store.state.contentLayout.mode
-      let previousEditMode = this.$store.state.contentLayout.previousEditMode
+      let mode = this.$content.store.state.mode
+      let previousEditMode = this.$content.store.state.previousEditMode
       if (mode === 'view') {
         // Switch to one of the edit modes
         //console.log(` - switch to ${previousEditMode}`)
-        this.$store.commit('contentLayout/setEditMode', { mode: previousEditMode })
+        this.$content.setEditMode({ mode: previousEditMode })
 
       } else {
         // Switch back to view mode
         //console.log(` - switch to view mode`)
-        this.$store.commit('contentLayout/setEditMode', { mode: 'view', previousEditMode: mode })
+        this.$content.setEditMode({ mode: 'view', previousEditMode: mode })
       }
     },
 
     cycleEditMode () {
-      let mode = this.$store.state.contentLayout.mode
+      let mode = this.$content.store.state.mode
       switch (mode) {
         case 'edit':
-          this.$store.commit('contentLayout/setEditMode', { mode: 'debug', previousEditMode: 'debug' })
+          this.$content.setEditMode({ mode: 'debug', previousEditMode: 'debug' })
           break;
 
         // No 'layout' mode for <content-pane>
         case 'debug':
         case 'layout':
-          this.$store.commit('contentLayout/setEditMode', { mode: 'edit', previousEditMode: 'edit' })
+          this.$content.setEditMode({ mode: 'edit', previousEditMode: 'edit' })
           break;
       }
     },

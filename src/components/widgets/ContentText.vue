@@ -15,10 +15,10 @@ div
       | contentId: {{contentId}}
 
     // the click event's propagation will be stopped
-    span.stop(@click="select(element), itemClick(element)")
+    span.stop(@click="selectThisElement, itemClick(element)")
       | {{protectedContent}}
   // Edit and layout mode - click to edit
-  span.stop(v-else @click="select(element), itemClick(element)")
+  span.stop(v-else @click="selectThisElement, itemClick(element)")
     | {{protectedContent}}
 
   // Here's the editing bit
@@ -50,7 +50,7 @@ export default {
     /*
      *  Must provide either contentId or an element.
      *  If contentId is provided, we'll select the content from Crowdhound.
-     *  If an element is provided, we'll update it via $store.
+     *  If an element is provided, we'll update it via $content.store.
      */
     //editcontext: Object,
     contentId: String,
@@ -99,7 +99,7 @@ export default {
           this.rememberToSave()
         } else {
           let name = 'text'
-          this.$store.dispatch('contentLayout/setProperty', { vm: this, element: this.element, name: name, value })
+          this.$content.setProperty({ vm: this, element: this.element, name: name, value })
         }
       }
     },
@@ -118,15 +118,6 @@ export default {
         this.editing = false
       } else {
         this.editing = !this.editing
-      }
-    },
-
-    // Select this element
-    select (element) {
-      console.log('Text.select()')
-
-      if (this.pageEditMode != 'view') {
-        this.$store.commit('contentLayout/setPropertyElement', { element })
       }
     },
 

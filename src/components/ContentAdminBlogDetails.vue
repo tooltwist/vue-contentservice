@@ -53,7 +53,7 @@ export default {
     /*
      *  Must provide either contentId or an element.
      *  If contentId is provided, we'll select the content from Crowdhound.
-     *  If an element is provided, we'll update it via $store.
+     *  If an element is provided, we'll update it via $content.store.
      */
     //editcontext: Object,
     contentId: String,
@@ -79,7 +79,7 @@ export default {
 
     extraDebug: function () {
       return true
-      //return this.$store.state.contentLayout.extraDebug
+      //return this.$content.store.state.extraDebug
     },
 
     useCrowdhound () {

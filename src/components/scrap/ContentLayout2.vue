@@ -13,7 +13,7 @@
     // Display the element
     .tt-content-layout(v-if="sanitizedContentComp")
       //content-children(:editcontext="editcontext", :element="sanitizedContentComp")
-      content-children(:editcontext="editcontext", :element="$store.state.contentLayout.layout")
+      content-children(:editcontext="editcontext", :element="$content.store.state.layout")
 
 </template>
 
@@ -107,11 +107,11 @@ export default {
     if (this.anchor) {
 
       // Have an anchor - load the content from Crowdhound
-      this.$store.dispatch('contentLayout/setContent', { vm: this, type: 'crowdhound', anchor: this.anchor })
+      this.$content.setContent({ vm: this, type: 'crowdhound', anchor: this.anchor })
     } else if (this.layout) {
 
       // Layout is provided. The store will not load or save this layout.
-      this.$store.dispatch('contentLayout/setContent', { vm: this, type: 'fixed', layout: this.layout })
+      this.$content.setContent({ vm: this, type: 'fixed', layout: this.layout })
     } else {
       // Incorrect props
       console.error(`content-content must be provided prop 'layout' or prop 'anchor'`)

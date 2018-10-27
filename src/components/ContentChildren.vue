@@ -83,7 +83,7 @@ export default {
         position = parent.children.length
       }
       console.log(`insert at: ${position}`)
-      //this.$store.state.contentLayout.anchor
+      //this.$content.store.state.anchor
 
       // Check that the data makes sense
       console.log('data:', pastedData);
@@ -91,7 +91,7 @@ export default {
       if (typeof(pastedData) !== 'string') {
         return this.reportError(`Invalid paste object (not text).`)
       }
-      this.$store.dispatch('contentLayout/insertLayoutAction', { vm: this, parent: parent, position: position, layout: pastedData })
+      this.$content.insertLayout({ vm: this, parent: parent, position: position, layout: pastedData })
 
       // let data
       // try {
@@ -113,7 +113,7 @@ export default {
       //     return this.reportError(`Invalid paste object (missing layout).`)
       //   }
       //   console.log(`Will insert `, data.layout)
-      //   this.$store.dispatch('contentLayout/insertLayoutAction', { vm: this, parent: parent, position: position, layout: data.layout })
+      //   this.$content.insertLayout({ vm: this, parent: parent, position: position, layout: data.layout })
       // }
 
       return false
@@ -152,13 +152,13 @@ export default {
         for (var i = 0; i < element.children.length; i++) {
           if (element.children[i] === child) {
             console.log(`Insert at position ${i}`)
-            this.$store.dispatch('contentLayout/insertLayoutAction', { vm: this, parent: element, position: i, layout: insertContent })
+            this.$content.insertLayout({ vm: this, parent: element, position: i, layout: insertContent })
             break
           }
         }
       } else {
         // No child specified - add at the end
-        this.$store.dispatch('contentLayout/insertLayoutAction', { vm: this, parent: element, position: -1, layout: insertContent })
+        this.$content.insertLayout({ vm: this, parent: element, position: -1, layout: insertContent })
       }
     }
   },

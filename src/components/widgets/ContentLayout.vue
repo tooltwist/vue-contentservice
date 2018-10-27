@@ -4,15 +4,15 @@
   .c-content-layout(v-bind:class="[(pageEditMode=='debug') ? 'tt-container-outline' : '']")
 
     // Preview mode
-    .container(v-if="pageEditMode==='view'", v-on:click.stop="select(element)")
+    .container(v-if="pageEditMode==='view'", v-on:click.stop="selectThisElement")
       content-children(:editcontext="editcontext", :element="element")
 
     // Edit mode
-    .container(v-else-if="pageEditMode==='edit'", v-on:click.stop="select(element)")
+    .container(v-else-if="pageEditMode==='edit'", v-on:click.stop="selectThisElement")
       content-children(:editcontext="editcontext", :element="element")
 
     // Debug mode
-    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
+    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="selectThisElement")
       .c-layout-mode-heading layout
       .container
         content-children.my-content(:editcontext="editcontext", :element="element")
@@ -55,13 +55,6 @@ export default {
       copyStyle(this.element, style, 'padding-right')
       return style
     }
-  },
-  methods: {
-    select (element) {
-      if (this.pageEditMode != 'view') {
-        this.$store.commit('contentLayout/setPropertyElement', { element })
-      }
-    },
   }
 }
 

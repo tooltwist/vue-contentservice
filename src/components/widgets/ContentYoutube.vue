@@ -10,7 +10,7 @@
         iframe(width="560", height="315", :src="src", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
 
     // Debug mode
-    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="select(element)")
+    div(v-else-if="pageEditMode==='debug'", v-on:click.stop="selectThisElement")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | youtube
@@ -19,7 +19,7 @@
         .youtube-container.my-dummy-iframe
 
     // Edit, layout modes
-    .container(v-else, v-on:click.stop="select(element)")
+    .container(v-else, v-on:click.stop="selectThisElement")
       .youtube-container.my-dummy-iframe
 </template>
 
@@ -65,14 +65,6 @@ export default {
     //   copyStyle(this.element, style, 'padding-right')
     //   return style
     // }
-  },
-  methods: {
-    select (element) {
-      console.log(`select()`, element)
-      if (this.pageEditMode != 'view') {
-        this.$store.commit('contentLayout/setPropertyElement', { element })
-      }
-    },
   }
 }
 

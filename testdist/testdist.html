@@ -1,0 +1,138 @@
+<html>
+<head>
+  <title>Content Service</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="description" content="Test page for ContentService.io development">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  body {
+    background: #20262E;
+    font-family: Helvetica;
+  }
+
+  #app {
+    margin-top: 35px;
+    background: #fff;
+    padding: 20px;
+  }
+
+  .authservice-login {
+    margin-top: 20px;
+    margin-bottom: 40px;
+  }
+  </style>
+</head>
+<body>
+  <!-- font-awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+  <!-- Standard Bulma -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+
+  <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/vue-contentservice@0.1.71/dist/vue-contentservice.css">
+  <!--
+  <script src="https://unpkg.com/vue-contentservice@latest/dist/vue-contentservice.umd.js"></script>
+-->
+  <script src="../dist/vue-contentservice.umd.js"></script>
+
+  <script src="../../vue-docservice/dist/vue-docservice.umd.js"></script>
+
+  <!-- LoginService styles -->
+  <link rel="stylesheet" href="../dist/vue-contentservice.css">
+  <link rel="stylesheet" href="../../vue-docservice/dist/vue-docservice.css">
+
+  <div id="app" class="has-text-centered">
+
+    <!-- Already logged in -->
+    <h1>
+    This page is "content managed"
+    </h1>
+
+    <input type="button" @click="pressed" value="CLICK ME"/>
+
+
+    <content-layout-editor class=".my-triple-pane" :editable="editable" :anchor="anchor" zheight="300px" zeditingHeight="600px"></content-layout-editor>
+
+
+  </div>
+
+  <script>
+
+  /*
+   * STEPS TO MAKE THIS YOURS...
+   * 1. Clone this sandbox.
+   * 2. Open an account at http://tooltwist.com.
+   * 3. Define a new App and get an APIKey.
+   * 4. Set the APIKey below and uncomment
+   *    the register and forgot options..
+   * 5. Experiment with the options
+   *    (see)
+   */
+  const options = {
+    // Local server
+    /*
+    host: 'localhost',
+    port: 7000,
+    // apikey: 'API1AM6O86YHI8FA6TPSBA05C8FV4',
+    apikey: 'API10O0X1NS8FWUTO3FXKN15ZOR09',
+    */
+
+    // Test server
+    /*
+    host: 'test.crowdhound.io',
+    port: 80,
+    apikey: 'API10O0X1NS8FWUTO3FXKN15ZOR09',
+    */
+
+    // UAT server
+    /*
+    */
+    host: 'uat.crowdhound.io',
+    port: 80,
+    apikey: 'API10O0X1NS8FWUTO3FXKN15ZOR09',
+    //apikey: 'API1EBHYUYS5QBRCK3CA2JAUAM652',
+    version: '2.0',
+
+    defaultIconPack: 'fas'
+  };
+
+
+  console.log(`window.ContentService`, window.ContentService)
+  Vue.use(window.ContentService, options);
+  console.log(`Hoola 1`)
+  Vue.use(window.DocService, {
+
+  });
+  console.log(`Hoola 2`)
+
+
+  new Vue({
+    el: "#app",
+    data () {
+      return {
+        // NEW
+        leftPane: true,
+        editable: true,
+        anchor: 'mbc.test.layout',
+      }
+    },
+    methods: {
+      pressed () {
+        console.log(`Pressed!!!`);
+        console.log('this.$content: ', this.$content);
+        console.log('this.$content.store: ', this.$content.store);
+      }
+    },
+    created() {
+      console.log(`Start created()`);
+      console.log('$content: ', this.$content);
+      console.log('this.$content.store: ', this.$content.store);
+      console.log(`End created()`);
+    },
+  })
+
+  </script>
+</body>
+</html>

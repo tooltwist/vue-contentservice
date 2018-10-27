@@ -4,11 +4,11 @@
   .c-content-container(v-bind:class="editModeClass")
 
     // Edit mode
-    .container(v-if="pageEditMode==='edit'", @click.stop="select(element)")
+    .container(v-if="pageEditMode==='edit'", @click.stop="selectThisElement")
       content-children(:editcontext="editcontext", :element="element")
 
     // Debug mode
-    div(v-else-if="pageEditMode==='debug'", @click.stop="select(element)")
+    div(v-else-if="pageEditMode==='debug'", @click.stop="selectThisElement")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | container
@@ -47,13 +47,6 @@ export default {
       copyStyle(this.element, style, 'padding-right')
       return style
     }
-  },
-  methods: {
-    select (element) {
-      if (this.pageEditMode != 'view') {
-        this.$store.commit('contentLayout/setPropertyElement', { element })
-      }
-    },
   }
 }
 
