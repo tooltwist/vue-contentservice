@@ -38,6 +38,7 @@ class Contentservice {
     this.disabled = false
 
     console.log('&&& Contentservice constructor', options)
+    this.protocol = options.protocol ? options.protocol : 'https'
     this.host = options.host ? options.host : 'api.contentservice.io'
     this.port = options.port ? options.port : 80
     this.version = options.version ? options.version : '2.0'
@@ -84,9 +85,8 @@ class Contentservice {
   }
 
   endpoint () {
-    // console.log('endpoint():', this)
-    const protocol = this.protocol ? this.protocol : 'http'
-    const endpoint = `${protocol}://${this.host}:${this.port}/api/${this.version}/${this.apikey}`
+    const endpoint = `${this.protocol}://${this.host}:${this.port}/api/${this.version}/${this.apikey}`
+    console.log(`endpoint(): ${endpoint}`)
     return endpoint
   }
 

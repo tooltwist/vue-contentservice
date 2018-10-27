@@ -19881,6 +19881,7 @@ function () {
 
     this.disabled = false;
     console.log('&&& Contentservice constructor', options);
+    this.protocol = options.protocol ? options.protocol : 'https';
     this.host = options.host ? options.host : 'api.contentservice.io';
     this.port = options.port ? options.port : 80;
     this.version = options.version ? options.version : '2.0';
@@ -19925,9 +19926,8 @@ function () {
   }, {
     key: "endpoint",
     value: function endpoint() {
-      // console.log('endpoint():', this)
-      var protocol = this.protocol ? this.protocol : 'http';
-      var endpoint = "".concat(protocol, "://").concat(this.host, ":").concat(this.port, "/api/").concat(this.version, "/").concat(this.apikey);
+      var endpoint = "".concat(this.protocol, "://").concat(this.host, ":").concat(this.port, "/api/").concat(this.version, "/").concat(this.apikey);
+      console.log("endpoint(): ".concat(endpoint));
       return endpoint;
     }
   }, {
