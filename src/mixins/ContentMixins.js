@@ -4,10 +4,10 @@ export default {
   computed: {
 
     extraDebug: function () {
-      if (this.$content && this.$content.store.state.extraDebug) {
+      if (this.$content) {
         return this.$content.store.state.extraDebug
       }
-      console.error('this.$content.store.state.extraDebug not defined');
+      console.error('this.$content not defined');
       return true
     },
 
