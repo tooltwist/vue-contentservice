@@ -40,7 +40,13 @@ class Contentservice {
     console.log('&&& Contentservice constructor', options)
     this.protocol = options.protocol ? options.protocol : 'https'
     this.host = options.host ? options.host : 'api.contentservice.io'
-    this.port = options.port ? options.port : 80
+    if (options.port) {
+      this.port = options.port
+    } else if (this.protocol == 'http') {
+      this.port = 80
+    } else {
+      this.port = 443
+    }
     this.version = options.version ? options.version : '2.0'
     this.apikey = options.apikey
 
