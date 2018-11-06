@@ -1,32 +1,11 @@
 <template lang="pug">
   .ch-elem(v-if="sane")
     div(v-if="element")
-      //| {{element.type}} {{element.id}}
-      // | [type:{{element.type}} children:{{element.children && element.children.length}}]
-      content-section-props(v-if="element.type=='section'", :element="element")
-      content-container-props(v-else-if="element.type=='container'", :element="element")
-      content-fixed-position-container-props(v-else-if="element.type=='fixed-position-container'", :element="element")
-      content-columns-props(v-else-if="element.type=='columns'", :element="element")
-      // content-children-props(v-else-if="element.type=='children'", :element="element")
-      content-text-props(v-else-if="element.type=='text'", :element="element")
-      content-form-props(v-else-if="element.type=='form'", :element="element")
-      content-field-props(v-else-if="element.type=='field'", :element="element")
-      content-froala-props(v-else-if="element.type=='froala'", :element="element")
-      // content-intellidox-props(v-else-if="element.type=='ix'", :element="element")
-      //content-layout-props(v-else-if="element.type=='layout'", :element="element")
-      // span(v-else)
-      //  | skipping '{{element.type}}'
 
-      content-google-slides-props(v-else-if="element.type=='google-slides'", :element="element")
-      content-google-sheets-props(v-else-if="element.type=='google-sheets'", :element="element")
-      content-google-docs-props(v-else-if="element.type=='google-docs'", :element="element")
-      content-youtube-props(v-else-if="element.type=='youtube'", :element="element")
-
-      content-vimeo-props(v-else-if="element.type=='vimeo'", :element="element")
-      content-mbc-visibility-group-props(v-else-if="element.type=='mbc-visibility-group'", :element="element")
-
-      content-layout-props(v-if="element.type=='layout'", :element="element")
-
+      // Show the properties for this element
+      component(v-if="propertyComponentNameForElement", v-bind:is="propertyComponentNameForElement", :editcontext="editcontext", :element="element")
+      div(v-else)
+        | Unknown type ({{element.type}})
 
       // Now show the next level
       content-element-props(v-if="haveMore" :level="level+1")
@@ -62,6 +41,14 @@ export default {
       let path = this.$content.store.state.pathToSelectedElement
       return path.length > (this.level + 1)
     },
+
+    propertyComponentNameForElement: function () {
+      console.log(`propertyComponentNameForElement(${this.element.type})`);
+      let type = this.element.type
+      let def = this.$content.getLayoutType(type)
+      return def ? def.propertyComponentName : null
+    }
+
   },
   created: function () {
 
