@@ -91,7 +91,6 @@ export default {
         position = parent.children.length
       }
       console.log(`insert at: ${position}`)
-      //this.$content.store.state.anchor
 
       // Check that the data makes sense
       console.log('data:', pastedData);

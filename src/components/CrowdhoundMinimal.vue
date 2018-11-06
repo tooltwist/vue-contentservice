@@ -16,7 +16,8 @@ export default {
     CrowdhoundMinimalElement
   },
   props: {
-    anchor: String
+    contentId: String,
+    anchor: String, // Deprecated
   },
   data () {
     return {
@@ -29,7 +30,10 @@ export default {
     }
   },
   watch: {
-    anchor: function(newAnchor, oldAnchor) {
+    anchor: function(newContentId, oldContentId) { // Deprecated
+      this.load()
+    },
+    contentId: function(newContentId, oldContentId) {
       this.load()
     }
   },
@@ -44,7 +48,7 @@ export default {
 
       // Select the elements
       let params = {
-        elementId: this.anchor,
+        elementId: (this.contentId ? this.contentId : this.anchor),
         withChildren: true
       }
       this.$content.select(this, params).then(result => {

@@ -3,7 +3,7 @@ div(v-if="sane")
 
   .tt-content(:zclass="pageEditMode === 'view' ? 'tt-mode-view' : ''", :class="classForMode")
     | &lt;content-content(
-    span(v-if="anchor") &nbsp;anchor
+    span(v-if="contentId") &nbsp;contentId
     span(v-if="layout") &nbsp;layout
     | &nbsp;)&gt;
     br
@@ -32,20 +32,20 @@ export default {
      *      - require layout
      *  2. 'layout'
      *      Layout stored in Crowdhound
-     *      - require anchor
+     *      - require contentId
      *
      *  ZZZZZ INDIVIDUAL NO LONGER USED
      *  3. 'individual'
      *      There is no Layout. Components will need to save themselves.
      *      - require anchorPrefix
      */
-    type: { // Not to confused with pageEditMode.
+    type: { // Not to be confused with pageEditMode.
       type: String,
       required: true
     },
 
     layout: Object,
-    anchor: String,
+    contentId: String,
     //- anchorPrefix: String,
 
     editcontext: Object,
@@ -104,7 +104,7 @@ export default {
   created: function () {
 
     console.error(`------------------------------`)
-    console.log(`anchor=`, this.anchor)
+    console.log(`contentId=`, this.contentId)
     console.log(`layout=`, this.layout)
 
     // Sanity check
@@ -114,17 +114,17 @@ export default {
       return
     }
 
-    if (this.anchor) {
+    if (this.contentId) {
 
-      // Have an anchor - load the content from Crowdhound
-      this.$content.setContent({ vm: this, type: 'crowdhound', anchor: this.anchor })
+      // Have a contentId - load the content from Crowdhound
+      this.$content.setContent({ vm: this, type: 'crowdhound', contentId: this.contentId })
     } else if (this.layout) {
 
       // Layout is provided. The store will not load or save this layout.
       this.$content.setContent({ vm: this, type: 'fixed', layout: this.layout })
     } else {
       // Incorrect props
-      console.error(`content-content must be provided prop 'layout' or prop 'anchor'`)
+      console.error(`content-content must be provided prop 'layout' or prop 'contentId'`)
     }
   }
 }

@@ -178,9 +178,9 @@ function install (Vue, options) {
   _content.registerWidget(Vue, {
     name: 'section',
     label: 'Section',
-    category: 'Lovely Widgets',
-    iconClass: 'fa-arrows-v fa',
-    iconClass5: 'fas fa-arrows-alt-v',
+    category: '',
+    iconClass: 'fa fa-arrows-v fas fa-arrows-alt-v contentservice-section-icon',
+    iconClass5: 'fas fa-arrows-alt-v contentservice-section-icon',
     dragtype: 'component',
 
     // Registering for native Vue templates
@@ -203,7 +203,7 @@ function install (Vue, options) {
   _content.registerWidget(Vue, {
     name: 'container',
     label: 'Container',
-    category: 'Lovely Widgets',
+    category: '',
     iconClass: 'fa-arrows-h fa',
     iconClass5: 'fas fa-arrows-alt-h',
     dragtype: 'component',
@@ -229,7 +229,7 @@ function install (Vue, options) {
   _content.registerWidget(Vue, {
     name: 'columns',
     label: 'Columns',
-    category: 'Lovely Widgets',
+    category: '',
     iconClass: 'fa-columns fa',
     iconClass5: 'fas fa-columns',
     dragtype: 'component',
@@ -265,7 +265,7 @@ function install (Vue, options) {
   _content.registerWidget(Vue, {
     name: 'text',
     label: 'Text',
-    category: 'Lovely Widgets',
+    category: '',
     iconClass: 'fa-font fa',
     iconClass5: 'fas fa-font',
     dragtype: 'component',

@@ -36,7 +36,8 @@ div(v-if="sane")
       ContentAdminBlogListElement
     },
     props: {
-      anchor: String,
+      anchor: String, // Deprecated
+      contentId: String,
       tenant: String
     },
     data () {
@@ -50,7 +51,10 @@ div(v-if="sane")
       }
     },
     watch: {
-      anchor: function(newAnchor, oldAnchor) {
+      anchor: function(newAnchor, oldAnchor) { // Deprecated
+        this.load()
+      },
+      contentId: function(newAnchor, oldAnchor) {
         this.load()
       }
     },

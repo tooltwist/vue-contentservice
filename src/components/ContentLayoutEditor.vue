@@ -16,7 +16,7 @@ div(v-if="sane")
       .c-editbar(v-if="pageEditMode !== 'view'" @click.stop="switchMode(null)")
 
         // left end of bar
-        .c-editbar-anchor {{anchor}}
+        .c-editbar-contentId {{crowdhoundAnchor}}
 
         // right end of bar
         .c-editbar-right
@@ -84,8 +84,12 @@ export default {
       type: Number
     },
 
-    // Option 1 - Provide an anchor in Crowdhound
-    anchor: {
+    // Option 1 - Provide a contentId, used as an anchor to select from Crowdhound
+    anchor: { // Deprecated. Not sure if this is actually used.
+      type: String,
+      required: false
+    },
+    contentId: { // Use this rather than 'anchor', even though it is used as an anchor in Crowdhound.
       type: String,
       required: false
     },
@@ -131,12 +135,27 @@ export default {
   ],
   watch: {
     // whenever anchor changes, this function will run
-    anchor: function (newAnchor, oldAnchor) {
-      //console.error(`anchor changed from ${oldAnchor} to ${newAnchor}`)
-      this.$content.setContent({ vm: this, type: 'crowdhound', anchor: newAnchor })
+    anchor: function (newContentId, oldContentId) { // Deprecated
+      // Deprecated
+      //console.error(`anchor changed from ${oldContentId} to ${newContentId}`)
+      this.$content.setContent({ vm: this, type: 'crowdhound', contentId: newContentId })
+    },
+    // whenever contentId changes, this function will run
+    contentId: function (newId, oldId) {
+      //console.error(`contentId changed from ${oldId} to ${newId}`)
+      this.$content.setContent({ vm: this, type: 'crowdhound', contentId: contentId })
     }
   },
   computed: {
+    crowdhoundAnchor: function () {
+      if (this.contentId) {
+        return this.contentId
+      }
+      if (this.anchor) { // Deprecated
+        return this.anchor
+      }
+      return null
+    },
 
     /*
     saveMode: function () {
@@ -391,13 +410,20 @@ export default {
 
 
     console.log(`------------------------------`)
-    console.log(`anchor=`, this.anchor)
+    console.log(`contentId=`, this.crowdhoundAnchor)
     console.log(`layout=`, this.layout)
 
-    if (this.anchor) {
+    if (this.contentId) {
 
-      // Have an anchor - load the content from Crowdhound
-      this.$content.setContent({ vm: this, type: 'crowdhound', anchor: this.anchor })
+      // Have an ID - load the content from Crowdhound
+      this.$content.setContent({ vm: this, type: 'crowdhound', contentId: this.contentId })
+      this.haveLayout = true
+
+    } else if (this.anchor) {
+
+      // Deprecated, but supported for (probably unneeded) backwards compatibility.
+      console.error(`ContentLayoutEditor: prop 'anchor' is deprecated. Please use 'contentId' instead.`);
+      this.$content.setContent({ vm: this, type: 'crowdhound', contentId: this.anchor })
       this.haveLayout = true
     } else if (this.layout) {
 
@@ -406,7 +432,7 @@ export default {
       this.haveLayout = true
     } else {
       // Incorrect props
-      console.error(`content-content must be provided prop 'layout' or prop 'anchor'`)
+      console.error(`content-layout-editor must be provided prop 'layout' or prop 'contentId'`)
     }
   } // created()
 }
@@ -515,7 +541,7 @@ export default {
         text-align: center;
 
 
-        .c-editbar-anchor {
+        .c-editbar-contentId {
           position: absolute;
           left: 15px;
           color: white;

@@ -5,7 +5,7 @@
         img(src="../assets/logo.png")
       h1.title.is-3 Layout, fixed
 
-    content-layout-editor.my-triple-pane(:editable="editable", :anchor="anchor", zheight="300px", zeditingHeight="600px")
+    content-layout-editor.my-triple-pane(:editable="editable", :contentId="contentId", zheight="300px", zeditingHeight="600px")
 
       //template(slot="left-pane")
       //  | This is the left pane
@@ -38,10 +38,10 @@ export default {
       // NEW
       leftPane: true,
       editable: true,
-      anchor: 'mbc.test.layout',
+      contentId: 'mbc.test.layout',
       /*
       editable: Boolean,
-      anchor: {
+      contentId: {
         required: false,
         type: String
       },

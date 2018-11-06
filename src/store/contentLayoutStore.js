@@ -28,10 +28,12 @@ export const state = () => {
     extraDebug: false,
     dragging: false,
 
+    // We call it 'contentId' here, but this is actually a Crowdhound 'anchor'.
+    contentId: null,
+
     // An element from Crowdhound with the layout as JSON in the description field.
-    // This is only set if we were given an anchor.
+    // This is only set if we were given a contentId.
     // If it is null we don't save here.
-    anchor: null,
     crowdhoundElement: null,
 
     // Currently loaded layout.
@@ -104,14 +106,14 @@ export const getters = {
 // see https://vuex.vuejs.org/guide/actions.html
 export const actions = {
 
-  setContentAction ({ commit, state }, { vm, type, layout, anchor}) {
-    console.log(`In Action contentLayout/setContentAction(type=${type}, layout=${layout?'yes':'no'}, anchor=${anchor})`)
+  setContentAction ({ commit, state }, { vm, type, layout, contentId}) {
+    console.log(`In Action contentLayout/setContentAction(type=${type}, layout=${layout?'yes':'no'}, contentId=${contentId})`)
     if (layout) {
       commit('setLayout', { vm, layout: layout, crowdhoundElement: null, editable: false })
-    } else if (anchor) {
-      loadLayoutFromAnchor(commit, vm, anchor)
+    } else if (contentId) {
+      loadLayoutFromAnchor(commit, vm, contentId)
     } else {
-      console.error(`setContent should be passed either anchor or layout`)
+      console.error(`setContent should be passed either contentId or layout`)
     }
   },
 
@@ -232,7 +234,7 @@ console.log(`ok 1`)
 export const mutations = {
 
   // Set the current layout, displayed in the middle panel.
-  setLayout (state, { vm, layout, anchor, crowdhoundElement, /*tenant, elementId, */ editable /*, element */ } ) {
+  setLayout (state, { vm, layout, contentId, crowdhoundElement, /*tenant, elementId, */ editable /*, element */ } ) {
     //console.log('In Mutation contentLayout/setLayout()', state)
     console.log('In Mutation contentLayout/setLayout()', layout)
 
@@ -243,7 +245,7 @@ export const mutations = {
     } else {
       console.error(`Mutation contentLayout/setLayout requires 'layout' parameter`)
       state.layout = null
-      state.anchor = null
+      state.contentId = null
       state.crowdhoundElement = null
       state.editable = false
 
@@ -256,10 +258,10 @@ export const mutations = {
 
     if (crowdhoundElement) {
       state.crowdhoundElement = crowdhoundElement
-      state.anchor = anchor
+      state.contentId = contentId
     } else {
       state.crowdhoundElement = null
-      state.anchor = null
+      state.contentId = null
     }
 
     if (editable) {
@@ -565,8 +567,8 @@ function safeJson (element, compressed/*boolean,optional*/) {
 //   root.tt_counter++
 // }
 
-function loadLayoutFromAnchor (commit, vm, anchor, editable) {
-  console.log(`store.loadlayout(${anchor})`)
+function loadLayoutFromAnchor (commit, vm, contentId, editable) {
+  console.log(`store.loadlayout(${contentId})`)
 
   // We select the content from crowdhound
   //console.log(`ContentTriplePane.loadLayout`)
@@ -586,17 +588,13 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
     canEdit = true
   }
 
-  //- let anchor = '$testpage.text1'
+  //- let contentId = '$testpage.text1'
   //let shortAnchor = `$testpage.${this.anchorPrefix}.${this.anchorSuffix}`
-  let shortAnchor = anchor.startsWith('$') ? anchor.substring(1) : anchor
+  let shortAnchor = contentId.startsWith('$') ? contentId.substring(1) : contentId
   let fullAnchor = `$`  + shortAnchor
   let elementType = 'layout'
-  console.error(`>>> anchor is ${anchor}.`)
+  console.error(`>>> contentId is ${contentId}.`)
 
-  //- let params = {
-  //-   elementId: anchor,
-  //-   withChildren: true
-  //- }
   vm.$content.select(this, fullAnchor, elementType)
     //- this.$content.select(this, params)
     .then(result => {
@@ -635,8 +633,8 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
 
         console.error(`>>> Creating default layout`)
 
-        // Word out a heading, based on the anchor
-        let heading = anchor
+        // Word out a heading, based on the contentId
+        let heading = contentId
         if (heading.startsWith('$')) {
           heading = heading.substring(1)
         }
@@ -697,7 +695,7 @@ function loadLayoutFromAnchor (commit, vm, anchor, editable) {
       let sanitized = addAnyMissingValues(vm, layout)
       commit('setLayout', {
         vm,
-        anchor: fullAnchor,
+        contentId: fullAnchor,
         layout: layout,
         crowdhoundElement: elementContainingLayout, // NOT an element in the layout
         // tenant: elementContainingLayout.tenant,

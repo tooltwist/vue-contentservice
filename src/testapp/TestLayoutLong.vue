@@ -9,7 +9,7 @@
       br
       h1.title.is-3 Long page
     //content-layout-editor#my-triple-pane(:editcontext="editcontext", editable="false", :contentdata="contentdata", :type="typeN", :anchorN="anchorN")
-    content-layout-editor.my-triple-pane(:editable="editable", :anchor="anchor", height="300px", editingHeight="600px")
+    content-layout-editor.my-triple-pane(:editable="editable", :contentId="contentId", height="300px", editingHeight="600px")
 
       template(slot="middle-pane")
         //content-layout2(type="fixed", :layout="layoutZ", :editcontext="editcontext")
@@ -40,10 +40,10 @@ export default {
       // NEW
       leftPane: true,
       editable: true,
-      anchor: 'mbc.test.layout',
+      contentId: 'mbc.test.layout',
       /*
       editable: Boolean,
-      anchor: {
+      contentId: {
         required: false,
         type: String
       },

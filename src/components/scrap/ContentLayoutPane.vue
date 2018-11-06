@@ -37,7 +37,8 @@ export default {
   name: 'content-layout-pane',
   props: {
     editcontext: Object,
-    anchor: String,
+    anchor: String, // Deprecated, use contentId
+    contentId: String,
     editable: String,
     toolbox: Object,
   },
@@ -132,15 +133,12 @@ export default {
         return
       }
 
-      let shortAnchor = this.anchor
-      let fullAnchor = `$`  + this.anchor
+      let contentId = this.contentId ? this.contentId : this.anchor
+      let shortAnchor = contentId.startsWith('$') ? contentId.substring(1) : contentId
+      let fullAnchor = `$`  + shortAnchor
       let elementType = 'layout'
       console.error(`>>> anchor is ${fullAnchor}.`)
 
-      //- let params = {
-      //-   elementId: anchor,
-      //-   withChildren: true
-      //- }
       this.$content.select(this, fullAnchor, elementType)
         //- this.$content.select(this, params)
         .then(result => {

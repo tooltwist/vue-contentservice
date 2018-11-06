@@ -74,8 +74,8 @@ export default {
     //   var blob = new Blob([json], {type: "text/plain;charset=utf-8"});
     //
     //   let filename = 'layout'
-    //   if (this.$content.store.state.anchor) {
-    //     filename += '-' + this.$content.store.state.anchor.substring(1)
+    //   if (this.$content.store.state.contentId) {
+    //     filename += '-' + this.$content.store.state.contentId.substring(1)
     //   }
     //   filename += `-${this.element.type}-${this.element.id}.txt`
     //   FileSaver.saveAs(blob, filename);
@@ -87,7 +87,7 @@ export default {
     //   let payload = {
     //     type: 'contentservice.io',
     //     version: '1.0',
-    //     source: this.$content.store.state.anchor,
+    //     source: this.$content.store.state.contentId,
     //     timestamp: new Date(),
     //     layout: this.element
     //   }

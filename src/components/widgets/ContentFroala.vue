@@ -214,10 +214,6 @@ export default {
       let anchor2 = `$testpage.${this.contentId}`
       let elementType = 'html'
 
-      //- let params = {
-      //-   elementId: anchor,
-      //-   withChildren: true
-      //- }
       console.log('Here we are before select...')
       this.$content.select(this, anchor2, elementType)
       .then(result => {

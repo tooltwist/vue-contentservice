@@ -58,9 +58,7 @@ export default {
   },
   data: function () {
     return {
-      'editing': false,
-      //anchor: '$example-text-comments',
-      //- anchor: '$example-text-comments',
+      editing: false,
       title: '',
       summary: '',
       description: '',
@@ -180,13 +178,9 @@ export default {
       // Select the elements
       let anchor1 = `testpage.${this.contentId}`
       let anchor2 = `$testpage.${this.contentId}`
-      //console.error(`Anchor is ${anchor}.`)
+      //console.error(`contentId is ${contentId}.`)
       let elementType = 'text'
 
-      //- let params = {
-      //-   elementId: anchor,
-      //-   withChildren: true
-      //- }
       this.$content.select(this, anchor2, elementType)
         .then(result => {
 

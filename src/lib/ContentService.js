@@ -299,10 +299,6 @@ class Contentservice {
 
 
 	/**
-	 *	Select may be in various formats:
-	 *		select(vm, '$my-anchor', 'user-list', callback) - select a thread by it's anchor and anchorType.
-	 *		select(vm, rootId, callback) - select a thread. Anchor will not be created if it doesn't exist.
-	 *		select(vm, params, callback)
    *	Select may be in various formats:
 	 *		select(vm, '$my-anchor', 'user-list') - select a thread by it's anchor and anchorType.
 	 *		select(vm, rootId) - select a thread. Anchor will NOT be created if it doesn't exist.
