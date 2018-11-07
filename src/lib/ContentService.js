@@ -112,7 +112,7 @@ class Contentservice {
     }
 
     // Define the components
-    console.log(`registering ${componentName}`)
+    console.log(`registering non-toolbox widget ${componentName}`)
     vm.component(componentName, component)
     vm.component(propertyComponentName, propertyComponent)
   }
@@ -124,7 +124,7 @@ class Contentservice {
   }
 
   registerWidget (vm, { name, label, category, iconClass, iconClass5, componentName, component, propertyComponent, data}) {
-    console.error(`registerWidget(${name}, ${category})`)
+    //console.error(`registerWidget(${name}, ${category})`)
 
     if (!label) {
       label = name
@@ -156,7 +156,7 @@ class Contentservice {
     }
 
     // Define the components
-    console.log(`registering widget ${componentName}`)
+    console.log(`registering toolbox widget ${componentName}`)
     vm.component(componentName, component)
     vm.component(propertyComponentName, propertyComponent)
   }

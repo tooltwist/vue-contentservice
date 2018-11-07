@@ -389,8 +389,6 @@ function install (Vue, options) {
   Vue.use(Vuex)
   let store = new Vuex.Store(ContentLayoutStore);
   _content.store = store
-  console.log(`YARP have a new store`, store);
-
 
   return _content
 } //- install()

@@ -696,34 +696,6 @@ module.exports = function() {
 
 /***/ }),
 
-/***/ "097d":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-// https://github.com/tc39/proposal-promise-finally
-
-var $export = __webpack_require__("5ca1");
-var core = __webpack_require__("8378");
-var global = __webpack_require__("7726");
-var speciesConstructor = __webpack_require__("ebd6");
-var promiseResolve = __webpack_require__("bcaa");
-
-$export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
-  var C = speciesConstructor(this, core.Promise || global.Promise);
-  var isFunction = typeof onFinally == 'function';
-  return this.then(
-    isFunction ? function (x) {
-      return promiseResolve(C, onFinally()).then(function () { return x; });
-    } : onFinally,
-    isFunction ? function (e) {
-      return promiseResolve(C, onFinally()).then(function () { throw e; });
-    } : onFinally
-  );
-} });
-
-
-/***/ }),
-
 /***/ "09d3":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -19854,6 +19826,9 @@ function _typeof(obj) {
 
   return _typeof(obj);
 }
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
+var es6_promise = __webpack_require__("551c");
+
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
 var web_dom_iterable = __webpack_require__("ac6a");
 
@@ -19885,15 +19860,6 @@ function _createClass(Constructor, protoProps, staticProps) {
   if (staticProps) _defineProperties(Constructor, staticProps);
   return Constructor;
 }
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.iterator.js
-var es6_array_iterator = __webpack_require__("cadf");
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__("551c");
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es7.promise.finally.js
-var es7_promise_finally = __webpack_require__("097d");
-
 // EXTERNAL MODULE: ./node_modules/axios/index.js
 var axios = __webpack_require__("bc3a");
 var axios_default = /*#__PURE__*/__webpack_require__.n(axios);
@@ -19926,8 +19892,6 @@ function isError(err) {
 }
 var inBrowser = typeof window !== 'undefined';
 // CONCATENATED MODULE: ./src/lib/ContentService.js
-
-
 
 
 
@@ -20049,7 +20013,7 @@ function () {
         propertyComponent: propertyComponent // Define the components
 
       };
-      console.log("registering ".concat(componentName));
+      console.log("registering non-toolbox widget ".concat(componentName));
       vm.component(componentName, component);
       vm.component(propertyComponentName, propertyComponent);
     } // -> { component, propertyComponent }
@@ -20072,8 +20036,8 @@ function () {
           component = _ref.component,
           propertyComponent = _ref.propertyComponent,
           data = _ref.data;
-      console.error("registerWidget(".concat(name, ", ").concat(category, ")"));
 
+      //console.error(`registerWidget(${name}, ${category})`)
       if (!label) {
         label = name;
       }
@@ -20101,7 +20065,7 @@ function () {
         dragtype: 'component' // Define the components
 
       };
-      console.log("registering widget ".concat(componentName));
+      console.log("registering toolbox widget ".concat(componentName));
       vm.component(componentName, component);
       vm.component(propertyComponentName, propertyComponent);
     }
@@ -26136,7 +26100,6 @@ function components_install(Vue, options) {
   Vue.use(vuex_esm);
   var store = new vuex_esm.Store(contentLayoutStore);
   _content.store = store;
-  console.log("YARP have a new store", store);
   return _content;
 } //- install()
 
