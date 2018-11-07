@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     iconClass: function (tool) {
-      console.log(`iconClass()`, tool)
+      //console.log(`iconClass()`, tool)
       if (this.$content) {
 
         if (this.$content.icons('fa')) {

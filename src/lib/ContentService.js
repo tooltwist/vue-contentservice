@@ -166,21 +166,21 @@ class Contentservice {
     for (var name in this.knownElementTypes) {
       if (this.knownElementTypes.hasOwnProperty(name)) {
         let type = this.knownElementTypes[name]
-        console.error(`Add tool ${name}`, type);
+        //console.error(`Add tool ${name}`, type);
         let categoryRec = categories[type.category]
-        console.log(`category = ${type.category}`, categoryRec);
+        //console.log(`category = ${type.category}`, categoryRec);
         if ( !categoryRec) {
           categoryRec = {
             name: type.category,
             types: [ ]
           }
-          console.error(`Add category ${type.category}`);
+          //console.error(`Add category ${type.category}`);
           categories[type.category] = categoryRec
         }
         categoryRec.types[name] = type
       }
     }
-    console.error(`Toolbox Types - `, categories);
+    //console.error(`Toolbox Types - `, categories);
 
     // Convert categories to an array and sort
     let arr = [ ]
