@@ -271,6 +271,25 @@ export const mutations = {
     }
   },
 
+  // Set property values in a specific element
+  // This *should* be an element in the current layout
+  setPropertyInElementMutation (state, { element, name, value } ) {
+    console.log('In Mutation contentLayout/setPropertyInElementMutation()', element)
+
+    console.log(`LOOKING FOR ${element.id}`)
+    let path = trackDownElementInLayout(state, element.id)
+    if (path) {
+      let specifiedElement = path[path.length-1]
+
+      // Do this such that a new reactive property is created.
+      // https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats
+      // NOT: specifiedElement[name] = value
+      vm.$set(specifiedElement, name, value)
+    } else {
+      console.error(`setPropertyInElementMutation: element not found in current layout`);
+    }
+  },
+
   // Set the element shown in the properties panel.
   // This *should* be an element in the current layout
   setPropertyElementMutation (state, { element } ) {
@@ -825,7 +844,7 @@ function handleError(vm, msg) {
   if (vm && vm.$toast) {
     vm.$toast.open({ message: `${msg}`, type: 'is-danger' })
   } else {
-    alert(msg)
+    alert(`Error ${msg}`)
   }
   return false
 }

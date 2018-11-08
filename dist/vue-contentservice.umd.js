@@ -20163,6 +20163,21 @@ function () {
     key: "setProperty",
     value: function setProperty(params) {
       this.store.dispatch('setPropertyAction', params);
+    } // Same parameters as contentLayoutStore.setPropertyInElement
+    // Mutation
+
+  }, {
+    key: "setPropertyInElement",
+    value: function setPropertyInElement(state, _ref2) {
+      var element = _ref2.element,
+          name = _ref2.name,
+          value = _ref2.value;
+      console.log("$content.setPropertyInElement", element, name, value);
+      this.store.dispatch('setPropertyInElementMutation', {
+        element: element,
+        name: name,
+        value: value
+      });
     } // Same parameters as contentLayoutStore.setLayout
     // Mutation
 
@@ -20182,8 +20197,8 @@ function () {
 
   }, {
     key: "setExpandedElement",
-    value: function setExpandedElement(state, _ref2) {
-      var element = _ref2.element;
+    value: function setExpandedElement(state, _ref3) {
+      var element = _ref3.element;
       this.store.commit('setEditMode', params);
     } // Same parameters as contentLayoutStore.setEditMode
     // Mutation
@@ -25123,10 +25138,30 @@ var mutations = {
       state.editable = false;
     }
   },
+  // Set property values in a specific element
+  // This *should* be an element in the current layout
+  setPropertyInElementMutation: function setPropertyInElementMutation(state, _ref10) {
+    var element = _ref10.element,
+        name = _ref10.name,
+        value = _ref10.value;
+    console.log('In Mutation contentLayout/setPropertyInElementMutation()', element);
+    console.log("LOOKING FOR ".concat(element.id));
+    var path = trackDownElementInLayout(state, element.id);
+
+    if (path) {
+      var specifiedElement = path[path.length - 1]; // Do this such that a new reactive property is created.
+      // https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats
+      // NOT: specifiedElement[name] = value
+
+      vm.$set(specifiedElement, name, value);
+    } else {
+      console.error("setPropertyInElementMutation: element not found in current layout");
+    }
+  },
   // Set the element shown in the properties panel.
   // This *should* be an element in the current layout
-  setPropertyElementMutation: function setPropertyElementMutation(state, _ref10) {
-    var element = _ref10.element;
+  setPropertyElementMutation: function setPropertyElementMutation(state, _ref11) {
+    var element = _ref11.element;
     console.log('In Mutation contentLayout/setPropertyElementMutation()', element); //return
     // console.log('State is ', state)
     // Clone the element
@@ -25147,8 +25182,8 @@ var mutations = {
   },
   // Set the element currently expanded in the properties panel.
   // This *must* be an element in pathToSelectedElement.
-  setExpandedElement: function setExpandedElement(state, _ref11) {
-    var element = _ref11.element;
+  setExpandedElement: function setExpandedElement(state, _ref12) {
+    var element = _ref12.element;
     console.log('In Mutation contentLayout/setExpandedElement()', element); //return
     // console.log('State is ', state)
     // Clone the element
@@ -25167,9 +25202,9 @@ var mutations = {
     console.error("setExpandedElement: element not in pathToSelectedElement");
   },
   // Set the screen mode [view | edit | layout | debug]
-  setEditMode: function setEditMode(state, _ref12) {
-    var mode = _ref12.mode,
-        previousEditMode = _ref12.previousEditMode;
+  setEditMode: function setEditMode(state, _ref13) {
+    var mode = _ref13.mode,
+        previousEditMode = _ref13.previousEditMode;
     //ZZZZ Check the parameters
     // console.log(`mutation contentLayout/setEditMode(${mode}, ${previousEditMode})`)
     state.mode = mode;
@@ -25179,21 +25214,21 @@ var mutations = {
     }
   },
   // Start dragging. This should temporarily switch to layout mode.
-  dragStart: function dragStart(state, _ref13) {
-    _objectDestructuringEmpty(_ref13);
+  dragStart: function dragStart(state, _ref14) {
+    _objectDestructuringEmpty(_ref14);
 
     // console.log(`mutation contentLayout/dragStart()`)
     state.dragging = true;
   },
-  dragStop: function dragStop(state, _ref14) {
-    _objectDestructuringEmpty(_ref14);
+  dragStop: function dragStop(state, _ref15) {
+    _objectDestructuringEmpty(_ref15);
 
     // console.log(`mutation contentLayout/dragStop()`)
     state.dragging = false;
   },
   // Set the message shown above the page (CLEAN | DIRTY | SAVING, etc).
-  setSaveMsg: function setSaveMsg(state, _ref15) {
-    var msg = _ref15.msg;
+  setSaveMsg: function setSaveMsg(state, _ref16) {
+    var msg = _ref16.msg;
     //ZZZZ Check the parameters
     // console.log(`mutation contentLayout/setSaveMsg(${msg})`)
     state.saveMsg = msg;
@@ -25201,11 +25236,11 @@ var mutations = {
   // Set the value of a property in an element.
   // The element is not necessarily the 'propertyElement',
   // it *should* be an element in the current layout.
-  updateElementPropertyMutation: function updateElementPropertyMutation(state, _ref16) {
-    var vm = _ref16.vm,
-        element = _ref16.element,
-        name = _ref16.name,
-        value = _ref16.value;
+  updateElementPropertyMutation: function updateElementPropertyMutation(state, _ref17) {
+    var vm = _ref17.vm,
+        element = _ref17.element,
+        name = _ref17.name,
+        value = _ref17.value;
     //ZZZZ Check the parameters
     console.log("mutation contentLayout/updateElementPropertyMutation(".concat(element.id, ", ").concat(name, ", ").concat(value, ")"), element); // Do this such that a new reactive property is created.
     // https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats
@@ -25243,11 +25278,11 @@ var mutations = {
   //   }
   //   //console.log(`insertChild, parent after:`, safeJson(element));
   // },
-  insertLayoutMutation: function insertLayoutMutation(state, _ref17) {
-    var vm = _ref17.vm,
-        parent = _ref17.parent,
-        position = _ref17.position,
-        layout = _ref17.layout;
+  insertLayoutMutation: function insertLayoutMutation(state, _ref18) {
+    var vm = _ref18.vm,
+        parent = _ref18.parent,
+        position = _ref18.position,
+        layout = _ref18.layout;
     console.log('In Mutation contentLayout/insertLayoutMutation()', parent, position, layout); //let toInsert = layout
     // if (position === 'last' || position < 0) {
     //   position = parent.children.length
@@ -25288,9 +25323,9 @@ var mutations = {
     }
   },
   // Delete an element from the current layout.
-  deleteElementMutation: function deleteElementMutation(state, _ref18) {
-    var vm = _ref18.vm,
-        element = _ref18.element;
+  deleteElementMutation: function deleteElementMutation(state, _ref19) {
+    var vm = _ref19.vm,
+        element = _ref19.element;
     console.log("In Mutation contentLayout/deleteElementMutation(".concat(element.id, " (").concat(element.type, "))")); // Find the path down to this element, so we know the parent.
 
     var path = trackDownElementInLayout(state, element.id);
@@ -25319,8 +25354,8 @@ var mutations = {
   // },
   // Call this method to trigger redrawing of components that monitor
   // the value of 'refreshCounter'.
-  refreshMutation: function refreshMutation(state, _ref19) {
-    _objectDestructuringEmpty(_ref19);
+  refreshMutation: function refreshMutation(state, _ref20) {
+    _objectDestructuringEmpty(_ref20);
 
     console.log('In Mutation refreshMutation()', state.refreshCounter);
     state.refreshCounter++;
@@ -25683,7 +25718,7 @@ function contentLayoutStore_handleError(vm, msg) {
       type: 'is-danger'
     });
   } else {
-    alert(msg);
+    alert("Error ".concat(msg));
   }
 
   return false;

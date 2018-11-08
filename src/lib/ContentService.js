@@ -221,20 +221,30 @@ class Contentservice {
   setContent(params) {
     this.store.dispatch('setContentAction', params)
   }
+
   // Same parameters as contentLayoutStore.deleteElementAction
   // Action
   deleteElement(params) {
     this.store.dispatch('deleteElementAction', params)
   }
+
   // Same parameters as contentLayoutStore.insertLayoutAction
   // Action
   insertLayout(params) {
     this.store.dispatch('insertLayoutAction', params)
   }
+
   // Same parameters as contentLayoutStore.setProperty
   // Action
   setProperty(params) {
     this.store.dispatch('setPropertyAction', params)
+  }
+
+  // Same parameters as contentLayoutStore.setPropertyInElement
+  // Mutation
+  setPropertyInElement (state, { element, name, value } ) {
+    console.log(`$content.setPropertyInElement`, element, name, value);
+    this.store.dispatch('setPropertyInElementMutation', { element, name, value })
   }
 
   // Same parameters as contentLayoutStore.setLayout
