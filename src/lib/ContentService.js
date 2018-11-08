@@ -242,7 +242,7 @@ class Contentservice {
 
   // Same parameters as contentLayoutStore.setPropertyInElement
   // Mutation
-  setPropertyInElement (state, { element, name, value } ) {
+  setPropertyInElement ({ element, name, value } ) {
     console.log(`$content.setPropertyInElement`, element, name, value);
     this.store.dispatch('setPropertyInElementMutation', { element, name, value })
   }

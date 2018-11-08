@@ -20168,7 +20168,7 @@ function () {
 
   }, {
     key: "setPropertyInElement",
-    value: function setPropertyInElement(state, _ref2) {
+    value: function setPropertyInElement(_ref2) {
       var element = _ref2.element,
           name = _ref2.name,
           value = _ref2.value;
