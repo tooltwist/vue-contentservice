@@ -20169,11 +20169,13 @@ function () {
   }, {
     key: "setPropertyInElement",
     value: function setPropertyInElement(_ref2) {
-      var element = _ref2.element,
+      var vm = _ref2.vm,
+          element = _ref2.element,
           name = _ref2.name,
           value = _ref2.value;
-      console.log("$content.setPropertyInElement", element, name, value);
+      console.log("$content.setPropertyInElement", vm, element, name, value);
       this.store.commit('setPropertyInElementMutation', {
+        vm: vm,
         element: element,
         name: name,
         value: value
@@ -25141,7 +25143,8 @@ var mutations = {
   // Set property values in a specific element
   // This *should* be an element in the current layout
   setPropertyInElementMutation: function setPropertyInElementMutation(state, _ref10) {
-    var element = _ref10.element,
+    var vm = _ref10.vm,
+        element = _ref10.element,
         name = _ref10.name,
         value = _ref10.value;
     console.log('In Mutation contentLayout/setPropertyInElementMutation()', element);

@@ -273,7 +273,7 @@ export const mutations = {
 
   // Set property values in a specific element
   // This *should* be an element in the current layout
-  setPropertyInElementMutation (state, { element, name, value } ) {
+  setPropertyInElementMutation (state, { vm, element, name, value } ) {
     console.log('In Mutation contentLayout/setPropertyInElementMutation()', element)
 
     console.log(`LOOKING FOR ${element.id}`)
