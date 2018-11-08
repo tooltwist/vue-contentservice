@@ -20173,7 +20173,7 @@ function () {
           name = _ref2.name,
           value = _ref2.value;
       console.log("$content.setPropertyInElement", element, name, value);
-      this.store.dispatch('setPropertyInElementMutation', {
+      this.store.commit('setPropertyInElementMutation', {
         element: element,
         name: name,
         value: value

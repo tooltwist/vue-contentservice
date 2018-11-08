@@ -244,7 +244,7 @@ class Contentservice {
   // Mutation
   setPropertyInElement ({ element, name, value } ) {
     console.log(`$content.setPropertyInElement`, element, name, value);
-    this.store.dispatch('setPropertyInElementMutation', { element, name, value })
+    this.store.commit('setPropertyInElementMutation', { element, name, value })
   }
 
   // Same parameters as contentLayoutStore.setLayout
