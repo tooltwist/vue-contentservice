@@ -131,7 +131,9 @@ export const actions = {
   // insertChildAction', { vm: this, element, child: newchild, position: -1 })
 
   insertLayoutAction({ commit, state }, { vm, parent, position, layout}) {
-    console.log('Action contentLayout/insertLayoutAction()', parent, position, layout)
+    console.log('Action contentLayout/insertLayoutAction() parent=', parent)
+    console.log('Action contentLayout/insertLayoutAction() position=', position)
+    console.log('Action contentLayout/insertLayoutAction() layout=', layout)
     console.log(`state=`, state)
 
 console.log(`ok 1`)
@@ -158,7 +160,8 @@ console.log(`ok 1`)
         break;
 
       default:
-        return handleError(`Invalid paste object`)
+        console.log(`ok 1f`, typeof(layout))
+        return handleError(vm, `Invalid paste object`)
     }
     console.log(`ok 2`)
     console.log(`data=`, data)
@@ -197,7 +200,7 @@ console.log(`ok 1`)
   },
 
   setPropertyAction ({ commit, state }, { vm, element, name, value }) {
-    console.log(`action setPropertyAction(${element.id}, ${name}, ${value})`)
+    console.log(`action setPropertyAction(${element}, ${name}, ${value})`)
 
     /*
      *  Two possibilities here:
@@ -367,6 +370,10 @@ export const mutations = {
   // it *should* be an element in the current layout.
   updateElementPropertyMutation (state, { vm, element, name, value }) {
     //ZZZZ Check the parameters
+    if (!element) {
+      console.log(`Update property in currently selected property element`);
+      element = state.expandedElement
+    }
     console.log(`mutation contentLayout/updateElementPropertyMutation(${element.id}, ${name}, ${value})`, element)
 
     // Do this such that a new reactive property is created.
@@ -424,7 +431,7 @@ export const mutations = {
     // and paste, we don't want duplicate IDs already in our parent's layout.
     replaceIdsAlreadyInLayout(state, toInsert)
 
-    console.log(`ok 5`)
+    console.log(`ok 5`, toInsert)
 
     // Check it is sane
     addAnyMissingValues(vm, toInsert)
@@ -451,6 +458,17 @@ export const mutations = {
         return
       }
     }
+
+    // Show the properties for the new element
+    let path = trackDownElementInLayout(state, toInsert.id)
+    //console.log(`path to selected element=`, path)
+    state.pathToSelectedElement = path ? path : [ ]
+    state.expandedElement = path ? path[path.length-1] : null
+
+    console.log(`Path to new element=`, path)
+    path.forEach((element) => {
+      console.log(`  ${element.type}: ${element.id}`, element)
+    })
   },
 
   // Delete an element from the current layout.
@@ -844,6 +862,7 @@ function handleError(vm, msg) {
   if (vm && vm.$toast) {
     vm.$toast.open({ message: `${msg}`, type: 'is-danger' })
   } else {
+    console.error(`Error: ${msg}`)
     alert(`Error ${msg}`)
   }
   return false
@@ -856,11 +875,11 @@ function handleError(vm, msg) {
  */
 function trackDownElementInLayout(state, requiredID) {
   console.log(`trackDownElementInLayout(state, requiredID:${requiredID})`)
-  console.log(`state=`, state)
-  console.log(`state.layout=`, state.layout)
+  // console.log(`state=`, state)
+  // console.log(`state.layout=`, state.layout)
 
   let recurse = (elementInLayout) => {
-    console.log(`  - ${elementInLayout.id} (${elementInLayout.type})`)
+    // console.log(`  - ${elementInLayout.id} (${elementInLayout.type})`)
     if (elementInLayout.id === requiredID) {
       return [ elementInLayout ]
     }

@@ -236,8 +236,8 @@ class Contentservice {
 
   // Same parameters as contentLayoutStore.setProperty
   // Action
-  setProperty(params) {
-    this.store.dispatch('setPropertyAction', params)
+  setProperty({ vm, element, name, value }) {
+    this.store.dispatch('setPropertyAction', { vm, element, name, value })
   }
 
   // Same parameters as contentLayoutStore.setPropertyInElement
