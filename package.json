@@ -1,6 +1,6 @@
 {
   "name": "vue-contentservice",
-  "version": "0.1.86",
+  "version": "0.1.87",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve --open",
