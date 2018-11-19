@@ -36,7 +36,7 @@ div(v-if="sane")
 
       // Actual content
       .c-middle-pane-content
-        content-children(v-if="haveLayout", :element="$content.store.state.layout", :context="context")
+        content-children(v-if="haveLayout", :element="$content.store.state.layout", :context="mycontext")
 
         div(v-else)
           slot(name="middle-pane")
@@ -79,7 +79,7 @@ export default {
     // information.
     context: {
       type: Object,
-      required: true
+      required: false
     },
 
     // Initial pane sizes
@@ -163,6 +163,13 @@ export default {
         return this.anchor
       }
       return null
+    },
+
+    mycontext: function () {
+      if (this.context) {
+        return this.context
+      }
+      return { }
     },
 
     /*
