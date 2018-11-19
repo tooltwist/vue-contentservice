@@ -27,6 +27,24 @@ export default {
       return 'view'
     },
 
+    isEditMode: function () {
+      if (this.$content) {
+        return (this.$content.store.state.mode == 'edit')
+      }
+      return false
+    },
+
+    isDesignMode: function () {
+      if (this.$content) {
+        return (this.$content.store.state.mode == 'debug')
+      }
+      return false
+    },
+
+    isLive: function () {
+      return !(this.isEditMode || this.isDesignMode)
+    },
+
     editModeClass: function () {
       if (this.$content && this.$content.store.state.mode) {
 
@@ -37,7 +55,7 @@ export default {
         // Add property-editing-related classes, for the currently selected
         // element, and the element expanded in the properties editor.
         if (this.element) {
-          if (this.element === this.$content.store.state.propertyElement) {
+          if (this.element === this.$content.store.getters.propertyElement) {
             console.log(`HEY THATS ME!!! ${this.element.id} (${this.element.type})`)
             cls += ` c-selected`
           }

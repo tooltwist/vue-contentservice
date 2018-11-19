@@ -1,6 +1,6 @@
 <template lang="pug">
-  div
-    .tt-property-header
+  .c-property-element(:class="propertyClass")
+    .tt-property-header(@click="setExpandedElement")
       .my-button
         // handle font-awesome 4 and 5
         // Clipboard. See https://www.npmjs.com/package/v-clipboard

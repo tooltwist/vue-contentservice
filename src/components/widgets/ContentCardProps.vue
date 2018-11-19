@@ -9,9 +9,9 @@
         //- i.fa.fa-files-o.fas.fa-copy(v-clipboard="elementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
         //- | &nbsp;
         //- i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
-      | Google Slides
+      | Card
 
-    transition(name="fade")
+      transition(name="c-property-list-transition")
       .c-element-properties(v-if="isExpandedElement")
         .tt-property
           .c-property-label doc ID

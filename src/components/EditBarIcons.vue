@@ -31,7 +31,6 @@ export default {
      *  If contentId is provided, we'll select the content from Crowdhound.
      *  If an element is provided, we'll update it via $content.store.
      */
-    //editcontext: Object,
     contentId: String,
     element: Object,
   },

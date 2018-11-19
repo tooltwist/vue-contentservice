@@ -1,10 +1,14 @@
 <template lang="pug">
-  div
-    .tt-property-header Columns
-    // {{element.id}}
-    .columns
-      .column.c-property-label Columns
-      .column.c-property-value {{element.children.length}}
+.c-property-element(:class="propertyClass")
+  .tt-property-header(@click="setExpandedElement")
+    | Columns
+
+  transition(name="c-property-list-transition")
+    .c-element-properties(v-if="isExpandedElement")
+      .tt-property
+        .c-property-label Columns
+        .c-property-value
+          .column.c-property-value {{element.children.length}}
 </template>
 
 <script>

@@ -5,14 +5,13 @@
         img(src="../assets/logo.png")
       h1.title.is-3 Layout, fixed
 
-    content-layout-editor.my-triple-pane(:editable="editable", :contentId="contentId", zheight="300px", zeditingHeight="600px")
+    content-layout-editor.my-triple-pane(:editable="editable", :contentId="contentId", :context="{}")
 
       //template(slot="left-pane")
       //  | This is the left pane
 
 
       template(slot="middle-pane")
-        //content-layout2(type="fixed", :layout="layoutZ", :editcontext="editcontext")
         | HERE IS THE MIDDLE PANE
         .my-box
         .my-box
@@ -51,13 +50,6 @@ export default {
       }
       */
 
-
-
-      // OLD
-      editcontext: {
-        showLeftPane: false,
-        pageEditMode: 'view'
-      },
 
       typeN: 'crowdhound',
       anchorN: 'mbc.test.layout',

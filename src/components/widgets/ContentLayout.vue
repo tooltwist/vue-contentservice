@@ -1,27 +1,25 @@
 <template lang="pug">
 
-
+  // IS THIS USED?
   .c-content-layout(v-bind:class="[(pageEditMode=='debug') ? 'tt-container-outline' : '']")
 
     // Preview mode
     .container(v-if="pageEditMode==='view'", v-on:click.stop="selectThisElement")
-      content-children(:editcontext="editcontext", :element="element")
+      content-children(:element="element")
 
     // Edit mode
     .container(v-else-if="pageEditMode==='edit'", v-on:click.stop="selectThisElement")
-      content-children(:editcontext="editcontext", :element="element")
+      content-children(:element="element")
 
     // Debug mode
     div(v-else-if="pageEditMode==='debug'", v-on:click.stop="selectThisElement")
       .c-layout-mode-heading layout
       .container
-        content-children.my-content(:editcontext="editcontext", :element="element")
+        content-children.my-content(:element="element")
 
     // Live
     .container(v-else)
-      content-children(:editcontext="editcontext", :element="element")
-
-
+      content-children(:element="element")
 </template>
 
 <script>
@@ -33,7 +31,6 @@ export default {
   components: {
   },
   props: {
-    editcontext: Object,
     element: Object,
   },
   mixins: [

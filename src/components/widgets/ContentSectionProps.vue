@@ -1,8 +1,10 @@
 <template lang="pug">
-  div
-    .tt-property-header Section
-    // {{element.id}}
-    .c-element-properties
+  .c-property-element(:class="propertyClass")
+    .tt-property-header(@click="setExpandedElement")
+      | Section
+
+    transition(name="c-property-list-transition")
+      .c-element-properties(v-show="isExpandedElement")
 
 </template>
 

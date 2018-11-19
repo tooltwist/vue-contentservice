@@ -44,9 +44,9 @@ new Vue({
       case '/layout-fixed-left': return h(TestLayoutFixedLeft)
 
       case '/crowdhound-long': return h(TestCrowdhoundLong)
-      case '/crowdhound-long-left': return h(TestCrowdhoundLongLeft)
-      case '/crowdhound-fixed': return h(TestCrowdhoundFixed)
-      case '/crowdhound-fixed-left': return h(TestCrowdhoundFixedLeft)
+      // case '/crowdhound-long-left': return h(TestCrowdhoundLongLeft)
+      // case '/crowdhound-fixed': return h(TestCrowdhoundFixed)
+      // case '/crowdhound-fixed-left': return h(TestCrowdhoundFixedLeft)
     }
     return h(TestHomePage)
   },

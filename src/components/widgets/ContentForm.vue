@@ -2,40 +2,44 @@
 
   .content-form(v-bind:class="editModeClass")
 
-    // Debug mode
-    div(v-if="isPageMode('debug')", @click.stop="selectThisElement")
+    // Design mode
+    div(v-if="isDesignMode", @click.stop="selectThisElement")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | form
-      content-children.my-content(:editcontext="editcontext", :element="element")
+      content-children.my-content(:element="element", :context="context")
 
-    // Edit mode
-    div(v-else-if="isPageMode('edit')", @click.stop="selectThisElement")
-      content-children(:editcontext="editcontext", :element="element")
-
-    // Preview mode
-    div(v-else-if="isPageMode('view')", @click.stop="selectThisElement")
-      content-children(:editcontext="editcontext", :element="element")
+    // Editing
+    div(v-else-if="isEditMode", @click.stop="selectThisElement")
+      content-children(:element="element", :context="context")
 
     // Live
     form.form(v-else)
-      content-children(:editcontext="editcontext", :element="element")
-
+      content-children(:element="element", :context="context")
 </template>
 
 <script>
 import ContentMixins from '../../mixins/ContentMixins'
 import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
-import EditBarIcons from '../EditBarIcons'
 
 export default {
   name: 'content-form',
-  components: {
-    EditBarIcons
-  },
   props: {
-    editcontext: Object,
     element: Object,
+
+    // The context provides a means for a container to pass information down to
+    // the elements it's contains, to provide elements context within the
+    // hierarchy of elements. Why?
+    // During editing there can only be one currently-being-edited layout,
+    // and the store provides context about the single element being editing.
+    // During normal rendering there may be multiple layouts on a page, but
+    // the store only saves a single state, so the store cannot be used.
+    // In cases where a container and it's elements need to know a bit about
+    // each other, this context can contain that non-editing-related context.
+    context: {
+      type: Object,
+      required: true
+    },
   },
   mixins: [ ContentMixins, CutAndPasteMixins ],
   data: function () {

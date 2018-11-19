@@ -9,19 +9,15 @@
       br
 
     // Debug mode
-    div(v-if="isPageMode('debug')", @click.stop="selectThisElement")
+    div(v-if="isDesignMode", @click.stop="selectThisElement")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | richtext
       froala(:tag="'div'", :config="config", v-model="protectedText")
 
     // Editing
-    div(v-else-if="isPageMode('edit')", @click.stop="selectThisElement")
+    div(v-else-if="isEditMode", @click.stop="selectThisElement")
       froala(:tag="'div'", :config="config", v-model="protectedText")
-
-    // layout
-    div(v-else-if="isPageMode('layout')", @click.stop="selectThisElement")
-      froala-view(:tag="'div'", v-model="element.text")
 
     // Live mode
     template(v-else)
@@ -31,7 +27,6 @@
 <script>
 import ContentMixins from '../../mixins/ContentMixins'
 import CutAndPasteMixins from '../../mixins/CutAndPasteMixins'
-import EditBarIcons from '../EditBarIcons'
 
 // Don't display a license error every time (intentionally global)
 let missingLicenseCounter = 0
@@ -46,16 +41,12 @@ const SAVE_INTERVAL = 2000
 
 export default {
   name: 'content-froala',
-  components: {
-    EditBarIcons
-  },
   props: {
     /*
      *  Must provide either contentId or an element.
      *  If contentId is provided, we'll select the content from Crowdhound.
      *  If an element is provided, we'll update it via $content.store.
      */
-    //editcontext: Object,
     contentId: String,
     element: Object,
   },

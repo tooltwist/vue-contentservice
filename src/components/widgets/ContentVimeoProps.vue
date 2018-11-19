@@ -11,13 +11,12 @@
         //- i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
       | Vimeo Video
 
-    transition(name="fade")
+    transition(name="c-property-list-transition")
       .c-element-properties(v-if="isExpandedElement")
         .tt-property
           .c-property-label Video ID
           .c-property-value
             input.input(v-model="docID")
-
 </template>
 
 <script>

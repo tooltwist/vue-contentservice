@@ -1,11 +1,13 @@
 <template lang="pug">
-  div
-    .tt-property-header Form
-    // {{element.id}}
-    .c-element-properties
-      .tt-property
-        .c-property-label ID
-        .c-property-value {{element.id}}
+  .c-property-element(:class="propertyClass")
+    .tt-property-header(@click="setExpandedElement")
+      | Form
+
+    transition(name="c-property-list-transition")
+      .c-element-properties(v-show="isExpandedElement")
+        .tt-property
+          .c-property-label ID
+          .c-property-value {{element.id}}
 
 </template>
 

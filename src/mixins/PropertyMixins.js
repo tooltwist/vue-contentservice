@@ -13,31 +13,33 @@ export default {
     },
 
     isSelectedElement: function ( ) {
-      if (this.element === this.$content.store.state.propertyElement) {
+      if (this.element === this.$content.store.getters.propertyElement) {
         return true
       }
       return false
-    }
-
-  },
-
-  methods: {
+    },
 
     propertyClass ( ) {
       let cls = ''
       if (this.element === this.$content.store.state.expandedElement) {
         cls += ' c-expanded'
       }
-      if (this.element === this.$content.store.state.propertyElement) {
+      if (this.element === this.$content.store.getters.propertyElement) {
         cls += ' c-selected'
+      } else {
+        cls += ' c-not-selected'
       }
       return cls
     },
 
+  },
+
+  methods: {
+
     setExpandedElement () {
-      console.log(`setExpandedElement()`)
       if (this.pageEditMode != 'view') {
-        this.$content.setExpandedElement({ element: this.element })
+        let element = this.element
+        this.$content.setExpandedElement({ element })
       }
     },
 

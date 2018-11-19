@@ -36,7 +36,7 @@ div(v-if="sane")
 
       // Actual content
       .c-middle-pane-content
-        content-children(v-if="haveLayout", :editcontext="{}", :element="$content.store.state.layout")
+        content-children(v-if="haveLayout", :element="$content.store.state.layout", :context="context")
 
         div(v-else)
           slot(name="middle-pane")
@@ -71,8 +71,16 @@ let SAVE_INDIVIDUAL = 3
 let previousTimeStamp = 0
 
 export default {
-  name: 'content-triple-pane',
+  name: 'content-layout-editor',
   props: {
+
+    // The context provides a means for a container to pass information down to the
+    // elements it's contains. During editing the store is used to provide all
+    // information.
+    context: {
+      type: Object,
+      required: true
+    },
 
     // Initial pane sizes
     rightPane: {
@@ -191,7 +199,7 @@ export default {
 
     propertyElementAsJson: function () {
       if (process.browser) {
-        return this.$content.util.safeJson(this.$content.store.state.propertyElement)
+        return this.$content.util.safeJson(this.$content.store.getters.propertyElement)
       }
       return '-server side-'
     },
@@ -282,7 +290,7 @@ export default {
     thePropertyElement () {
       if (process.browser) {
         if (this.$content.store.state) {
-          return this.$content.store.state.propertyElement
+          return this.$content.store.getters.propertyElement
         } else {
           // Has contentservice been installed?
           console.error(`ContentLayoutEditor: this.$content.store.state is not defined`)
@@ -369,7 +377,6 @@ export default {
 
     dump () {
       console.log('dump')
-      //- console.log('dump', this.editcontext)
       //- console.log(`contentdata=`, this.contentdata)
       //- if (this.contentdata && this.contentdata.data && this.contentdata.data.layout) {
       //-   console.log(`layout:\n`, this.contentdata.data.layout)

@@ -9,13 +9,12 @@
       h1.title.is-3 Long page with a Left panel
 
     // STEP 1 - add a 'ref' tag.
-    content-layout-editor.my-triple-pane(:editable="editable", :contentId="contentId", height="300px", editingHeight="600px", :style="postRenderStyle", ref="layoutPane")
+    content-layout-editor.my-triple-pane(:editable="editable", :contentId="contentId", height="300px", editingHeight="600px", :style="postRenderStyle", ref="layoutPane", :context="{}")
 
       template(slot="left-pane")
         | This is the left pane
 
       template(slot="middle-pane")
-        //content-layout2(type="fixed", :layout="layoutZ", :editcontext="editcontext")
         | HERE IS THE MIDDLE PANE
         .my-box
         .my-box
@@ -47,12 +46,6 @@ export default {
       // Step 2 - Create a variable for the size of the layout area,
       // after the content has been rendered.
       postRenderHeight: null,
-
-      // OLD
-      editcontext: {
-        showLeftPane: false,
-        pageEditMode: 'view'
-      },
 
       typeN: 'crowdhound',
       anchorN: 'mbc.test.layout',

@@ -1,27 +1,28 @@
 <template lang="pug">
-  div
-    .tt-property-header Container
-    // {{element.id}}
-    .c-element-properties
-      .tt-property
-        .c-property-label Type
-        .c-property-value
-          select(v-model="protectedIsFluid")
-            option() navbar
-            option() hero
-            option() section
-            option() footer
-      .tt-property
-        .c-property-label
-        .c-property-value
-          label.checkbox
-            input(type="checkbox" v-model="protectedIsFluid")
-            | &nbsp;full width
-      .tt-property
-        .c-property-label Background
-        .c-property-value
-          input.input(v-model="protectedBgColor")
+  .c-property-element(:class="propertyClass")
+    .tt-property-header(@click="setExpandedElement")
+      | Container
 
+    transition(name="c-property-list-transition")
+      .c-element-properties(v-show="isExpandedElement")
+        .tt-property
+          .c-property-label Type
+          .c-property-value
+            select(v-model="protectedIsFluid")
+              option() navbar
+              option() hero
+              option() section
+              option() footer
+        .tt-property
+          .c-property-label
+          .c-property-value
+            label.checkbox
+              input(type="checkbox" v-model="protectedIsFluid")
+              | &nbsp;full width
+        .tt-property
+          .c-property-label Background
+          .c-property-value
+            input.input(v-model="protectedBgColor")
 </template>
 
 <script>

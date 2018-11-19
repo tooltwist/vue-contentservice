@@ -1,11 +1,10 @@
 <template lang="pug">
 
-
   .c-content-container(v-bind:class="editModeClass")
 
     // Edit mode
     .container(v-if="pageEditMode==='edit'", @click.stop="selectThisElement")
-      content-children(:editcontext="editcontext", :element="element")
+      content-children(:element="element", :context="context")
 
     // Debug mode
     div(v-else-if="pageEditMode==='debug'", @click.stop="selectThisElement")
@@ -13,11 +12,11 @@
         edit-bar-icons(:element="element")
         | container
       .container
-        content-children.my-content(:editcontext="editcontext", :element="element")
+        content-children.my-content(:element="element", :context="context")
 
     // Live
     .container(v-else)
-      content-children(:editcontext="editcontext", :element="element")
+      content-children(:element="element", :context="context")
 </template>
 
 <script>
@@ -31,8 +30,21 @@ export default {
     EditBarIcons
   },
   props: {
-    editcontext: Object,
     element: Object,
+
+    // The context provides a means for a container to pass information down to
+    // the elements it's contains, to provide elements context within the
+    // hierarchy of elements. Why?
+    // During editing there can only be one currently-being-edited layout,
+    // and the store provides context about the single element being editing.
+    // During normal rendering there may be multiple layouts on a page, but
+    // the store only saves a single state, so the store cannot be used.
+    // In cases where a container and it's elements need to know a bit about
+    // each other, this context can contain that non-editing-related context.
+    context: {
+      type: Object,
+      required: true
+    },
   },
   mixins: [ ContentMixins, CutAndPasteMixins ],
   computed: {

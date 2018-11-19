@@ -1,14 +1,22 @@
 <template lang="pug">
   .ch-elem(v-if="sane")
-    div(v-if="element")
-
-      // Show the properties for this element
-      component(v-if="propertyComponentNameForElement", v-bind:is="propertyComponentNameForElement", :editcontext="editcontext", :element="element")
+    div(v-for="propertyElement in hierarchyToSelectedElement")
+      //| {{ propertyElement.type}},
+      //| {{propertyComponentNameForElement2(propertyElement)}}
+      //br
+      component(v-if="propertyComponentNameForElement2(propertyElement)", v-bind:is="propertyComponentNameForElement2(propertyElement)", :element="propertyElement")
       div(v-else)
-        | Unknown type ({{element.type}})
-
-      // Now show the next level
-      content-element-props(v-if="haveMore" :level="level+1")
+        .tt-property-element-unknown-type
+          | Unknown type ({{propertyElement.type}})
+    .tt-property-footer
+    //div(v-if="element")
+    //  // Show the properties for this element
+    //  component(v-if="propertyComponentNameForElement", v-bind:is="propertyComponentNameForElement", :element="element")
+    //  div(v-else)
+    //    | Unknown type ({{element.type}})
+    //
+    //  // Now show the next level
+    //  content-element-props(v-if="haveMore" :level="level+1")
 </template>
 
 <script>
@@ -31,6 +39,11 @@ export default {
     }
   },
   computed: {
+    hierarchyToSelectedElement: function ( ) {
+      let path = this.$content.store.state.pathToSelectedElement
+      return path
+    },
+
     element: function ( ) {
       let path = this.$content.store.state.pathToSelectedElement
       return (path.length > this.level) ? path[this.level] : null
@@ -45,6 +58,16 @@ export default {
     propertyComponentNameForElement: function () {
       console.log(`propertyComponentNameForElement(${this.element.type})`);
       let type = this.element.type
+      let def = this.$content.getLayoutType(type)
+      return def ? def.propertyComponentName : null
+    },
+  },
+
+  methods: {
+
+    propertyComponentNameForElement2 (element) {
+      console.log(`propertyComponentNameForElement2(${element.type})`);
+      let type = element.type
       let def = this.$content.getLayoutType(type)
       return def ? def.propertyComponentName : null
     }

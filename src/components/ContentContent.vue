@@ -13,8 +13,7 @@ div(v-if="sane")
 
     // Display the element
     .tt-content-layout(v-if="sanitizedContentComp")
-      //content-children(:editcontext="editcontext", :element="sanitizedContentComp")
-      content-children(:editcontext="editcontext", :element="$content.store.state.layout")
+      content-children(:element="$content.store.state.layout")
 
 </template>
 
@@ -46,10 +45,6 @@ export default {
 
     layout: Object,
     contentId: String,
-    //- anchorPrefix: String,
-
-    editcontext: Object,
-
 
     // deprecate this. ZZZZ
     contentdata: Object,

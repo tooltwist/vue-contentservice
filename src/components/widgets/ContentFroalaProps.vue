@@ -1,10 +1,13 @@
 <template lang="pug">
-  div
-    .tt-property-header RichText
-    .c-element-properties
-      .tt-property
-        .c-property-label classes
-        .c-property-value {{element.classes}}
+  .c-property-element(:class="propertyClass")
+    .tt-property-header(@click="setExpandedElement")
+      | RichText
+
+    transition(name="c-property-list-transition")
+      .c-element-properties(v-show="isExpandedElement")
+        .tt-property
+          .c-property-label classes
+          .c-property-value {{element.classes}}
 
 </template>
 

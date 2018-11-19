@@ -1,11 +1,14 @@
 <template lang="pug">
-  div
-    .tt-property-header
+  .c-property-element(:class="propertyClass")
+    .tt-property-header(@click="setExpandedElement")
       | Field
-    .c-element-properties
-      string-property(:element="element", property="label", label="Label")
-      string-property(:element="element", property="placeholder", label="Placeholder")
-      string-property(:element="element", property="help", label="Help message")
+
+
+    transition(name="c-property-list-transition")
+      .c-element-properties(v-show="isExpandedElement")
+        string-property(:element="element", property="label", label="Label")
+        string-property(:element="element", property="placeholder", label="Placeholder")
+        string-property(:element="element", property="help", label="Help message")
 
 </template>
 

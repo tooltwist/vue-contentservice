@@ -9,11 +9,9 @@
       br
       button.button.is-warning.is-pulled-right Hello
       h1.title.is-3 Long page + Crowdhound content
-    //content-layout-editor#my-triple-pane(:editcontext="editcontext", editable="false", :contentdata="contentdata", :type="typeN", :anchorN="anchorN")
-    content-layout-editor.my-triple-pane(:editable="editable", :contentId="contentId", height="300px", editingHeight="600px")
+    content-layout-editor.my-triple-pane(:editable="editable", :contentId="contentId", height="300px", editingHeight="600px", :context="{}")
 
       template(slot="middle-pane")
-        //content-layout2(type="fixed", :layout="layoutZ", :editcontext="editcontext")
         | HERE IS THE MIDDLE PANE
         .my-box
         .my-box
@@ -54,13 +52,6 @@ export default {
       }
       */
 
-
-
-      // OLD
-      editcontext: {
-        showLeftPane: false,
-        pageEditMode: 'view'
-      },
 
       typeN: 'crowdhound',
       anchorN: 'mbc.test.layout',

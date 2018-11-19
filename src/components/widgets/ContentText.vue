@@ -8,7 +8,7 @@ div
   span(v-if="isPageMode('view')")
     | {{protectedContent}}
   // Debug mode - show a surround, click to edit
-  .my-debug-box(v-else-if="isPageMode('debug')")
+  .my-debug-box(v-else-if="isDesignMode")
     .my-debug-header
       | text
       br
@@ -22,12 +22,11 @@ div
     | {{protectedContent}}
 
   // Here's the editing bit
-  div(v-if="isPageMode('edit,layout,debug') && editing")
+  div(v-if="isPageMode('edit,debug') && editing")
     hr
     | &nbsp;{{saveMsg}}
     br
     textarea.textarea.my-input(v-model="protectedContent")
-
 </template>
 
 <script>
@@ -52,9 +51,22 @@ export default {
      *  If contentId is provided, we'll select the content from Crowdhound.
      *  If an element is provided, we'll update it via $content.store.
      */
-    //editcontext: Object,
     contentId: String,
     element: Object,
+
+    // The context provides a means for a container to pass information down to
+    // the elements it's contains, to provide elements context within the
+    // hierarchy of elements. Why?
+    // During editing there can only be one currently-being-edited layout,
+    // and the store provides context about the single element being editing.
+    // During normal rendering there may be multiple layouts on a page, but
+    // the store only saves a single state, so the store cannot be used.
+    // In cases where a container and it's elements need to know a bit about
+    // each other, this context can contain that non-editing-related context.
+    context: {
+      type: Object,
+      required: true
+    },
   },
   data: function () {
     return {

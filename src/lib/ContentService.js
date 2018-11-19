@@ -261,8 +261,8 @@ class Contentservice {
 
   // Same parameters as contentLayoutStore.setExpandedElement
   // Mutation
-  setExpandedElement (state, { element } ) {
-    this.store.commit('setEditMode', params)
+  setExpandedElement (params) {
+    this.store.commit('setExpandedElementMutation', params)
   }
 
   // Same parameters as contentLayoutStore.setEditMode

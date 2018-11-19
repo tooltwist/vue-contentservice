@@ -1,17 +1,19 @@
 <template lang="pug">
-  div
-    .tt-property-header Text
-    .c-element-properties
-      .tt-property
-        .c-property-label color
-        .c-property-value {{value('color')}}
-      .tt-property
-        .c-property-label font-family
-        .c-property-value {{value('font-family')}}
-      .tt-property
-        .c-property-label font-size
-        .c-property-value {{value('font-size')}}
+  .c-property-element(:class="propertyClass")
+    .tt-property-header(@click="setExpandedElement")
+      | Text
 
+    transition(name="c-property-list-transition")
+      .c-element-properties(v-show="isExpandedElement")
+        .tt-property
+          .c-property-label color
+          .c-property-value {{value('color')}}
+        .tt-property
+          .c-property-label font-family
+          .c-property-value {{value('font-family')}}
+        .tt-property
+          .c-property-label font-size
+          .c-property-value {{value('font-size')}}
 </template>
 
 <script>

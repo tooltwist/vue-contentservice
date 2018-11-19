@@ -20,6 +20,7 @@ import ContentPane from './ContentPane.vue'
 
 import ContentElement from './ContentElement.vue'
 import ContentElementProps from './ContentElementProps.vue'
+import ContentPropertiesHeader from './ContentPropertiesHeader.vue'
 import ContentChildren from './ContentChildren.vue'
 import ContentContentProps from './ContentContentProps.vue'
 
@@ -156,7 +157,6 @@ function install (Vue, options) {
    */
   Vue.component('crowdhound-minimal', CrowdhoundMinimal)
 
-  // Vue.component('content-triple-pane', ContentTriplePane)
   Vue.component('content-layout-editor', ContentLayoutEditor)
   Vue.component('content-toolbox', ContentToolbox)
 
@@ -343,8 +343,8 @@ function install (Vue, options) {
 
 
 
+  // Register components that are toolbox widgets
 
-  // _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
   // _content.registerLayoutType(Vue, 'container', 'content-container', ContentContainer, ContentContainerProps)
   _content.registerLayoutType(Vue, 'element', 'content-element', ContentElement, ContentElementProps)
   // _content.registerLayoutType(Vue, 'text', 'content-text', ContentText, ContentTextProps)
@@ -357,8 +357,9 @@ function install (Vue, options) {
   _content.registerLayoutType(Vue, 'layout', 'content-layout', ContentLayout, ContentLayoutProps)
   _content.registerLayoutType(Vue, 'card', 'card', ContentCard, ContentCardProps)
 
-
+  // Components not in the toolbox
   Vue.component('edit-bar-icons', EditBarIcons)
+  Vue.component('edit-properties-header', ContentPropertiesHeader)
 
 
   // Set up external libraries

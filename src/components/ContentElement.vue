@@ -1,7 +1,7 @@
 <template lang="pug">
 
   .tt-element
-    component(v-if="componentNameForElement", v-bind:is="componentNameForElement", :editcontext="editcontext", :element="element")
+    component(v-if="componentNameForElement", v-bind:is="componentNameForElement", :context="context", :element="element")
     div(v-else)
       | Unknown element type '{{element.type}}'
 </template>
@@ -11,7 +11,12 @@
 export default {
   name: 'content-element',
   props: {
-    editcontext: Object,
+    // The context provides a means for a container to pass information down to it's children
+    context: {
+      type: Object,
+      required: true
+    },
+
     element: Object,
   },
   computed: {

@@ -319,8 +319,8 @@ export const mutations = {
 
   // Set the element currently expanded in the properties panel.
   // This *must* be an element in pathToSelectedElement.
-  setExpandedElement (state, { element } ) {
-    console.log('In Mutation contentLayout/setExpandedElement()', element)
+  setExpandedElementMutation (state, { element } ) {
+    console.log('In Mutation contentLayout/setExpandedElementMutation()', element)
     //return
     // console.log('State is ', state)
     // Clone the element
@@ -335,7 +335,7 @@ export const mutations = {
         return
       }
     }
-    console.error(`setExpandedElement: element not in pathToSelectedElement`)
+    console.error(`setExpandedElementMutation: element not in pathToSelectedElement`)
   },
 
   // Set the screen mode [view | edit | layout | debug]

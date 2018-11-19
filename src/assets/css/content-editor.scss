@@ -11,6 +11,19 @@ $tt-property-header-color: #666;
 $tt-property-grid: #f0f0f0;
 
 /* Properties Panel */
+.c-properties-pane {
+  background-color: #fafafa;
+  .title {
+    border-top: solid 4px #dd0038;
+    //color: #dd0038;
+    padding-top: 2px;
+    background-color: #ffffff;
+    padding-bottom: 2px;
+    //border-bottom: solid 1px #dd0038;
+    border-bottom: solid 1px $tt-property-header-outline;
+    margin-bottom: 2px;
+  }
+}
 .tt-property-header {
   border-top: solid 1px $tt-property-header-outline;
   background-color: $tt-property-header-background;
@@ -19,9 +32,13 @@ $tt-property-grid: #f0f0f0;
   height: 20px;
   font-size: 13px;
 }
+.tt-property-element-unknown-type {
+  font-size: 10px;
+}
 .c-element-properties {
   display: block;
-  margin-bottom: 2px;
+  //margin-bottom: 2px;
+  background-color: #ffffff;
 }
 .tt-property {
   display: -webkit-flex;
@@ -85,6 +102,60 @@ $tt-property-grid: #f0f0f0;
   //margin: 2px;
   //background-color: red;
 }
+
+/*
+ *  Properties Editing.
+ */
+ // Transitions for properties editing.
+ .c-property-list-transition-enter-active {
+   // Slow arrival
+   transition: opacity .7s;
+ }
+ .c-property-list-transition-leave-active {
+   // Fast exit
+   transition: opacity 0s;
+ }
+ .c-property-list-transition-enter, .c-property-list-transition-leave-to /* .property-list-transition-leave-active below version 2.1.8 */ {
+   opacity: 0;
+ }
+
+.c-property-element {
+  &.c-expanded.c-selected {
+    .tt-property-header {
+      font-weight: bold;
+    }
+  }
+  &.c-expanded.c-not-selected {
+    .tt-property-header {
+      color: #dd0038;
+    }
+    .c-element-properties {
+      background-color: #fff5f7;
+    }
+  }
+}
+
+// Components (toolbox) pane
+.c-components-pane {
+  //background-color: #f7f7f7;
+  .title {
+    border-top: solid 4px #dd0038;
+    //color: #dd0038;
+    padding-top: 2px;
+    background-color: #ffffff;
+    padding-bottom: 2px;
+    //border-bottom: solid 1px #dd0038;
+    //border-bottom: solid 1px $tt-property-header-outline;
+    margin-bottom: 2px;
+  }
+}
+
+
+ /*ZZZZZZZZZZ
+
+ SHOULDN'T THIS BE SOMEWHERE ELSE???
+
+ZZZZZZZZZZ*/
 
 // Make the slides responsive
 // From https://productforums.google.com/forum/#!topic/docs/tuufSoBoxKc
