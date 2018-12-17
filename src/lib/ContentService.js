@@ -236,8 +236,8 @@ class Contentservice {
 
   // Same parameters as contentLayoutStore.setProperty
   // Action
-  setProperty({ vm, element, name, value }) {
-    this.store.dispatch('setPropertyAction', { vm, element, name, value })
+  setProperty({ vm, element, name, value, save }) {
+    this.store.dispatch('setPropertyAction', { vm, element, name, value, save })
   }
 
   // Same parameters as contentLayoutStore.setPropertyInElement
@@ -245,6 +245,17 @@ class Contentservice {
   setPropertyInElement ({ vm, element, name, value } ) {
     console.log(`$content.setPropertyInElement`, vm, element, name, value);
     this.store.commit('setPropertyInElementMutation', { vm, element, name, value })
+  }
+
+  // This is only here, to match the setProperty functions.
+  getProperty({ element, name, defaultValue }) {
+    if (element.hasOwnProperty(name)) {
+      return element[name]
+    }
+    if (typeof(defaultValue) !== 'undefined') {
+      return defaultValue
+    }
+    return undefined
   }
 
   // Same parameters as contentLayoutStore.setLayout

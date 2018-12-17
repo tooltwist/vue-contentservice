@@ -1,7 +1,7 @@
 <template lang="pug">
   .c-property-element(:class="propertyClass")
     .tt-property-header(@click="setExpandedElement")
-      .my-button
+      .my-buttons
         // handle font-awesome 4 and 5
         // Clipboard. See https://www.npmjs.com/package/v-clipboard
         span(@click="downloadMyElement")
@@ -73,10 +73,11 @@ export default {
     }
   }
 
-  .my-button {
+  .my-buttons {
     position: absolute;
-    right: 5px;
+    right: 3px;
     cursor: pointer;
+    font-size: 10px;
   }
 
   .my-restore {

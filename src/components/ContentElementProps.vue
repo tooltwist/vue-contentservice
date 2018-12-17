@@ -66,7 +66,7 @@ export default {
   methods: {
 
     propertyComponentNameForElement2 (element) {
-      console.log(`propertyComponentNameForElement2(${element.type})`);
+      // console.log(`propertyComponentNameForElement2(${element.type})`);
       let type = element.type
       let def = this.$content.getLayoutType(type)
       return def ? def.propertyComponentName : null

@@ -199,8 +199,8 @@ console.log(`ok 1`)
     rememberToSave(commit, state, vm)
   },
 
-  setPropertyAction ({ commit, state }, { vm, element, name, value }) {
-    console.log(`action setPropertyAction(${element}, ${name}, ${value})`)
+  setPropertyAction ({ commit, state }, { vm, element, name, value, save }) {
+    console.log(`action setPropertyAction(${element}, ${name}, ${value}, save=${save})`)
 
     /*
      *  Two possibilities here:
@@ -221,7 +221,14 @@ console.log(`ok 1`)
     commit('setSaveMsg', { msg: DIRTY })
 
     // Start the timer, to save after a short delay
-    rememberToSave(commit, state, vm)
+    if (typeof(save) === 'Boolean' && !save) {
+      // Skip saving. This can be used when a value in the element is being
+      // set just to pass information to the properties component. For example,
+      // if there is a current 'tab' for which properties are to be displayed.
+      console.error(`NOT SAVING THIS TRANSITORY VALUE. WARP YIP WANZACKO!`);
+    } else {
+      rememberToSave(commit, state, vm)
+    }
   },
 
 }

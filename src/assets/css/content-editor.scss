@@ -123,11 +123,13 @@ $tt-property-grid: #f0f0f0;
   &.c-expanded.c-selected {
     .tt-property-header {
       font-weight: bold;
+      cursor: pointer;
     }
   }
   &.c-expanded.c-not-selected {
     .tt-property-header {
       color: #dd0038;
+      cursor: pointer;
     }
     .c-element-properties {
       background-color: #fff5f7;

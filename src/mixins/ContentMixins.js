@@ -41,6 +41,10 @@ export default {
       return false
     },
 
+    isViewMode: function () {
+      return this.isLive
+    },
+
     isLive: function () {
       return !(this.isEditMode || this.isDesignMode)
     },
@@ -52,11 +56,18 @@ export default {
         let mode = this.$content.store.state.mode
         let cls = `c-edit-mode-${mode}`
 
+        // For backward compatibility (debug mode is now called design mode)
+        if (cls === 'c-edit-mode-debug') {
+          cls += ' c-edit-mode-design'
+        } else if (cls === 'c-edit-mode-design') {
+          cls += ' c-edit-mode-debug'
+        }
+
         // Add property-editing-related classes, for the currently selected
         // element, and the element expanded in the properties editor.
         if (this.element) {
           if (this.element === this.$content.store.getters.propertyElement) {
-            console.log(`HEY THATS ME!!! ${this.element.id} (${this.element.type})`)
+            // console.log(`HEY THATS ME!!! ${this.element.id} (${this.element.type})`)
             cls += ` c-selected`
           }
           if (this.element === this.$content.store.state.expandedElement) {
@@ -84,7 +95,6 @@ export default {
       }
       return false
     }
-
   },
 
   methods: {

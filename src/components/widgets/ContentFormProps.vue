@@ -19,7 +19,7 @@ export default {
   mixins: [ PropertyMixins ],
   props: {
     element: Object
-  }
+  },
 }
 </script>
 

@@ -14,7 +14,7 @@
             //- i(v-else).fas.fa-2x.fa-file-word-o
             //- div(slot="image")
             //-   i.fas.fa-2x.fa-file-word-o
-          .my-component-label {{type.name}}
+          .my-component-label {{type.label}}
 
       hr
       | OLD WIDGETS
