@@ -250,7 +250,7 @@ export const mutations = {
 
     if (layout) {
       state.layout = addAnyMissingValues(vm, layout)
-      console.log(`sanitized layout:`, state.layout)
+      // console.log(`sanitized layout:`, state.layout)
       state.crowdhoundElement = crowdhoundElement
     } else {
       console.error(`Mutation contentLayout/setLayout requires 'layout' parameter`)
@@ -260,9 +260,9 @@ export const mutations = {
       state.editable = false
 
       // Hack
-      if (element) {
-        console.error(`We do have 'element'`)
-      }
+      // if (element) {
+      //   console.error(`We do have 'element'`)
+      // }
       return
     }
 
@@ -284,9 +284,9 @@ export const mutations = {
   // Set property values in a specific element
   // This *should* be an element in the current layout
   setPropertyInElementMutation (state, { vm, element, name, value } ) {
-    console.log('In Mutation contentLayout/setPropertyInElementMutation()', element)
+    // console.log('In Mutation contentLayout/setPropertyInElementMutation()', element)
 
-    console.log(`LOOKING FOR ${element.id}`)
+    // console.log(`LOOKING FOR ${element.id}`)
     let path = trackDownElementInLayout(state, element.id)
     if (path) {
       let specifiedElement = path[path.length-1]
@@ -303,22 +303,14 @@ export const mutations = {
   // Set the element shown in the properties panel.
   // This *should* be an element in the current layout
   setPropertyElementMutation (state, { element } ) {
-    console.log('In Mutation contentLayout/setPropertyElementMutation()', element)
-    //return
-    // console.log('State is ', state)
-    // Clone the element
-    //let duplicate = JSON.parse(JSON.stringify(data.element));
-    // console.log(`Before`)
-    // state.propertyElement = element
-    //console.log(`After`)
+    // console.log('In Mutation contentLayout/setPropertyElementMutation()', element)
 
-    // console.log(`LOOKING FOR ${element.id}`)
     let path = trackDownElementInLayout(state, element.id)
     //console.log(`path to selected element=`, path)
     state.pathToSelectedElement = path ? path : [ ]
     state.expandedElement = path ? path[path.length-1] : null
 
-    console.log(`Path to selected element=`, path)
+    // console.log(`Path to selected element=`, path)
     path.forEach((element) => {
       console.log(`  ${element.type}: ${element.id}`)
     })
@@ -381,44 +373,13 @@ export const mutations = {
       console.log(`Update property in currently selected property element`);
       element = state.expandedElement
     }
-    console.log(`mutation contentLayout/updateElementPropertyMutation(${element.id}, ${name}, ${value})`, element)
+    // console.log(`mutation contentLayout/updateElementPropertyMutation(${element.id}, ${name}, ${value})`, element)
 
     // Do this such that a new reactive property is created.
     // https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats
     // NOT: element[name] = value
     vm.$set(element, name, value)
   },
-
-  // Clone an element hierarchy and insert it as a child
-  // into an element in the current layout.
-  // insertChild(state, { vm, element, child, position}) {
-  //   console.log('In Mutation contentLayout/insertChild()', element)
-  //   console.log('In Mutation insertChild()', child)
-  //
-  //   //console.log(`insertChild, parent before:`, safeJson(element));
-  //   console.log(`insertChild, child:`, safeJson(child));
-  //
-  //   // Clone the hierarchy (this is the cheat's way)
-  //   //let newchild = JSON.parse(JSON.stringify(child));
-  //   let newchild = JSON.parse(safeJson(child));
-  //
-  //   // Overwrite any element IDs
-  //   overwriteElementIDs(newchild)
-  //
-  //   // Check it is sane
-  //   // newchild._parent = element //ZZKOP
-  //   addAnyMissingValues(vm, newchild)
-  //
-  //   // Plug it in as a child of the element
-  //   // The inserted item will become reactive, because the layout is already reactive.
-  //   // See https://vuejs.org/v2/guide/list.html#Array-Change-Detection
-  //   if (position >= 0) {
-  //     element.children.splice(position, 0, newchild)
-  //   } else {
-  //     element.children.push(newchild)
-  //   }
-  //   //console.log(`insertChild, parent after:`, safeJson(element));
-  // },
 
   insertLayoutMutation (state, { vm, parent, position, layout }) {
     console.log('In Mutation contentLayout/insertLayoutMutation()', parent, position, layout)
@@ -497,7 +458,6 @@ export const mutations = {
         }
       }
     }
-
   },
 
   // // Set the element shown in the properties panel.

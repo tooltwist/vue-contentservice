@@ -26,7 +26,7 @@
           //- i(v-else).fas.fa-2x.fa-file-word-o
           //- div(slot="image")
           //-   i.fas.fa-2x.fa-file-word-o
-        .my-component-label {{tool.name}}
+        .my-component-label {{tool.label}}
 </template>
 
 <script>
