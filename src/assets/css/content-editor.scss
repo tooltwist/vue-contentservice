@@ -122,12 +122,14 @@ $tt-property-grid: #f0f0f0;
 .c-property-element {
   &.c-expanded.c-selected {
     .tt-property-header {
+      position: relative;
       font-weight: bold;
       cursor: pointer;
     }
   }
   &.c-expanded.c-not-selected {
     .tt-property-header {
+      position: relative;
       color: #dd0038;
       cursor: pointer;
     }
@@ -256,4 +258,52 @@ ZZZZZZZZZZ*/
       color: $c-editbar-color;
     }
   }
+}
+
+/*
+ *  Toolbox icons
+ */
+.c-icon-section {
+  background-image: url("../assets/icons/icon-section-26.png");
+}
+.c-icon-columns {
+  background-image: url("../assets/icons/icon-columns-26.png");
+}
+.c-icon-container {
+  background-image: url("../assets/icons/icon-container-26.png");
+}
+.c-icon-youtube {
+  background-image: url("../assets/icons/icon-youtube-26.png");
+}
+.c-icon-text {
+  background-image: url("../assets/icons/icon-text-26-2.png");
+}
+.c-icon-vimeo {
+  background-image: url("../assets/icons/icon-vimeo-26.png");
+}
+
+/*
+ *  Edit bar and properties icons.
+ */
+.c-editbar-cut {
+  display: inline-block;
+  background-image: url("../assets/icons/icon-editbar-cut-2.png");
+  height: 10px;
+  width: 10px;
+  // background-color: red;
+}
+.c-editbar-copy {
+  display: inline-block;
+  background-image: url("../assets/icons/icon-editbar-copy-10-2.png");
+  height: 10px;
+  width: 10px;
+  // background-color: red;
+}
+.c-editbar-delete {
+  display: inline-block;
+  // background-image: url("../assets/icons/icon-editbar-delete.png");
+  background-image: url("../assets/icons/icon-editbar-trash-12.png");
+  height: 10px;
+  width: 10px;
+  background-color: red;
 }

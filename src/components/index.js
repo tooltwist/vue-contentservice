@@ -179,8 +179,11 @@ function install (Vue, options) {
     name: 'section',
     label: 'Section',
     category: '',
-    iconClass: 'fa fa-arrows-v fas fa-arrows-alt-v contentservice-section-icon',
-    iconClass5: 'fas fa-arrows-alt-v contentservice-section-icon',
+    // iconClass: 'fa fa-arrows-v fas fa-arrows-alt-v contentservice-section-icon',
+    // iconClass5: 'fas fa-arrows-alt-v contentservice-section-icon',
+    iconClass: 'c-icon-section contentservice-section-icon',
+    iconClass5: 'c-icon-section contentservice-section-icon',
+    // iconClass5: 'fas fa-arrows-alt-v contentservice-section-icon',
     dragtype: 'component',
 
     // Registering for native Vue templates
@@ -204,8 +207,8 @@ function install (Vue, options) {
     name: 'container',
     label: 'Container',
     category: '',
-    iconClass: 'fa-arrows-h fa',
-    iconClass5: 'fas fa-arrows-alt-h',
+    iconClass: 'c-icon-container',
+    iconClass5: 'c-icon-container',
     dragtype: 'component',
 
     // Register native Vue templates
@@ -230,8 +233,7 @@ function install (Vue, options) {
     name: 'columns',
     label: 'Columns',
     category: '',
-    iconClass: 'fa-columns fa',
-    iconClass5: 'fas fa-columns',
+    iconClass: 'c-icon-columns',
     dragtype: 'component',
 
     // Register native Vue templates
@@ -266,8 +268,7 @@ function install (Vue, options) {
     name: 'text',
     label: 'Text',
     category: '',
-    iconClass: 'fa-font fa',
-    iconClass5: 'fas fa-font',
+    iconClass: 'c-icon-text',
     dragtype: 'component',
 
     // Register native Vue templates
@@ -292,9 +293,8 @@ function install (Vue, options) {
   _content.registerWidget(Vue, {
     name: 'youtube',
     label: 'Youtube',
-    category: 'Video',
-    iconClass: 'fa fa-youtube',
-    iconClass5: 'fab fa-youtube',
+    category: '',
+    iconClass: 'c-icon-youtube',
     dragtype: 'component',
 
     // Register native Vue templates
@@ -319,9 +319,8 @@ function install (Vue, options) {
   _content.registerWidget(Vue, {
     name: 'vimeo',
     label: 'Vimeo',
-    category: 'Video',
-    iconClass: 'fa fa-vimeo',
-    iconClass5: 'fab fa-vimeo',
+    category: '',
+    iconClass: 'c-icon-vimeo',
     dragtype: 'component',
 
     // Register native Vue templates
