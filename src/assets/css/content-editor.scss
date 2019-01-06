@@ -235,6 +235,8 @@ ZZZZZZZZZZ*/
   height: $c-heading-height;
   line-height: $c-heading-height;
   font-size: $c-heading-font-size;
+  font-weight: bold;
+  opacity: 0.5;
   margin-bottom: 1px;
   position: relative;
   text-align: left;
@@ -252,7 +254,7 @@ ZZZZZZZZZZ*/
     position: absolute;
     right: 5px;
     padding-top: 1px;
-    font-size: $c-heading-icon-font-size;
+    font-size: 8px;
 
     span:hover {
       color: $c-editbar-color;
@@ -280,30 +282,4 @@ ZZZZZZZZZZ*/
 }
 .c-icon-vimeo {
   background-image: url("../assets/icons/icon-vimeo-26.png");
-}
-
-/*
- *  Edit bar and properties icons.
- */
-.c-editbar-cut {
-  display: inline-block;
-  background-image: url("../assets/icons/icon-editbar-cut-2.png");
-  height: 10px;
-  width: 10px;
-  // background-color: red;
-}
-.c-editbar-copy {
-  display: inline-block;
-  background-image: url("../assets/icons/icon-editbar-copy-10-2.png");
-  height: 10px;
-  width: 10px;
-  // background-color: red;
-}
-.c-editbar-delete {
-  display: inline-block;
-  // background-image: url("../assets/icons/icon-editbar-delete.png");
-  background-image: url("../assets/icons/icon-editbar-trash-12.png");
-  height: 10px;
-  width: 10px;
-  background-color: red;
 }

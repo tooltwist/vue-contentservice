@@ -10,7 +10,7 @@
           //- br
         .my-widget(v-for="type in cat.types" v-if="type.dragtype == 'component'")
           drag.my-drag(:transfer-data="type", @dragstart="dragStart", @dragend="dragStop")
-            i.my-image(:class="iconClass(type)")
+            .my-image(:class="iconClass(type)")
             //- i(v-else).fas.fa-2x.fa-file-word-o
             //- div(slot="image")
             //-   i.fas.fa-2x.fa-file-word-o
@@ -192,15 +192,29 @@ function chooseIcon(rules) {
         //width: 50px;
         //height: 50px;
         padding-top: 5px;
-        //background-color: yellow;
+        text-align: center;
+        // background-color: yellow;
 
-        .my-image {
-          width: 26px;
-          height: 26px;
-          // border: solid 1px red;
+        .my-drag {
+          // background-color: orange;
+          text-align: center;
+          padding: 0px;
+          margin: 0px;
+          height: 29px;
+
+          .my-image {
+            display: inline-block;
+            // left: auto;
+            // right: auto;
+            width: 26px;
+            height: 26px;
+            // background-color: pink;
+            // border: solid 1px pink;
+          }
         }
         .my-component-label {
           font-size: 11px;
+          margin-bottom: 2px;
         }
       }
     }

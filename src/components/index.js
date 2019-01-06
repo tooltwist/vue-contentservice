@@ -68,6 +68,12 @@ import StringProperty from './propertyTypes/StringProperty.vue'
 // Our store
 import ContentLayoutStore from '../store/contentLayoutStore.js'
 
+// Install font-awesome icons
+import { library } from '@fortawesome/fontawesome-svg-core'
+let faLibrary = library
+import { faCut, faCopy, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
 
 let _Vue = null
 let _content = null
@@ -368,6 +374,13 @@ function install (Vue, options) {
   // Vue-split-panel
   Vue.use(VueSplit)
 
+  // Font-awesome
+  faLibrary.add(faCut)
+  faLibrary.add(faCopy)
+  faLibrary.add(faDownload)
+  faLibrary.add(faTrash)
+  Vue.component('font-awesome-icon', FontAwesomeIcon)
+
   // Froala. Unfortunately requires jQuery.
   // https://github.com/froala/vue-froala-wysiwyg
   if (typeof window != 'undefined') {
@@ -375,7 +388,7 @@ function install (Vue, options) {
   }
   require('froala-editor/js/froala_editor.pkgd.min.js')
   require('froala-editor/css/froala_editor.pkgd.min.css')
-  require('font-awesome/css/font-awesome.css')
+  // require('font-awesome/css/font-awesome.css')
   require('froala-editor/css/froala_style.min.css')
   Vue.use(VueFroala)
 

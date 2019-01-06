@@ -2,19 +2,19 @@
   .c-heading-icons(v-if="sane")
     span(v-clipboard="myElementCutToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
       | &nbsp;
-      i.fa.fa-cut.fas.fa-cut
+      font-awesome-icon(icon="cut")
       | &nbsp;
     span(v-clipboard="myElementCopyToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
       | &nbsp;
-      i.fa.fa-files-o.fas.fa-copy
+      font-awesome-icon(icon="copy")
       | &nbsp;
     span(@click.stop="downloadMyElement")
       | &nbsp;
-      i.fa.fa-download.fas.fa-download
+      font-awesome-icon(icon="download")
       | &nbsp;
     span(@click.stop="deleteMyElement")
       | &nbsp;
-      i.fa.fa-trash-o.fas.fa-trash-alt
+      font-awesome-icon(icon="trash")
       | &nbsp;
 </template>
 
