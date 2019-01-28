@@ -318,22 +318,7 @@ export default {
         return true
       }
       previousTimeStamp = e.timeStamp
-
-      // Toggle between view and {edit|layout|debug}
-      // When we switch to view mode, we remember which of the edit modes
-      // we were in, so we can toggle back to the same mode.
-      let mode = this.$content.store.state.mode
-      let previousEditMode = this.$content.store.state.previousEditMode
-      if (mode === 'view') {
-        // Switch to one of the edit modes
-        //console.log(` - switch to ${previousEditMode}`)
-        this.$content.setEditMode({ mode: previousEditMode })
-
-      } else {
-        // Switch back to view mode
-        //console.log(` - switch to view mode`)
-        this.$content.setEditMode({ mode: 'view', previousEditMode: mode })
-      }
+      this.$content.toggleEditMode()
     },
 
     switchMode (newMode) {

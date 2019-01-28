@@ -187,8 +187,7 @@ function install (Vue, options) {
     category: '',
     // iconClass: 'fa fa-arrows-v fas fa-arrows-alt-v contentservice-section-icon',
     // iconClass5: 'fas fa-arrows-alt-v contentservice-section-icon',
-    iconClass: 'c-icon-section contentservice-section-icon',
-    iconClass5: 'c-icon-section contentservice-section-icon',
+    iconClass: 'c-icon-section',
     // iconClass5: 'fas fa-arrows-alt-v contentservice-section-icon',
     dragtype: 'component',
 

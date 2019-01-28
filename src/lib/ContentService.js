@@ -282,6 +282,24 @@ class Contentservice {
     this.store.commit('setEditMode', params)
   }
 
+  // Toggle between view and {edit|layout|debug}
+  toggleEditMode() {
+    // When we switch to view mode, we remember which of the edit modes
+    // we were in, so we can toggle back to the same mode.
+    let mode = this.store.state.mode
+    let previousEditMode = this.store.state.previousEditMode
+    if (mode === 'view') {
+      // Switch to one of the edit modes
+      console.log(` - toggle to ${previousEditMode}`)
+      this.setEditMode({ mode: previousEditMode })
+
+    } else {
+      // Switch back to view mode
+      console.log(` - toggle to view mode`)
+      this.setEditMode({ mode: 'view', previousEditMode: mode })
+    }
+  }
+
   // Same parameters as contentLayoutStore.setSaveMsg
   // Mutation
   setSaveMsg(params) {
