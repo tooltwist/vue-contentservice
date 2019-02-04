@@ -1,6 +1,6 @@
 {
   "name": "@tooltwist/vue-contentservice",
-  "version": "0.1.90",
+  "version": "0.1.91",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve --open",
