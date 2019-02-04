@@ -1,5 +1,5 @@
 {
-  "name": "vue-contentservice",
+  "name": "@tooltwist/vue-contentservice",
   "version": "0.1.90",
   "private": false,
   "scripts": {
