@@ -2411,9 +2411,9 @@ function () {
         propertyComponentName: propertyComponentName,
         component: component,
         propertyComponent: propertyComponent // Define the components
+        // console.log(`registering non-toolbox widget ${componentName}`)
 
       };
-      console.log("registering non-toolbox widget ".concat(componentName));
       vm.component(componentName, component);
       vm.component(propertyComponentName, propertyComponent);
     } // -> { component, propertyComponent }
@@ -2463,9 +2463,9 @@ function () {
         // The definition used when creating a new component.
         data: data,
         dragtype: 'component' // Define the components
+        // console.log(`registering toolbox widget ${componentName}`)
 
       };
-      console.log("registering toolbox widget ".concat(componentName));
       vm.component(componentName, component);
       vm.component(propertyComponentName, propertyComponent);
     }
@@ -7989,8 +7989,7 @@ var mutations = {
 
     state.pathToSelectedElement = path ? path : [];
     state.expandedElement = path ? path[path.length - 1] : null;
-    console.log("Path to new element=", path);
-    path.forEach(function (element) {
+    console.log("Path to new element=", path)(path ? path : []).forEach(function (element) {
       console.log("  ".concat(element.type, ": ").concat(element.id), element);
     });
   },

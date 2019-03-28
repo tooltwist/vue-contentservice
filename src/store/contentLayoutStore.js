@@ -434,7 +434,7 @@ export const mutations = {
     state.expandedElement = path ? path[path.length-1] : null
 
     console.log(`Path to new element=`, path)
-    path.forEach((element) => {
+    (path ? path : [ ]).forEach((element) => {
       console.log(`  ${element.type}: ${element.id}`, element)
     })
   },

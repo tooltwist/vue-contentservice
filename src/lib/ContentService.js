@@ -112,7 +112,7 @@ class Contentservice {
     }
 
     // Define the components
-    console.log(`registering non-toolbox widget ${componentName}`)
+    // console.log(`registering non-toolbox widget ${componentName}`)
     vm.component(componentName, component)
     vm.component(propertyComponentName, propertyComponent)
   }
@@ -156,7 +156,7 @@ class Contentservice {
     }
 
     // Define the components
-    console.log(`registering toolbox widget ${componentName}`)
+    // console.log(`registering toolbox widget ${componentName}`)
     vm.component(componentName, component)
     vm.component(propertyComponentName, propertyComponent)
   }
