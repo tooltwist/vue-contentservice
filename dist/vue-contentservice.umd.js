@@ -7614,6 +7614,13 @@ var getters = {
     }
 
     return null;
+  },
+  getPathToElement: function getPathToElement(state) {
+    return function (elementId) {
+      console.log("contentLayoutStore.getPathToElement(".concat(elementId, ")"));
+      var path = trackDownElementInLayout(state, elementId);
+      return path;
+    };
   }
   /********************************************
    *
@@ -7988,10 +7995,10 @@ var mutations = {
     var path = trackDownElementInLayout(state, toInsert.id); //console.log(`path to selected element=`, path)
 
     state.pathToSelectedElement = path ? path : [];
-    state.expandedElement = path ? path[path.length - 1] : null;
-    console.log("Path to new element=", path)(path ? path : []).forEach(function (element) {
-      console.log("  ".concat(element.type, ": ").concat(element.id), element);
-    });
+    state.expandedElement = path ? path[path.length - 1] : null; //console.log(`Path to new element=`, path)
+    //(path ? path : [ ]).forEach(function (element) {
+    //  console.log(`  ${element.type}: ${element.id}`, element)
+    //})
   },
   // Delete an element from the current layout.
   deleteElementMutation: function deleteElementMutation(state, _ref19) {
@@ -8342,6 +8349,7 @@ function rememberToSave(commit, state, vm) {
         rootId: state.crowdhoundElement.rootId,
         parentId: state.crowdhoundElement.parentId,
         id: state.crowdhoundElement.id,
+        type: 'layout',
         description: safeJson(state.layout, true
         /*compressed*/
         )

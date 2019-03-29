@@ -95,6 +95,11 @@ export const getters = {
     return null
   },
 
+  getPathToElement: (state) => (elementId) => {
+    console.log(`contentLayoutStore.getPathToElement(${elementId})`);
+    let path = trackDownElementInLayout(state, elementId)
+    return path
+  }
 }
 
 
@@ -433,10 +438,10 @@ export const mutations = {
     state.pathToSelectedElement = path ? path : [ ]
     state.expandedElement = path ? path[path.length-1] : null
 
-    console.log(`Path to new element=`, path)
-    (path ? path : [ ]).forEach((element) => {
-      console.log(`  ${element.type}: ${element.id}`, element)
-    })
+    //console.log(`Path to new element=`, path)
+    //(path ? path : [ ]).forEach(function (element) {
+    //  console.log(`  ${element.type}: ${element.id}`, element)
+    //})
   },
 
   // Delete an element from the current layout.
@@ -791,6 +796,7 @@ function rememberToSave (commit, state, vm) {
         rootId: state.crowdhoundElement.rootId,
         parentId: state.crowdhoundElement.parentId,
         id: state.crowdhoundElement.id,
+        type: 'layout',
         description: safeJson(state.layout, true/*compressed*/)
       }
       console.log(`saveToCrowdhound() in Store`, crowdhoundElement)
