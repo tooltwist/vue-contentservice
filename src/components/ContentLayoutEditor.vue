@@ -150,8 +150,8 @@ export default {
     },
     // whenever contentId changes, this function will run
     contentId: function (newId, oldId) {
-      //console.error(`contentId changed from ${oldId} to ${newId}`)
-      this.$content.setContent({ vm: this, type: 'crowdhound', contentId: contentId })
+      // console.error(`contentId changed from ${oldId} to ${newId}`)
+      this.$content.setContent({ vm: this, type: 'crowdhound', contentId: newId })
     }
   },
   computed: {

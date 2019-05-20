@@ -43,6 +43,8 @@ import ContentFixedPositionContainer from './widgets/ContentFixedPositionContain
 import ContentFixedPositionContainerProps from './widgets/ContentFixedPositionContainerProps.vue'
 import ContentColumns from './widgets/ContentColumns.vue'
 import ContentColumnsProps from './widgets/ContentColumnsProps.vue'
+import PanelWithoutProperties from './widgets/PanelWithoutProperties.vue'
+import PanelWithoutPropertiesProps from './widgets/PanelWithoutPropertiesProps.vue'
 
 import ContentCard from './widgets/ContentCardProps.vue'
 import ContentCardProps from './widgets/ContentCardProps.vue'
@@ -256,10 +258,12 @@ function install (Vue, options) {
         children: [
           {
             // Column 1
+            type: 'panelWithoutProperties',
             children: [ ]
           },
           {
             // Column 2
+            type: 'panelWithoutProperties',
             children: [ ]
           }
         ]
@@ -345,6 +349,8 @@ function install (Vue, options) {
     }
   })
 
+  // Special widget - an invisible panel under columns, tabs, etc
+  _content.registerLayoutType(Vue, 'panelWithoutProperties', 'panel-without-properties', PanelWithoutProperties, PanelWithoutPropertiesProps)
 
 
   // Register components that are toolbox widgets

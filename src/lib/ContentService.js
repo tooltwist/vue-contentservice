@@ -234,6 +234,12 @@ class Contentservice {
     this.store.dispatch('insertLayoutAction', params)
   }
 
+  // Same parameters as contentLayoutStore.moveChildAction
+  // Action
+  moveChild(params) {
+    this.store.dispatch('moveChildAction', params)
+  }
+
   // Same parameters as contentLayoutStore.setProperty
   // Action
   setProperty({ vm, element, name, value, save }) {

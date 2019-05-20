@@ -5,3 +5,5 @@ yarn-error.log
 /j1
 src/protected-config/froalaKey.js
 /spare-parts
+
+/dist/

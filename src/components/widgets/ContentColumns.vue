@@ -6,10 +6,35 @@
         edit-bar-icons(:element="element")
         | columns
 
-    .columns
+    .columns(v-if="isDesignMode", @click.stop="selectThisElement")
       // Children are columns (and may not have a type sprecified)
-      .column(v-for="child in element.children")
-        content-children(:element="child", :context="context", )
+      .column(v-for="child,index in element.children")
+        .c-content-column(:class="editModeClass")
+          .c-layout-mode-heading
+            //edit-bar-icons(:element="element")
+            .c-heading-icons
+              span(v-if="index > 0", @click.stop="shiftLeft(index)")
+                | &nbsp;
+                | &lt;
+                | &nbsp;
+              span(v-if="index < element.children.length - 1", @click.stop="shiftRight(index)")
+                | &nbsp;
+                | &gt;
+                | &nbsp;
+              span(@click.stop="addColumn(index)")
+                | &nbsp;
+                | +
+                | &nbsp;
+              span(@click.stop="deleteColumn(index)")
+                | &nbsp;
+                font-awesome-icon(icon="trash")
+                | &nbsp;
+            | column
+          content-children(:element="child", :context="context")
+
+    .columns(v-else, @click.stop="selectThisElement")
+      .column(v-for="child,index in element.children")
+        content-children(:element="child", :context="context")
 </template>
 
 <script>
@@ -40,25 +65,90 @@ export default {
     },
   },
   mixins: [ ContentMixins, CutAndPasteMixins ],
+  methods: {
+
+    shiftLeft: function(index) {
+      this.$content.moveChild({ vm: this, parent: this.element, from: index, to: index - 1 })
+    },
+
+    shiftRight: function(index) {
+      this.$content.moveChild({ vm: this, parent: this.element, from: index, to: index + 1 })
+    },
+
+    addColumn: function(index) {
+      let insertContent = {
+        type: "contentservice.io",
+        version: "1.0",
+        source: "toolbox",
+        layout: {
+          type: 'panelWithoutProperties',
+          children: [ ]
+        }
+      }
+      this.$content.insertLayout({ vm: this, parent: this.element, position: index+1, layout: insertContent })
+    },
+
+    deleteColumn: function(index) {
+
+      // Confirm first
+      let result = confirm(`Are you sure you want to delete this column?`);
+      if (result) {
+
+        // Delete the column
+        let child = this.element.children[index]
+        this.$content.deleteElement({ vm: this, element: child })
+      }
+    },
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 
-  $frame-color: darkgreen;
-  $text-color: white;
+  .c-content-columns {
+    $frame-color: rgba(0, 100, 0, 1.0);
+    $border-color: rgba(0, 100, 0, 0.5);
+    $text-color: white;
 
-  .c-layout-mode-heading {
-    // This overrides the definition in content-editor.scss
-    background-color: $frame-color;
-    color: $text-color;
+    .c-layout-mode-heading {
+      // This overrides the definition in content-editor.scss
+      background-color: $frame-color;
+      color: $text-color;
+    }
+
+    &.c-edit-mode-debug {
+      //border-top: solid 1px $frame-color;
+      border-left: dashed 2px $border-color;
+      border-bottom: dashed 2px $border-color;
+      border-right: dashed 2px $border-color;
+      margin: 1px;
+    }
   }
 
-  .c-edit-mode-debug {
-    border-left: dashed 2px $frame-color;
-    border-bottom: dashed 2px $frame-color;
-    border-right: dashed 2px $frame-color;
-    margin: 1px;
-  }
+  .c-content-column {
+    $frame-color: rgba(0, 50, 0, 1.0);
+    $border-color: rgba(0, 50, 0, 0.5);
+    $text-color: white;
 
+    .c-layout-mode-heading {
+      // This overrides the definition in content-editor.scss
+      background-color: $frame-color;
+      color: $text-color;
+    }
+
+    &.c-edit-mode-debug {
+      //border: none;
+      //border-top: solid 1px $border-color;
+      border-left: dashed 2px $border-color;
+      border-bottom: dashed 2px $border-color;
+      border-right: dashed 2px $border-color;
+      margin: 1px;
+    }
+
+    .c-heading-icons {
+      span {
+        cursor: pointer;
+      }
+    }
+  }
 </style>

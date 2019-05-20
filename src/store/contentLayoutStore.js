@@ -133,8 +133,8 @@ export const actions = {
     // Start the timer, to save after a short delay
     rememberToSave(commit, state, vm)
   },
-  // insertChildAction', { vm: this, element, child: newchild, position: -1 })
 
+  // insertChildAction', { vm: this, element, child: newchild, position: -1 })
   insertLayoutAction({ commit, state }, { vm, parent, position, layout}) {
     console.log('Action contentLayout/insertLayoutAction() parent=', parent)
     console.log('Action contentLayout/insertLayoutAction() position=', position)
@@ -199,6 +199,17 @@ console.log(`ok 1`)
 
     // Ok, let's do it
     commit('insertLayoutMutation', { vm, parent, position, layout: toInsert })
+
+    // Start the timer, to save after a short delay
+    rememberToSave(commit, state, vm)
+  },
+
+  // Reposition a child within an element.
+  moveChildAction({ commit, state }, { vm, parent, from, to}) {
+    console.log(`Action contentLayout/moveChildAction(${from}, ${to})`, parent)
+
+    // Ok, let's do it
+    commit('moveChildMutation', { vm, parent, from, to })
 
     // Start the timer, to save after a short delay
     rememberToSave(commit, state, vm)
@@ -442,6 +453,25 @@ export const mutations = {
     //(path ? path : [ ]).forEach(function (element) {
     //  console.log(`  ${element.type}: ${element.id}`, element)
     //})
+  },
+
+  moveChildMutation (state, { vm, parent, from, to }) {
+    console.log(`In Mutation contentLayout/moveChildMutation(${from}, ${to})`, parent)
+
+    let path = trackDownElementInLayout(state, parent.id)
+    if (path && path.length >= 1) {
+      parent = path[path.length - 1]
+      console.log(`Parent is ${parent.id} (${parent.type})`)
+
+      if (from < parent.children.length) {
+        // Remove the child from the array
+        let removedChildren = parent.children.splice(from, 1)
+        // Add it back to the array
+        parent.children.splice(to, 0, removedChildren[0])
+      }
+    }
+    state.pathToSelectedElement = path ? path : [ ]
+    state.expandedElement = path ? path[path.length-1] : null
   },
 
   // Delete an element from the current layout.
