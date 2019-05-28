@@ -332,8 +332,8 @@ class Contentservice {
 
   // Same parameters as contentLayoutStore.refresh
   // Mutation
-  refresh(params) {
-    this.store.commit('refreshMutation', params)
+  refresh() {
+    this.store.commit('refreshMutation', { })
   }
 
   //----------------------------------------------------------------------------//
