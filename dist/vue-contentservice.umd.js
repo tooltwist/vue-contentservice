@@ -2668,8 +2668,8 @@ function () {
 
   }, {
     key: "refresh",
-    value: function refresh(params) {
-      this.store.commit('refreshMutation', params);
+    value: function refresh() {
+      this.store.commit('refreshMutation', {});
     } //----------------------------------------------------------------------------//
     //                          NEW STUFF FROM CROWDHOUND                         //
     //----------------------------------------------------------------------------//
