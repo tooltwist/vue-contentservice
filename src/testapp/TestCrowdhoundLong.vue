@@ -100,8 +100,6 @@ export default {
 }
 </script>
 
-<style lang="sass" src="bulma"></style>
-
 <style lang="scss" scoped>
 
 $border-color: #ee0000;

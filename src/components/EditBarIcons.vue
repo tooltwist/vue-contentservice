@@ -1,5 +1,5 @@
 <template lang="pug">
-  .c-heading-icons(v-if="sane")
+  .c-editbar-icons(v-if="sane")
     span(v-clipboard="myElementCutToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
       | &nbsp;
       font-awesome-icon(icon="cut")
@@ -16,6 +16,7 @@
       | &nbsp;
       font-awesome-icon(icon="trash")
       | &nbsp;
+    .c-gutter-right
 </template>
 
 <script>
@@ -67,5 +68,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

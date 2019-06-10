@@ -76,6 +76,14 @@ let faLibrary = library
 import { faCut, faCopy, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+// require('../assets/css/editor-icons.scss')
+// require('../assets/css/content-variables.scss')
+// require('../assets/css/content-editor.scss')
+
+import mySCSS from '../assets/css/content-editor.scss'
+import Bulma from 'bulma'
+import EditorIcons from '../assets/css/editor-icons.scss'
+
 
 let _Vue = null
 let _content = null
@@ -390,6 +398,7 @@ function install (Vue, options) {
   // https://github.com/froala/vue-froala-wysiwyg
   if (typeof window != 'undefined') {
     window.$ = require('jquery');
+    window.jQuery = window.$
   }
   require('froala-editor/js/froala_editor.pkgd.min.js')
   require('froala-editor/css/froala_editor.pkgd.min.css')

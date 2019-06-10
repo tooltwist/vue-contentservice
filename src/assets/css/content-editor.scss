@@ -50,12 +50,13 @@ $tt-property-grid: #f0f0f0;
   display: block;
   flex: 1 0 0;
   text-align: right;
+  padding-left: $c-property-gutter-left;
   padding-right: 8px;
   border-bottom: solid 1px $tt-property-grid;
   border-right: solid 1px $tt-property-grid;
   margin: 0px;
   margin-top: 6px;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 18px;
   color: $c-property-label-color;
 }
@@ -64,9 +65,10 @@ $tt-property-grid: #f0f0f0;
   flex: 2.5 0 0;
   text-align: left;
   padding-left: 8px;
+  padding-right: $c-property-gutter-right;
   border-bottom: solid 1px $tt-property-grid;
   margin: 0px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
   line-height: 18px;
   color: $c-property-value-color;
@@ -263,23 +265,24 @@ ZZZZZZZZZZ*/
 }
 
 /*
- *  Toolbox icons
+ *  Highlighting the selected property in the editor in view mode
  */
-.c-icon-section {
-  background-image: url("../assets/icons/icon-section-26.png");
+.c-edit-mode-edit {
+  &.c-selected {
+    -webkit-box-shadow: $c-selected-shadow;
+    -moz-box-shadow: $c-selected-shadow;
+    box-shadow: $c-selected-shadow;
+  }
 }
-.c-icon-columns {
-  background-image: url("../assets/icons/icon-columns-26.png");
+
+/*
+ *  EditBarIcons component
+ */
+.c-editbar-icons {
+  .c-gutter-right {
+    width: $c-property-gutter-right;
+  }
 }
-.c-icon-container {
-  background-image: url("../assets/icons/icon-container-26.png");
-}
-.c-icon-youtube {
-  background-image: url("../assets/icons/icon-youtube-26.png");
-}
-.c-icon-text {
-  background-image: url("../assets/icons/icon-text-26-2.png");
-}
-.c-icon-vimeo {
-  background-image: url("../assets/icons/icon-vimeo-26.png");
-}
+
+
+@import './components/content-layout-editor.scss';

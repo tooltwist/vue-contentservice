@@ -14,7 +14,7 @@
             //- i(v-else).fas.fa-2x.fa-file-word-o
             //- div(slot="image")
             //-   i.fas.fa-2x.fa-file-word-o
-          .my-component-label {{type.label}}
+          .my-component-label(:style="labelStyle(type.label)") {{type.label}}
 
       //hr
       //| OLD WIDGETS
@@ -115,6 +115,14 @@ export default {
 
       // Default to font-awesome 4
       return [ 'fa', 'fa-2x', 'fa-word-file-o' ]
+    },//- iconClass
+    labelStyle (label) {
+      // let label = this.type.label
+      if (label && label.length > 10) {
+        return { fontSize: '9px' }
+      } else {
+        return { fontSize: '9px' }
+      }
     },
     dragStart () {
       this.$content.store.commit('dragStart', { })
@@ -147,6 +155,7 @@ function chooseIcon(rules) {
 
 
 <style lang="scss" scoped>
+//@import '../assets/css/editor-icons.scss';
 
 .toolbox-pane {
   position: relative;
@@ -180,18 +189,22 @@ function chooseIcon(rules) {
       //display: flex;
       padding: 0px;
       margin: 0px;
+      vertical-align: top;
 
       .my-category-name {
-        margin-left: -10px;
+        margin-top: 4px;
+        margin-left: 4px;
         zfont-weight: 800;
+        font-weight: bold;
       }
 
       .my-widget {
         display: inline-block;
         margin: 5px;
-        //width: 50px;
+        width: 48px;
         //height: 50px;
         padding-top: 5px;
+        vertical-align: top;
         text-align: center;
         // background-color: yellow;
 
@@ -213,8 +226,9 @@ function chooseIcon(rules) {
           }
         }
         .my-component-label {
-          font-size: 11px;
+          //font-size: 11px;
           margin-bottom: 2px;
+          overflow-x: hidden;
         }
       }
     }

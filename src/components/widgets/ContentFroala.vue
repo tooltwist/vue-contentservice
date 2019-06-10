@@ -252,17 +252,20 @@ export default {
   $frame-color: lightblue;
   $text-color: darkblue;
 
-  .c-layout-mode-heading {
-    // This extends the definition in content-editor.scss
-    background-color: $frame-color;
-    color: $text-color;
-  }
+  .c-content-froala {
 
-  .c-edit-mode-debug  {
-    border-left: dashed 2px $frame-color;
-    border-bottom: dashed 2px $frame-color;
-    border-right: dashed 2px $frame-color;
-    margin: 1px;
-  }
+    .c-layout-mode-heading {
+      // This extends the definition in content-editor.scss
+      background-color: $frame-color;
+      color: $text-color;
+    }
 
+    .c-edit-mode-debug  {
+      border-left: dashed 2px $frame-color;
+      border-bottom: dashed 2px $frame-color;
+      border-right: dashed 2px $frame-color;
+      margin: 1px;
+    }
+
+  }
 </style>

@@ -14,8 +14,16 @@ $c-heading-icon-font-size: 10px;
 // Properties being edited
 $c-property-label-color: #666;
 $c-property-value-color: #88a;
+$c-property-gutter-left: 5px;
+$c-property-gutter-right: 5px;
 
 // Margins above and below embeds (slides, videos, etc)
 $c-embed-margin-top: 20px;
 $c-embed-margin-bottom: 20px;
 $c-embed-border-color: #d0d0d0;
+
+// Box shadow to show round the selected element
+// blue
+//$c-selected-shadow: 0px 0px 7px 0px rgba(150,200,255,0.77);
+// #dd0038
+$c-selected-shadow: 0px 0px 9px 0px rgba(221,0,56,0.90);

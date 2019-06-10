@@ -86,7 +86,6 @@ export const getters = {
     // return json;
   },
 
-
   propertyElementAsJson: (state) => {
     if (state.pathToSelectedElement && state.pathToSelectedElement.length > 0) {
       let element = state.pathToSelectedElement[state.pathToSelectedElement - 1]
@@ -877,7 +876,7 @@ function handleError(vm, msg) {
  *  if we avoid cyclic links in the hierarchy)
  */
 function trackDownElementInLayout(state, requiredID) {
-  console.log(`trackDownElementInLayout(state, requiredID:${requiredID})`)
+  // console.log(`trackDownElementInLayout(state, requiredID:${requiredID})`)
   // console.log(`state=`, state)
   // console.log(`state.layout=`, state.layout)
 
