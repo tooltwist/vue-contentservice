@@ -6,4 +6,4 @@ yarn-error.log
 src/protected-config/froalaKey.js
 /spare-parts
 
-/dist/
+/dist
