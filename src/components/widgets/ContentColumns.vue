@@ -12,7 +12,7 @@
         .c-content-column(:class="editModeClass")
           .c-layout-mode-heading
             //edit-bar-icons(:element="element")
-            .c-heading-icons
+            .c-editbar-icons
               span(v-if="index > 0", @click.stop="shiftLeft(index)")
                 | &nbsp;
                 | &lt;
@@ -143,12 +143,6 @@ export default {
       border-bottom: dashed 2px $border-color;
       border-right: dashed 2px $border-color;
       margin: 1px;
-    }
-
-    .c-heading-icons {
-      span {
-        cursor: pointer;
-      }
     }
   }
 </style>

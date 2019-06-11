@@ -252,7 +252,10 @@ ZZZZZZZZZZ*/
   color: darkgreen;
   background-color: lightgreen;
 
-  .c-heading-icons {
+  /*
+   *  EditBarIcons component
+   */
+  .c-editbar-icons {
     position: absolute;
     right: 5px;
     padding-top: 1px;
@@ -260,6 +263,14 @@ ZZZZZZZZZZ*/
 
     span:hover {
       color: $c-editbar-color;
+    }
+    span {
+      cursor: pointer;
+    }
+
+    // EditbarIcons is also used in the properties pane.
+    .c-gutter-right {
+      width: $c-property-gutter-right;
     }
   }
 }
@@ -275,14 +286,8 @@ ZZZZZZZZZZ*/
   }
 }
 
+
 /*
- *  EditBarIcons component
+ *	Our components.
  */
-.c-editbar-icons {
-  .c-gutter-right {
-    width: $c-property-gutter-right;
-  }
-}
-
-
 @import './components/content-layout-editor.scss';

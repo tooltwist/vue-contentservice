@@ -81,7 +81,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // require('../assets/css/content-editor.scss')
 
 import mySCSS from '../assets/css/content-editor.scss'
-import Bulma from 'bulma'
+// import Bulma from 'bulma'
 import EditorIcons from '../assets/css/editor-icons.scss'
 
 
