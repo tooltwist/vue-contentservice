@@ -1220,13 +1220,6 @@ module.exports = require("vue");
 
 /***/ }),
 
-/***/ "9035":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
 /***/ "93a9":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1267,13 +1260,6 @@ module.exports = require("v-clipboard");
 /***/ }),
 
 /***/ "99a3":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
-/***/ "9c74":
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -8459,12 +8445,6 @@ var free_solid_svg_icons_ = __webpack_require__("368f");
 // EXTERNAL MODULE: external "@fortawesome/vue-fontawesome"
 var vue_fontawesome_ = __webpack_require__("07a2");
 
-// EXTERNAL MODULE: ./src/assets/css/content-editor.scss
-var content_editor = __webpack_require__("9035");
-
-// EXTERNAL MODULE: ./src/assets/css/editor-icons.scss
-var editor_icons = __webpack_require__("9c74");
-
 // CONCATENATED MODULE: ./src/components/index.js
 // External libraries
 
@@ -8530,9 +8510,9 @@ var faLibrary = fontawesome_svg_core_["library"];
  // require('../assets/css/editor-icons.scss')
 // require('../assets/css/content-variables.scss')
 // require('../assets/css/content-editor.scss')
-
- // import Bulma from 'bulma'
-
+// import mySCSS from '../assets/css/content-editor.scss'
+// // import Bulma from 'bulma'
+// import EditorIcons from '../assets/css/editor-icons.scss'
 
 var _Vue = null;
 var _content = null;
