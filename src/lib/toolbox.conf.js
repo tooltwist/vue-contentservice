@@ -1,10 +1,6 @@
 // This file contains definitions of the components
 // that may be dragged onto a page layout.
 
-// Icons:
-// https://fontawesome.com/v4.7.0/icons/
-// https://fontawesome.com/v4.7.0/cheatsheet/
-
 export default [
 
   // Section

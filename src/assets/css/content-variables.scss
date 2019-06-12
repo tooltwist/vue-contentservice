@@ -2,28 +2,28 @@
 
 
 // The editbar, at the top of the edit area
-$c-editbar-height: 16;
-$c-editbar-color: #dd0038;
+$c-editbar-height: 16 !default;
+$c-editbar-color: #dd0038 !default;
 
 
 // The heading above a widget when editing
-$c-heading-height: 13px;
-$c-heading-font-size: 11px;
-$c-heading-icon-font-size: 10px;
+$c-heading-height: 14px !default;
+$c-heading-font-size: 11px !default;
+$c-heading-icon-font-size: 10px !default;
 
 // Properties being edited
-$c-property-label-color: #666;
-$c-property-value-color: #88a;
-$c-property-gutter-left: 5px;
-$c-property-gutter-right: 5px;
+$c-property-label-color: #666 !default;
+$c-property-value-color: #88a !default;
+$c-property-gutter-left: 5px !default;
+$c-property-gutter-right: 5px !default;
 
 // Margins above and below embeds (slides, videos, etc)
-$c-embed-margin-top: 20px;
-$c-embed-margin-bottom: 20px;
-$c-embed-border-color: #d0d0d0;
+$c-embed-margin-top: 20px !default;
+$c-embed-margin-bottom: 20px !default;
+$c-embed-border-color: #d0d0d0 !default;
 
 // Box shadow to show round the selected element
 // blue
 //$c-selected-shadow: 0px 0px 7px 0px rgba(150,200,255,0.77);
 // #dd0038
-$c-selected-shadow: 0px 0px 9px 0px rgba(221,0,56,0.90);
+$c-selected-shadow: 0px 0px 9px 0px rgba(221,0,56,0.90) !default;

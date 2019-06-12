@@ -89,7 +89,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import '../../assets/css/content-variables.scss';
+  // @import '../../assets/css/content-variables.scss';
 
   $frame-color: lightblue;
   $text-color: darkblue;

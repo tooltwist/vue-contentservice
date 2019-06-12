@@ -2,19 +2,19 @@
   .c-editbar-icons(v-if="sane")
     span(v-clipboard="myElementCutToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
       | &nbsp;
-      font-awesome-icon(icon="cut")
+      .c-editbar-icon.c-icon-cut
       | &nbsp;
     span(v-clipboard="myElementCopyToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
       | &nbsp;
-      font-awesome-icon(icon="copy")
+      .c-editbar-icon.c-icon-copy
       | &nbsp;
     span(@click.stop="downloadMyElement")
       | &nbsp;
-      font-awesome-icon(icon="download")
+      .c-editbar-icon.c-icon-download
       | &nbsp;
     span(@click.stop="deleteMyElement")
       | &nbsp;
-      font-awesome-icon(icon="trash")
+      .c-editbar-icon.c-icon-trash
       | &nbsp;
     .c-gutter-right
 </template>

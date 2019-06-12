@@ -1,14 +1,6 @@
 <template lang="pug">
   .c-property-element(:class="propertyClass")
     .tt-property-header(@click="setExpandedElement")
-      .my-button
-        // handle font-awesome 4 and 5
-        // Clipboard. See https://www.npmjs.com/package/v-clipboard
-        //- i.fa.fa-download.fas.fa-download(@click="downloadMyElement")
-        //- | &nbsp;
-        //- i.fa.fa-files-o.fas.fa-copy(v-clipboard="elementToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
-        //- | &nbsp;
-        //- i.fa.fa-trash-o.fas.fa-trash-alt(@click="deleteMyElement")
       | Card
 
       transition(name="c-property-list-transition")

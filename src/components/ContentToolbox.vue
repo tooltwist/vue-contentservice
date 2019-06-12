@@ -3,11 +3,6 @@
     .my-components
       div.my-category(v-for="cat in this.$content.toolboxCategories()")
         .my-category-name {{cat.name}}
-        //br(v-if="cat.name != ''")
-        //- hr(v-if="cat.name != ''")
-        //div(v-for="type in cat.types")
-          //- | type={{type.name}}-[{{type.iconClass}}, {{type.iconClass5}}]
-          //- br
         .my-widget(v-for="type in cat.types" v-if="type.dragtype == 'component'")
           drag.my-drag(:transfer-data="type", @dragstart="dragStart", @dragend="dragStop")
             .my-image(:class="iconClass(type)")
@@ -16,17 +11,6 @@
             //-   i.fas.fa-2x.fa-file-word-o
           .my-component-label(:style="labelStyle(type.label)") {{type.label}}
 
-      //hr
-      //| OLD WIDGETS
-      //br
-      //// Using font awesome version 5
-      //.my-widget(v-for="tool in theToolbox")
-      //  drag(:transfer-data="tool", @dragstart="dragStart", @dragend="dragStop")
-      //    i(:class="iconClass(tool)")
-      //    //- i(v-else).fas.fa-2x.fa-file-word-o
-      //    //- div(slot="image")
-      //    //-   i.fas.fa-2x.fa-file-word-o
-      //  .my-component-label {{tool.label}}
     .accreditation
       | (icons courtesy of&nbsp;
       a(href="https://icons8.com", target="_blank") icons8.com
@@ -34,7 +18,7 @@
 </template>
 
 <script>
-import Toolbox from '../lib/toolbox.conf.js'
+//import Toolbox from '../lib/toolbox.conf.js'
 
 export default {
   name: 'tooltwist-layout',
@@ -45,7 +29,7 @@ export default {
   },
   data: function () {
     return {
-      theToolbox: { },
+      // theToolbox: { },
 
       // Did we pass sanity checks?
       sane: true
@@ -140,11 +124,11 @@ export default {
       return
     }
 
-    if (this.toolbox) {
-      this.theToolbox = this.toolbox
-    } else {
-      this.theToolbox = Toolbox
-    }
+    // if (this.toolbox) {
+    //   this.theToolbox = this.toolbox
+    // } else {
+    //   this.theToolbox = Toolbox
+    // }
   }
 }
 

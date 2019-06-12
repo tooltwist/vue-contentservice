@@ -2,24 +2,20 @@
   .c-property-element(:class="propertyClass")
     .tt-property-header(@click="setExpandedElement")
       .my-buttons
-        // handle font-awesome 4 and 5
         // Clipboard. See https://www.npmjs.com/package/v-clipboard
         span(@click="downloadMyElement")
           | &nbsp;
-          i.fa.fa-download.fas.fa-download
+          .c-property-element-header-icon.c-icon-download
           | &nbsp;
         span(v-clipboard="myElementCopyToClipboard" v-clipboard:success="clipboardSuccessHandler" v-clipboard:error="clipboardErrorHandler")
           | &nbsp;
-          i.fa.fa-files-o.fas.fa-copy
+          .c-property-element-header-icon.c-icon-copy
           | &nbsp;
         span(@click="deleteMyElement")
           | &nbsp;
-          i.fa.fa-trash-o.fas.fa-trash-alt
+          .c-property-element-header-icon.c-icon-trash
           | &nbsp;
       | Layout
-    //- .my-restore
-    //-   | drop here to restore layout
-
 </template>
 
 <script>

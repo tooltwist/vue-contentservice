@@ -11,23 +11,22 @@
       .column(v-for="child,index in element.children")
         .c-content-column(:class="editModeClass")
           .c-layout-mode-heading
-            //edit-bar-icons(:element="element")
             .c-editbar-icons
               span(v-if="index > 0", @click.stop="shiftLeft(index)")
                 | &nbsp;
-                | &lt;
+                .c-editbar-icon.c-icon-left
                 | &nbsp;
               span(v-if="index < element.children.length - 1", @click.stop="shiftRight(index)")
                 | &nbsp;
-                | &gt;
+                .c-editbar-icon.c-icon-right
                 | &nbsp;
               span(@click.stop="addColumn(index)")
                 | &nbsp;
-                | +
+                .c-editbar-icon.c-icon-plus
                 | &nbsp;
               span(@click.stop="deleteColumn(index)")
                 | &nbsp;
-                font-awesome-icon(icon="trash")
+                .c-editbar-icon.c-icon-trash
                 | &nbsp;
             | column
           content-children(:element="child", :context="context")
@@ -106,9 +105,9 @@ export default {
 <style lang="scss" scoped>
 
   .c-content-columns {
-    $frame-color: rgba(0, 100, 0, 1.0);
+    $frame-color: rgba(170, 230, 160, 1.0);
     $border-color: rgba(0, 100, 0, 0.5);
-    $text-color: white;
+    $text-color: black;
 
     .c-layout-mode-heading {
       // This overrides the definition in content-editor.scss
@@ -126,9 +125,9 @@ export default {
   }
 
   .c-content-column {
-    $frame-color: rgba(0, 50, 0, 1.0);
+    $frame-color: rgba(120, 180, 100, 1.0);
     $border-color: rgba(0, 50, 0, 0.5);
-    $text-color: white;
+    $text-color: black;
 
     .c-layout-mode-heading {
       // This overrides the definition in content-editor.scss

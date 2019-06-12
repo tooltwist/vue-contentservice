@@ -1,11 +1,11 @@
 import Vue from 'vue'
 
-import TestHomePage from './testapp/TestHomePage.vue'
-import TestLayoutFixed from './testapp/TestLayoutFixed.vue'
-import TestLayoutFixedLeft from './testapp/TestLayoutFixedLeft.vue'
-import TestLayoutLong from './testapp/TestLayoutLong.vue'
-import TestLayoutLongLeft from './testapp/TestLayoutLongLeft.vue'
-import TestCrowdhoundLong from './testapp/TestCrowdhoundLong.vue'
+import TestHomePage from './TestHomePage.vue'
+import TestLayoutFixed from './TestLayoutFixed.vue'
+import TestLayoutFixedLeft from './TestLayoutFixedLeft.vue'
+import TestLayoutLong from './TestLayoutLong.vue'
+import TestLayoutLongLeft from './TestLayoutLongLeft.vue'
+import TestCrowdhoundLong from './TestCrowdhoundLong.vue'
 
 
 import FroalaKey from './protected-config/froalaKey.js'
@@ -14,7 +14,7 @@ console.error(`FroalaKey is ${FroalaKey}`)
 Vue.config.productionTip = false
 
 // Content Service
-import ContentServiceModule from './components/index.js'
+import ContentServiceModule from '../components/index.js'
 console.error(`ContentServiceModule=`, ContentServiceModule)
 let ContentService = ContentServiceModule
 
@@ -30,6 +30,11 @@ const options = {
 Vue.use(ContentService, options);
 
 ContentService.store
+
+// import mySCSS from '../assets/css/content-editor.scss'
+import mySCSS from './contentservice+overrides.scss'
+import Bulma from 'bulma'
+//import EditorIcons from '../assets/css/editor-icons.scss'
 
 
 // Now run the site
