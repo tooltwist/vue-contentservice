@@ -1,4 +1,5 @@
 /node_modules
+/dist
 .*.swp
 .DS_Store
 yarn-error.log
@@ -6,4 +7,3 @@ yarn-error.log
 src/testapp/protected-config/froalaKey.js
 /spare-parts
 
-/dist
