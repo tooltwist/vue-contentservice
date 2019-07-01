@@ -1,7 +1,7 @@
 /* Global styles */
 
 @import './content-variables.scss';
-// @import './editor-icons.scss';
+//@import './editor-icons.scss';
 
 // .yarp {
 //   background-image: url("../icons/icon-section-26.png");
@@ -76,6 +76,21 @@ $tt-property-grid: #f0f0f0 !default;
   font-weight: 400;
   line-height: 18px;
   color: $c-property-value-color;
+
+  input.input {
+    margin-top: 2px;
+    font-size: 9px;
+  }
+
+  select.select {
+    margin-top: 2px;
+    font-size: 9px;
+  }
+
+  textarea {
+    margin-top: 2px;
+    font-size: 9px;
+  }
 }
 .c-property-label-and-value {
   display: block;
@@ -84,7 +99,7 @@ $tt-property-grid: #f0f0f0 !default;
   padding-left: 8px;
   border-bottom: solid 1px $tt-property-grid;
   margin: 0px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
   line-height: 18px;
   color: $c-property-value-color;
@@ -299,16 +314,32 @@ ZZZZZZZZZZ*/
 /*
  *  Highlighting the selected property in the editor in view mode
  */
-.c-edit-mode-edit {
-  &.c-selected {
-    -webkit-box-shadow: $c-selected-shadow;
-    -moz-box-shadow: $c-selected-shadow;
-    box-shadow: $c-selected-shadow;
-  }
-}
-
+// .c-edit-mode-edit.c-selected {
+//   -webkit-box-shadow: blue;
+//   -moz-box-shadow: blue;
+//   box-shadow: blue;
+//
+//   // Highlight the .highlight-when-selected element within the
+//   // currently selected widget, but if the currently selected widget
+//   // is a form, do not highlight all it's children. To accomplish
+//   // this, .do-not-highlight-all-children should be set on the child
+//   // elements of widgets that have children.
+//   .do-not-highlight-all-children:not() {
+//     .highlight-when-selected {
+//       -webkit-box-shadow: $c-selected-shadow;
+//       -moz-box-shadow: $c-selected-shadow;
+//       box-shadow: $c-selected-shadow;
+//     }
+//   }
+// }
 
 /*
- *	Our components.
+ *	Styles for our components.
  */
+@import './components/content-toolbox.scss';
 @import './components/content-layout-editor.scss';
+@import './components/content-section.scss';
+@import './components/content-container.scss';
+@import './components/content-froala.scss';
+@import './components/content-children.scss';
+@import './components/content-form.scss';

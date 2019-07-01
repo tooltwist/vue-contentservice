@@ -17,5 +17,12 @@ module.exports = {
     webpackBundleAnalyzer: {
       openAnalyzer: false
     }
+  },
+  // See https://forum.vuejs.org/t/minimize-css-in-vue-cli-3/38286/2
+  chainWebpack: config =>  {
+    // Disable CSS compression
+    config.plugins.delete('optimize-css')
+    // Disable JS compression
+    config.optimization.minimize(false)
   }
 }

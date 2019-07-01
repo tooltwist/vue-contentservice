@@ -31,10 +31,11 @@ Vue.use(ContentService, options);
 
 ContentService.store
 
-// import mySCSS from '../assets/css/content-editor.scss'
+// import mySCSS from '../assets/css/vue-contentservice.scss'
 import mySCSS from './contentservice+overrides.scss'
 import Bulma from 'bulma'
-//import EditorIcons from '../assets/css/editor-icons.scss'
+import EditorIcons from '../assets/css/icons-for-dev.scss'
+// import Z817662 from '../assets/css/vue-contentservice.scss'
 
 
 // Now run the site

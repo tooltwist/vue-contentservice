@@ -110,7 +110,7 @@ export default {
     $text-color: black;
 
     .c-layout-mode-heading {
-      // This overrides the definition in content-editor.scss
+      // This overrides the definition in vue-contentservice.scss
       background-color: $frame-color;
       color: $text-color;
     }
@@ -130,7 +130,7 @@ export default {
     $text-color: black;
 
     .c-layout-mode-heading {
-      // This overrides the definition in content-editor.scss
+      // This overrides the definition in vue-contentservice.scss
       background-color: $frame-color;
       color: $text-color;
     }

@@ -1,5 +1,5 @@
 <template lang="pug">
-  .c-property-element(:class="propertyClass")
+  .c-content-layout-props.c-property-element(:class="propertyClass")
     .tt-property-header(@click="setExpandedElement")
       .my-buttons
         // Clipboard. See https://www.npmjs.com/package/v-clipboard
@@ -62,24 +62,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .c-property-value {
-    input.input {
-      margin-top: 2px;
-      font-size: 9px;
-    }
-  }
-
-  .my-buttons {
-    position: absolute;
-    right: 3px;
-    cursor: pointer;
-    font-size: 10px;
-  }
-
-  .my-restore {
-    display: block;
-    min-height: 15px;
-    //height:
-    font-size: 10px;
-  }
 </style>

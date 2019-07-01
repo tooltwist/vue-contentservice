@@ -41,6 +41,15 @@ export default {
         //'alt+esc': {
           keydown: this.toggleEditing
         },
+        'ctrl+alt+right': {
+          keydown: this.nextElement
+        },
+        'ctrl+n': {
+          keydown: this.nextElement
+        },
+        'ctrl+N': {
+          keydown: this.nextElement
+        },
       }
     }
   },
@@ -51,6 +60,7 @@ export default {
       if (e.timeStamp === previousTimeStamp) {
         return true
       }
+      console.log(`toggleEditing() in ContentPane`);
       previousTimeStamp = e.timeStamp
 
       // Toggle between view and {edit|debug}
@@ -84,6 +94,14 @@ export default {
           break;
       }
     },
+
+    // If we are in edit mode, switch to the next element with the same parent.
+    nextElement () {
+      console.log(`nextElement()`);
+      if (this.pageEditMode !== 'view') {
+        console.log(`DO IT`);
+      }
+    }
   },
   created: function () {
 

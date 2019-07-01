@@ -36,12 +36,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .c-property-value {
-    input.input {
-      margin-top: 2px;
-      font-size: 9px;
-    }
-  }
 
   .my-button {
     position: absolute;

@@ -77,10 +77,4 @@ export default {
 <style lang="scss">
 </style>
 <style lang="scss" scoped>
-.c-property-value {
-  input.input {
-    margin-top: 2px;
-    font-size: 9px;
-  }
-}
 </style>

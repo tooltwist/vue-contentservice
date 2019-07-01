@@ -1,0 +1,69 @@
+
+/*
+ *  Alternative icon classes for use during development.
+ *
+ *  The URLs for icons are normally resolved by webpack in the client
+ *  application that uses this library, and in most cases they end
+ *  up as BASE64 encoded URLs.
+ *
+ *  Those applications need a .scss file to do that, where the image
+ *  URL start with the package name (e.g. @tooltwist/vue-contentservice).
+ *  That doesn't work for development though, where this library is
+ *  not yet a package, so this file contains alternative class definitions
+ *  for the icons.
+ */
+
+
+/*
+ *  Toolbox icons
+ */
+.c-icon-section {
+  background-image: url("../icons/icon-section-26.png");
+}
+.c-icon-columns {
+  background-image: url("../icons/icon-columns-26.png");
+}
+.c-icon-container {
+  background-image: url("../icons/icon-container-26.png");
+}
+.c-icon-youtube {
+  background-image: url("../icons/icon-youtube-26.png");
+}
+.c-icon-text {
+  background-image: url("../icons/icon-text-26-2.png");
+}
+.c-icon-vimeo {
+  background-image: url("../icons/icon-vimeo-26.png");
+}
+
+/*
+ *  Cut and paste icons, etc.
+ */
+.c-icon-copy {
+  background-image: url("../icons/icons8-copy-24.png");
+}
+.c-icon-cut {
+  background-image: url("../icons/icons8-cut-24.png");
+}
+.c-icon-download {
+  background-image: url("../icons/icons8-download-24.png");
+}
+.c-icon-trash {
+  background-image: url("../icons/icons8-trash-24.png");
+}
+.c-icon-plus {
+  background-image: url("../icons/icons8-plus-math-24.png");
+}
+.c-icon-left {
+  background-image: url("../icons/icons8-left-24.png");
+}
+.c-icon-right {
+  background-image: url("../icons/icons8-right-24.png");
+}
+
+/*
+ *  Drop area, during drag-and-drop.
+ */
+.c-droparea-background {
+  background-image: url("../drop-bg-1.png");
+}

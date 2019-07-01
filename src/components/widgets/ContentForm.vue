@@ -7,7 +7,7 @@
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | form
-      content-children.my-content(:element="element", :context="context")
+      content-children.c-content-form-content(:element="element", :context="context")
 
     // Editing
     div(v-else-if="isEditMode", @click.stop="selectThisElement")
@@ -67,31 +67,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  $header-color: #55f;
-  $header-text-color: white;
-  $shading-color: lightblue;
-
-  $frame-color: #55f;
-  $text-color: white;
-  $shading-color: #eef;
-
-  .c-layout-mode-heading {
-    // This extends the definition in content-editor.scss
-    background-color: $frame-color;
-    color: $text-color;
-  }
-
-  .c-edit-mode-debug  {
-    border-left: dashed 2px $frame-color;
-    border-bottom: dashed 2px $frame-color;
-    border-right: dashed 2px $frame-color;
-    margin: 1px;
-  }
-
-  .my-content {
-    background-color: $shading-color;
-    text-align: left;
-    padding-left: 5px;
-  }
-
+  // .content-form {
+  //   $header-color: #55f;
+  //   $header-text-color: white;
+  //   $shading-color: lightblue;
+  //
+  //   $frame-color: #55f;
+  //   $text-color: white;
+  //   $shading-color: #eef;
+  //
+  //   &.c-edit-mode-debug  {
+  //     border-left: dashed 2px $frame-color;
+  //     border-bottom: dashed 2px $frame-color;
+  //     border-right: dashed 2px $frame-color;
+  //     margin: 1px;
+  //
+  //     & > .c-layout-mode-heading {
+  //       // This extends the definition in vue-contentservice.scss
+  //       background-color: $frame-color;
+  //       color: $text-color;
+  //     }
+  //   }
+  //
+  //   .c-content-form-content {
+  //     background-color: $shading-color;
+  //     text-align: left;
+  //     padding-left: 5px;
+  //   }
+  // }
 </style>

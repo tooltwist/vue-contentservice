@@ -141,91 +141,74 @@ function chooseIcon(rules) {
 <style lang="scss" scoped>
 //@import '../assets/css/editor-icons.scss';
 
-.toolbox-pane {
-  position: relative;
-  padding: 0px !important;
-  margin: 0px;
-
-
-  //h1 {
-  //  background-color: purple;
-  //}
-
-  //.title {
-  //  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
-  //  display: block;
-  //  font-weight: 300;
-  //  font-size: 100px;
-  //  color: #35495e;
-  //  letter-spacing: 1px;
-  //  margin-bottom: 5px;
-  //  background-color: red;
-  //}
-
-
-  .my-components {
-    padding: 0px;
-    padding-top: 0px;
-    // background-color: pink;
-
-    .my-category {
-      // background-color: lightblue;
-      //display: flex;
-      padding: 0px;
-      margin: 0px;
-      vertical-align: top;
-
-      .my-category-name {
-        margin-top: 4px;
-        margin-left: 4px;
-        zfont-weight: 800;
-        font-weight: bold;
-      }
-
-      .my-widget {
-        display: inline-block;
-        margin: 5px;
-        width: 48px;
-        //height: 50px;
-        padding-top: 5px;
-        vertical-align: top;
-        text-align: center;
-        // background-color: yellow;
-
-        .my-drag {
-          // background-color: orange;
-          text-align: center;
-          padding: 0px;
-          margin: 0px;
-          height: 29px;
-
-          .my-image {
-            display: inline-block;
-            // left: auto;
-            // right: auto;
-            width: 26px;
-            height: 26px;
-            // background-color: pink;
-            // border: solid 1px pink;
-          }
-        }
-        .my-component-label {
-          //font-size: 11px;
-          margin-bottom: 2px;
-          overflow-x: hidden;
-        }
-      }
-    }
-  }
-
-
-  .accreditation {
-    font-size: 10px;
-    //position: absolute;
-    // bottom: 0;
-    margin-top: 20px;
-    text-align: center;
-  }
-
-}
+// .toolbox-pane {
+//   position: relative;
+//   padding: 0px !important;
+//   margin: 0px;
+//
+//   .my-components {
+//     padding: 0px;
+//     padding-top: 0px;
+//     // background-color: pink;
+//
+//     .my-category {
+//       // background-color: lightblue;
+//       //display: flex;
+//       padding: 0px;
+//       margin: 0px;
+//       vertical-align: top;
+//
+//       .my-category-name {
+//         margin-top: 4px;
+//         margin-left: 4px;
+//         zfont-weight: 800;
+//         font-weight: bold;
+//       }
+//
+//       .my-widget {
+//         display: inline-block;
+//         margin: 5px;
+//         width: 48px;
+//         //height: 50px;
+//         padding-top: 5px;
+//         vertical-align: top;
+//         text-align: center;
+//         // background-color: yellow;
+//
+//         .my-drag {
+//           // background-color: orange;
+//           text-align: center;
+//           padding: 0px;
+//           margin: 0px;
+//           height: 29px;
+//
+//           .my-image {
+//             display: inline-block;
+//             // left: auto;
+//             // right: auto;
+//             width: 26px;
+//             height: 26px;
+//             // background-color: pink;
+//             // border: solid 1px pink;
+//           }
+//         }
+//         .my-component-label {
+//           //font-size: 11px;
+//           margin-bottom: 2px;
+//           overflow-x: hidden;
+//         }
+//       }
+//     }
+//   }
+//
+//
+//   .accreditation {
+//     font-size: 10px;
+//     //position: absolute;
+//     // bottom: 0;
+//     margin-top: 20px;
+//     text-align: center;
+//   }
+//
+// }
 </style>

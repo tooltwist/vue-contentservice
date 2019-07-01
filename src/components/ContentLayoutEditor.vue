@@ -284,12 +284,12 @@ export default {
         'ctrl+alt+esc': {
           keydown: this.toggleEditing
         },
-        //- 'ctrl+enter': {
-        //-   keydown: this.toggleEditing
-        //- },
-        //- 'ctrl+alt+m': {
-        //-   keydown: this.switchMode(null)
-        //- },
+        'ctrl+alt+left': {
+          keydown: this.previousElement
+        },
+        'ctrl+alt+right': {
+          keydown: this.nextElement
+        },
       }
     },
 
@@ -317,6 +317,7 @@ export default {
       if (e.timeStamp === previousTimeStamp) {
         return true
       }
+      console.log(`toggleEditing() in ContentLayoutEditor`);
       previousTimeStamp = e.timeStamp
       this.$content.toggleEditMode()
     },
@@ -381,6 +382,61 @@ export default {
       //-
       //- }
     },
+
+    nextElement () {
+      this.cycleThroughElements(+1)
+    },
+
+    previousElement () {
+      this.cycleThroughElements(-1)
+    },
+
+    cycleThroughElements (offset) {
+      console.log(`nextElement() in ContentLayoutEditor.`);
+      if (this.pageEditMode !== 'view') {
+        console.log(`do it`);
+        let currentElement = this.$content.store.state.expandedElement
+        if (currentElement) {
+          console.log(`currentElement is`, currentElement);
+
+          // Find the expanded element in the pathToSelectedElement
+          let path = this.$content.store.state.pathToSelectedElement
+          let parent = null
+          for (let i = 0; i < path.length; i++) {
+            if (path[i].id === currentElement.id) {
+              console.log(`Found it at index ${i}`);
+              if (i > 0) {
+                parent = path[i - 1]
+                break
+              }
+            }
+          }
+          console.log(`parent is`, parent);
+
+          // Find the selected element's index under it's parent
+          let childIndex = -1
+          for (let i = 0; i < parent.children.length; i++) {
+            if (parent.children[i].id === currentElement.id) {
+              childIndex = i
+              console.log(`Child index is ${i}`);
+              break
+            }
+          }
+
+          // Select the next element
+          let newIndex = (childIndex + offset)
+          if (newIndex < 0) {
+            newIndex = parent.children.length - 1
+          }
+          if (newIndex >= parent.children.length) {
+            newIndex = 0
+          }
+          let newElement = parent.children[newIndex]
+          console.log(`newElement is`, newElement);
+          this.$content.setPropertyElement({ element: newElement })
+        }
+      }
+    },
   },
   created: function () {
     console.log(`ContentLayoutEditor.created(): this.$content.store=`, this.$content.store);
@@ -437,5 +493,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+//@import '../assets/css/editor-icons.scss'
 </style>

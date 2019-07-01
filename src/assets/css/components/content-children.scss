@@ -1,0 +1,30 @@
+.content-children {
+
+  &.c-show-drop-areas {
+    margin: 2px;
+    border: dotted 1px blue;
+    padding: 1px;
+  }
+
+  .my-children-debug-outline {
+    border: dashed 1px green;
+    margin: 1px;
+  }
+  .my-children-debug {
+    background-color: green;
+    color: white;
+    font-size: 9px;
+    text-align: center;
+  }
+  .c-droparea {
+    display: block;
+    min-height: 15px;
+    //background-image: url(../../drop-bg-1.png);
+    position: relative;
+    z-index: 1000;
+  }
+  .dropover {
+    background-color: #ccc;
+    border: dashed 1px cyan;
+  }
+}

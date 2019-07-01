@@ -1,6 +1,7 @@
 <template lang="pug">
 
-  .content-section(v-bind:class="[(pageEditMode=='debug') ? 'my-outline' : '']")
+  .c-content-section(v-bind:class="editModeClass")
+    //(v-bind:class="[(pageEditMode=='debug') ? 'my-outline' : '']")
 
     // Debug mode
     template(v-if="pageEditMode==='debug'", v-on:click.stop="selectThisElement")
@@ -63,26 +64,29 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-  @import '../../assets/css/content-variables.scss';
-
-  $frame-color: lightblue;
-  $text-color: blue;
-
-  .c-layout-mode-heading {
-    // This overrides the definition in content-editor.scss
-    background-color: $frame-color;
-    color: $text-color;
-  }
-
-  .c-edit-mode-debug {
-    border-left: dashed 2px $frame-color;
-    border-bottom: dashed 2px $frame-color;
-    border-right: dashed 2px $frame-color;
-    margin: 1px;
-  }
-
-  .my-content {
-    background-color: white;
-  }
+<style lang="scss">
+// @import '../../assets/css/content-variables.scss';
+//
+// .c-content-section {
+//
+//   $frame-color: lightblue;
+//   $text-color: blue;
+//
+//   .c-layout-mode-heading {
+//     // This overrides the definition in vue-contentservice.scss
+//     background-color: $frame-color;
+//     color: $text-color;
+//   }
+//
+//   .c-edit-mode-debug {
+//     border-left: dashed 2px $frame-color;
+//     border-bottom: dashed 2px $frame-color;
+//     border-right: dashed 2px $frame-color;
+//     margin: 1px;
+//   }
+//
+//   .my-content {
+//     background-color: white;
+//   }
+// }
 </style>

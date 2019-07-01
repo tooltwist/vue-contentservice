@@ -1,0 +1,24 @@
+
+.c-content-container {
+  $c-content-container-frame-color: lightgreen;
+  $text-color: darkgreen;
+
+  &.c-edit-mode-debug {
+    border-left: dashed 2px $c-content-container-frame-color;
+    border-bottom: dashed 2px $c-content-container-frame-color;
+    border-right: dashed 2px $c-content-container-frame-color;
+    margin: 1px;
+
+    .container {
+      width: 90% !important;
+    }
+    & > .c-layout-mode-heading {
+      // This overrides the definition in vue-contentservice.scss
+      background-color: $c-content-container-frame-color;
+      color: $text-color;
+    }
+  }
+  .my-content {
+    background-color: white;
+  }
+}

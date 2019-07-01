@@ -18,7 +18,7 @@ div(v-if="sane")
         // https://www.npmjs.com/package/vue-drag-drop#events
         drop(v-if="showDropAreas" @drop="handleDrop(element, child, ...arguments)")
           template(slot-scope="props")
-            .droparea(v-bind:class="[props.transferData ? 'dropover' : '']", contenteditable="true", @paste="onPaste($event, index)", @input="onInput")
+            .c-droparea.c-droparea-background(v-bind:class="[props.transferData ? 'dropover' : '']", contenteditable="true", @paste="onPaste($event, index)", @input="onInput")
 
         // Hack - does not display children without this.
         // | {{''}}
@@ -38,7 +38,7 @@ div(v-if="sane")
     // https://www.npmjs.com/package/vue-drag-drop#events
     drop(v-if="showDropAreas" @drop="handleDrop(element, null, ...arguments)")
       template(slot-scope="props")
-        .droparea(v-bind:class="[props.transferData ? 'dropover' : '']", contenteditable="true", @paste="onPaste($event,'last')", @input="onInput")
+        .c-droparea.c-droparea-background(v-bind:class="[props.transferData ? 'dropover' : '']", contenteditable="true", @paste="onPaste($event,'last')", @input="onInput")
 </template>
 
 <script>
@@ -194,34 +194,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content-children {
-
-  &.c-show-drop-areas {
-    margin: 2px;
-    border: dotted 1px blue;
-    padding: 1px;
-  }
-
-  .my-children-debug-outline {
-    border: dashed 1px green;
-    margin: 1px;
-  }
-  .my-children-debug {
-    background-color: green;
-    color: white;
-    font-size: 9px;
-    text-align: center;
-  }
-  .droparea {
-    display: block;
-    min-height: 15px;
-    background-image: url(../assets/drop-bg-1.png);
-    position: relative;
-    z-index: 1000;
-  }
-  .dropover {
-    background-color: #ccc;
-    border: dashed 1px cyan;
-  }
-}
+// .content-children {
+//
+//   &.c-show-drop-areas {
+//     margin: 2px;
+//     border: dotted 1px blue;
+//     padding: 1px;
+//   }
+//
+//   .my-children-debug-outline {
+//     border: dashed 1px green;
+//     margin: 1px;
+//   }
+//   .my-children-debug {
+//     background-color: green;
+//     color: white;
+//     font-size: 9px;
+//     text-align: center;
+//   }
+//   .droparea {
+//     display: block;
+//     min-height: 15px;
+//     background-image: url(../assets/drop-bg-1.png);
+//     position: relative;
+//     z-index: 1000;
+//   }
+//   .dropover {
+//     background-color: #ccc;
+//     border: dashed 1px cyan;
+//   }
+// }
 </style>

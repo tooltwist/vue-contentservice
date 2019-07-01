@@ -76,13 +76,13 @@ let faLibrary = library
 import { faCut, faCopy, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-require('../assets/css/editor-icons.scss')
+// require('../assets/css/editor-icons.scss')
 // require('../assets/css/content-variables.scss')
-// require('../assets/css/content-editor.scss')
+// require('../assets/css/vue-contentservice.scss')
 
-// import mySCSS from '../assets/css/content-editor.scss'
+import mySCSS from '../assets/css/vue-contentservice.scss'
 // import Bulma from 'bulma'
-// import EditorIcons from '../assets/css/editor-icons.scss'
+//import EditorIcons from '../assets/css/editor-icons.scss'
 
 
 let _Vue = null

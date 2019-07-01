@@ -9,14 +9,14 @@
       br
 
     // Debug mode
-    div(v-if="isDesignMode", @click.stop="selectThisElement")
+    template(v-if="isDesignMode", @click.stop="selectThisElement")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | richtext
       froala(:tag="'div'", :config="config", v-model="protectedText")
 
     // Editing
-    div(v-else-if="isEditMode", @click.stop="selectThisElement")
+    template(v-else-if="isEditMode", @click.stop="selectThisElement")
       froala(:tag="'div'", :config="config", v-model="protectedText")
 
     // Live mode
@@ -248,24 +248,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-  $frame-color: lightblue;
-  $text-color: darkblue;
-
-  .c-content-froala {
-
-    .c-layout-mode-heading {
-      // This extends the definition in content-editor.scss
-      background-color: $frame-color;
-      color: $text-color;
-    }
-
-    .c-edit-mode-debug  {
-      border-left: dashed 2px $frame-color;
-      border-bottom: dashed 2px $frame-color;
-      border-right: dashed 2px $frame-color;
-      margin: 1px;
-    }
-
-  }
+  //
+  // .c-content-froala {
+  //
+  //   $frame-color: lightblue;
+  //   $text-color: darkblue;
+  //
+  //   .c-layout-mode-heading {
+  //     // This extends the definition in vue-contentservice.scss
+  //     background-color: $frame-color;
+  //     color: $text-color;
+  //   }
+  //
+  //   .c-edit-mode-debug  {
+  //     border-left: dashed 2px $frame-color;
+  //     border-bottom: dashed 2px $frame-color;
+  //     border-right: dashed 2px $frame-color;
+  //     margin: 1px;
+  //   }
+  //
+  // }
 </style>

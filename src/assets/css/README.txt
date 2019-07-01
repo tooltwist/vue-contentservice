@@ -15,5 +15,5 @@ by any package that uses this package (e.g. vue-formservice).
 3. Applications wishing to customise our styling may do so by creating their
    own SASS file (e.g. contentservice+overrides.scss) to:
    (a) Set their own versions of the SASS variables we use.
-   (b) @import '~/vue-contentservice/src/assets/css/content-editor.scss'
+   (b) @import '~/vue-contentservice/src/assets/css/vue-contentservice.scss'
    (c) Override any of the CSS class definitions used by our widgets.

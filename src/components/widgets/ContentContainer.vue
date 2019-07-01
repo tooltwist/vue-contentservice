@@ -2,17 +2,17 @@
 
   .c-content-container(v-bind:class="editModeClass")
 
-    // Edit mode
-    .container(v-if="pageEditMode==='edit'", @click.stop="selectThisElement")
-      content-children(:element="element", :context="context")
-
     // Debug mode
-    div(v-else-if="pageEditMode==='debug'", @click.stop="selectThisElement")
+    div(v-if="pageEditMode==='debug'", @click.stop="selectThisElement")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | container
       .container
         content-children.my-content(:element="element", :context="context")
+
+    // Edit mode
+    .container(v-else-if="pageEditMode==='edit'", @click.stop="selectThisElement")
+      content-children(:element="element", :context="context")
 
     // Live
     .container(v-else)
@@ -78,27 +78,29 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-  @import '../../assets/css/content-variables.scss';
-
-  $frame-color: lightgreen;
-  $text-color: darkgreen;
-
-  .c-edit-mode-debug {
-    border-left: dashed 2px $frame-color;
-    border-bottom: dashed 2px $frame-color;
-    border-right: dashed 2px $frame-color;
-    margin: 1px;
-
-    .container {
-      width: 90% !important;
-    }
-  }
-  .c-layout-mode-heading {
-    // This overrides the definition in content-editor.scss
-    background-color: $frame-color;
-    color: $text-color;
-  }
-  .my-content {
-    background-color: white;
-  }
+//   @import '../../assets/css/content-variables.scss';
+//
+// .c-content-container {
+//   $frame-color: red;
+//   $text-color: darkgreen;
+//
+//   .c-edit-mode-debug {
+//     border-left: dashed 2px $frame-color;
+//     border-bottom: dashed 2px $frame-color;
+//     border-right: dashed 2px $frame-color;
+//     margin: 1px;
+//
+//     .container {
+//       width: 90% !important;
+//     }
+//   }
+//   .c-layout-mode-heading {
+//     // This overrides the definition in vue-contentservice.scss
+//     background-color: $frame-color;
+//     color: $text-color;
+//   }
+//   .my-content {
+//     background-color: white;
+//   }
+// }
 </style>

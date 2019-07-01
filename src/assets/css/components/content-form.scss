@@ -1,0 +1,28 @@
+.content-form {
+  $header-color: #55f;
+  $header-text-color: white;
+  $shading-color: lightblue;
+
+  $frame-color: #55f;
+  $text-color: white;
+  $shading-color: #eef;
+
+  &.c-edit-mode-debug  {
+    border-left: dashed 2px $frame-color;
+    border-bottom: dashed 2px $frame-color;
+    border-right: dashed 2px $frame-color;
+    margin: 1px;
+
+    & > .c-layout-mode-heading {
+      // This extends the definition in vue-contentservice.scss
+      background-color: $frame-color;
+      color: $text-color;
+    }
+  }
+
+  .c-content-form-content {
+    background-color: $shading-color;
+    text-align: left;
+    padding-left: 5px;
+  }
+}

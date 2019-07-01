@@ -1,0 +1,21 @@
+
+  .c-content-froala {
+
+    $frame-color: lightblue;
+    $frame-color: pink;
+    $text-color: darkblue;
+
+    &.c-edit-mode-debug  {
+      border-left: dashed 2px $frame-color;
+      border-bottom: dashed 2px $frame-color;
+      border-right: dashed 2px $frame-color;
+      margin: 1px;
+
+      & > .c-layout-mode-heading {
+        // This extends the definition in vue-contentservice.scss
+        background-color: $frame-color;
+        color: $text-color;
+      }
+    }
+
+  }

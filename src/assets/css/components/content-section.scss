@@ -1,0 +1,23 @@
+
+.c-content-section {
+
+  $frame-color: lightblue;
+  $text-color: blue;
+
+  &.c-edit-mode-debug {
+    border-left: dashed 2px $frame-color;
+    border-bottom: dashed 2px $frame-color;
+    border-right: dashed 2px $frame-color;
+    margin: 1px;
+
+    & > .c-layout-mode-heading {
+      // This overrides the definition in vue-contentservice.scss
+      background-color: $frame-color;
+      color: $text-color;
+    }
+  }
+
+  & > .my-content {
+    background-color: white;
+  }
+}

@@ -1,0 +1,68 @@
+.toolbox-pane {
+  position: relative;
+  padding: 0px !important;
+  margin: 0px;
+
+  .my-components {
+    padding: 0px;
+    padding-top: 0px;
+    // background-color: pink;
+
+    .my-category {
+      // background-color: lightblue;
+      //display: flex;
+      padding: 0px;
+      margin: 0px;
+      vertical-align: top;
+
+      .my-category-name {
+        margin-top: 4px;
+        margin-left: 4px;
+        zfont-weight: 800;
+        font-weight: bold;
+      }
+
+      .my-widget {
+        display: inline-block;
+        margin: 5px;
+        width: 48px;
+        //height: 50px;
+        padding-top: 5px;
+        vertical-align: top;
+        text-align: center;
+        // background-color: yellow;
+
+        .my-drag {
+          // background-color: orange;
+          text-align: center;
+          padding: 0px;
+          margin: 0px;
+          height: 29px;
+
+          .my-image {
+            display: inline-block;
+            // left: auto;
+            // right: auto;
+            width: 26px;
+            height: 26px;
+            // background-color: pink;
+            // border: solid 1px pink;
+          }
+        }
+        .my-component-label {
+          //font-size: 11px;
+          margin-bottom: 2px;
+          overflow-x: hidden;
+        }
+      }
+    }
+  }
+
+  .accreditation {
+    font-size: 10px;
+    //position: absolute;
+    // bottom: 0;
+    margin-top: 20px;
+    text-align: center;
+  }
+}
