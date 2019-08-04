@@ -9,19 +9,19 @@
       br
 
     // Debug mode
-    template(v-if="isDesignMode", @click.stop="selectThisElement")
+    div(v-if="isDesignMode", @click.stop="selectThisElement", :style="style", :class="clas")
       .c-layout-mode-heading
         edit-bar-icons(:element="element")
         | richtext
       froala(:tag="'div'", :config="config", v-model="protectedText")
 
     // Editing
-    template(v-else-if="isEditMode", @click.stop="selectThisElement")
+    div(v-else-if="isEditMode", @click.stop="selectThisElement", :style="style", :class="clas")
       froala(:tag="'div'", :config="config", v-model="protectedText")
 
     // Live mode
     template(v-else)
-      froala-view(:tag="'div'", v-model="protectedText")
+      froala-view(:tag="'div'", v-model="protectedText", :style="style", :class="clas")
 </template>
 
 <script>
@@ -127,8 +127,47 @@ export default {
           this.$content.setProperty({ vm: this, element: this.element, name: name, value })
         }
       }
+    },//- protectedText
+
+
+    style: function ( ) {
+      let style = this.element['style'] + ';'
+      // width
+      try {
+        let num = parseInt(this.element['width'])
+        if (num >= 20) {
+          style += `width:${num}px;`
+        }
+      } catch (e) { }
+
+      // height
+      try {
+        let num = parseInt(this.element['height'])
+        if (num >= 20) {
+          style += `height:${num}px;`
+        }
+      } catch (e) { }
+      //console.log(`boxStyle=`, style)
+      return style
+    },//- boxStyle
+
+    clas: function () {
+      var obj = { }
+      let classesForElement = this.element['class']
+      if (classesForElement) {
+        // console.log(`classesForElement=${classesForElement}`);
+        classesForElement.split(' ').forEach(clas => {
+          // console.log(`-- ${clas}`);
+          let classname = clas.trim()
+          if (classname) {
+            obj[classname] = true
+          }
+        })
+      }
+      return obj
     },
   },
+
   methods: {
 
     rememberToSave () {
