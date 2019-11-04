@@ -14,6 +14,8 @@ import { assert, inBrowser } from '../components/misc'
 
 const NETWORK_ERROR_MSG = 'Could not contact authentication server'
 
+let onceOnly = 0
+
 class Contentservice {
   // static install: (Vue) => void;
   // static version: string;
@@ -37,7 +39,7 @@ class Contentservice {
     }
     this.disabled = false
 
-    console.log('&&& Contentservice constructor', options)
+    // console.log('&&& Contentservice constructor', options)
     this.protocol = options.protocol ? options.protocol : 'https'
     this.host = options.host ? options.host : 'api.contentservice.io'
     if (options.port) {
@@ -66,7 +68,7 @@ class Contentservice {
     if (options.defaultIconPack) {
       console.log(`Will use icon pack ${options.defaultIconPack}`);
     }
-    console.log(`---> icons ---> ${this.defaultIconPack}`);
+    // console.log(`---> icons ---> ${this.defaultIconPack}`);
 
     // Remember the options
     this.options = options
@@ -79,7 +81,7 @@ class Contentservice {
 
   // init (app: any /* Vue component instance */) {
   init (app /* Vue component instance */) {
-    console.log('&&& ContentService.init')
+    // console.log('&&& ContentService.init')
 
     // VVVVV This does not seem to be called
     // alert('za init()')
@@ -92,7 +94,9 @@ class Contentservice {
 
   endpoint () {
     const endpoint = `${this.protocol}://${this.host}:${this.port}/api/${this.version}/${this.apikey}`
-    console.log(`endpoint(): ${endpoint}`)
+    if (onceOnly++ === 0) {
+      console.log(`endpoint(): ${endpoint}`)
+    }
     return endpoint
   }
 
@@ -296,12 +300,12 @@ class Contentservice {
     let previousEditMode = this.store.state.previousEditMode
     if (mode === 'view') {
       // Switch to one of the edit modes
-      console.log(` - toggle to ${previousEditMode}`)
+      // console.log(` - toggle to ${previousEditMode}`)
       this.setEditMode({ mode: previousEditMode })
 
     } else {
       // Switch back to view mode
-      console.log(` - toggle to view mode`)
+      // console.log(` - toggle to view mode`)
       this.setEditMode({ mode: 'view', previousEditMode: mode })
     }
   }
@@ -383,7 +387,7 @@ class Contentservice {
           console.log('CrowdHound.select: anchorType must be a string: ' + anchorType + ', ' + typeof(anchorType));
           return reject(new Error('invalid anchor parameter'));
         }
-        console.log('select anchor')
+        // console.log('select anchor')
         var params = {
           elementId: anchor,
           type: anchorType
@@ -424,13 +428,10 @@ class Contentservice {
       var url = `${this.endpoint()}/elements`;
       // url = addAuthenticationToken(url);
       if (this.options.debug) {
-        console.log('URL= ' + url)
+        console.log('CrowdHound.select()')
+        console.log('  url=' + url)
+        console.log('  params=', params)
       }
-      console.log('CrowdHound.select()')
-      console.log('  url=' + url)
-      console.log('  params=', params)
-
-
 
       axios({
         method: 'get',

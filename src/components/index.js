@@ -99,9 +99,9 @@ function install (Vue, options) {
   _Vue = Vue
 
   // Create ourselves a ContentService Object
-  console.log('Getting our _content')
+  // console.log('Getting our _content')
   _content = new ContentService(options)
-  console.log('Have our _content', _content)
+  // console.log('Have our _content', _content)
   //_content.checkInitialLoginStatus(false)
   //console.log('Finished checking status')
 

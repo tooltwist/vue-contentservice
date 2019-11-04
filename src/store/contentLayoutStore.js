@@ -111,7 +111,7 @@ export const getters = {
 export const actions = {
 
   setContentAction ({ commit, state }, { vm, type, layout, contentId}) {
-    console.log(`In Action contentLayout/setContentAction(type=${type}, layout=${layout?'yes':'no'}, contentId=${contentId})`)
+    // console.log(`In Action contentLayout/setContentAction(type=${type}, layout=${layout?'yes':'no'}, contentId=${contentId})`)
     if (layout) {
       commit('setLayout', { vm, layout: layout, crowdhoundElement: null, editable: false })
     } else if (contentId) {
@@ -260,8 +260,8 @@ export const mutations = {
 
   // Set the current layout, displayed in the middle panel.
   setLayout (state, { vm, layout, contentId, crowdhoundElement, /*tenant, elementId, */ editable /*, element */ } ) {
-    //console.log('In Mutation contentLayout/setLayout()', state)
-    console.log('In Mutation contentLayout/setLayout()', layout)
+    // console.log('In Mutation contentLayout/setLayout()', state)
+    // console.log('In Mutation contentLayout/setLayout()', layout)
 
     if (layout) {
       state.layout = addAnyMissingValues(vm, layout)
@@ -606,7 +606,7 @@ function safeJson (element, compressed/*boolean,optional*/) {
 // }
 
 function loadLayoutFromAnchor (commit, vm, contentId, editable) {
-  console.log(`store.loadlayout(${contentId})`)
+  // console.log(`store.loadlayout(${contentId})`)
 
   // We select the content from crowdhound
   //console.log(`ContentTriplePane.loadLayout`)
@@ -631,7 +631,7 @@ function loadLayoutFromAnchor (commit, vm, contentId, editable) {
   let shortAnchor = contentId.startsWith('$') ? contentId.substring(1) : contentId
   let fullAnchor = `$`  + shortAnchor
   let elementType = 'layout'
-  console.error(`>>> contentId is ${contentId}.`)
+  // console.error(`>>> contentId is ${contentId}.`)
 
   vm.$content.select(this, fullAnchor, elementType)
     //- this.$content.select(this, params)

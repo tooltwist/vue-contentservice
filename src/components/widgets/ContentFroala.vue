@@ -88,7 +88,10 @@ export default {
         // Froala activation key
         // Gets set from $content.options.froalaActivationKey
         // See https://www.froala.com/wysiwyg-editor/pricing
-        key: null
+        key: null,
+
+        // Do not show the 'Powered by Froala Editor' message.
+        attribution: false
 
       },
     }
@@ -214,12 +217,12 @@ export default {
   },
 
   created () {
-    //console.log(`TooltwistFroala.created`)
+    console.log(`TooltwistFroala.created()`, this.$content.options)
 
     // See if we have a license key for Froala
     // console.log('this.$content.options=', this.$content.options)
     if (this.$content && this.$content.options && this.$content.options.froalaActivationKey) {
-      // console.log(`Froala activation key: ${this.$content.options.froalaActivationKey}`)
+      console.log(`Froala activation key: ${this.$content.options.froalaActivationKey}`)
       this.config.key = this.$content.options.froalaActivationKey
     } else {
       if ((missingLicenseCounter++ % 20) === 0) {

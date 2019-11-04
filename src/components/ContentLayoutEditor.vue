@@ -73,6 +73,12 @@ let previousTimeStamp = 0
 export default {
   name: 'content-layout-editor',
   props: {
+    // Support keyboard shortcuts to enter edit mode
+    editShortcut: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
 
     // The context provides a means for a container to pass information down to the
     // elements it's contains. During editing the store is used to provide all
@@ -246,7 +252,6 @@ export default {
       }
     },
 
-
     leftSize: function () {
       if (!this.hasLeftSlot) {
         return 0
@@ -258,6 +263,7 @@ export default {
       }
       return this.myLeftPaneSize
     },
+
     middleSize: function () {
       let size = 100 - (this.leftSize + this.rightSize)
       if (size < 0) {
@@ -265,6 +271,7 @@ export default {
       }
       return size
     },
+
     rightSize: function () {
       if (this.pageEditMode === 'view' || this.pageEditMode === 'live') {
         return 0 // Hide the right pane
@@ -279,11 +286,7 @@ export default {
     },
 
     keymap () {
-      let self = this
-      return {
-        'ctrl+alt+esc': {
-          keydown: this.toggleEditing
-        },
+      let mapping = {
         'ctrl+alt+left': {
           keydown: this.previousElement
         },
@@ -291,8 +294,17 @@ export default {
           keydown: this.nextElement
         },
       }
+      // console.log(`editShortcut=${this.editShortcut}`)
+      if (this.editShortcut) {
+        mapping['ctrl+alt+esc'] = {
+          keydown: this.toggleEditingShortcut
+        }
+        mapping['ctrl+alt+e'] = {
+          keydown: this.toggleEditingShortcut
+        }
+      }
+      return mapping
     },
-
 
     thePropertyElement () {
       if (process.browser) {
@@ -312,13 +324,18 @@ export default {
 
   methods: {
 
-    toggleEditing (e) {
+    toggleEditingShortcut (e) {
       // Prevent duplicate event handling.
       if (e.timeStamp === previousTimeStamp) {
         return true
       }
-      console.log(`toggleEditing() in ContentLayoutEditor`);
+      // console.log(`toggleEditingShortcut() in ContentLayoutEditor`);
       previousTimeStamp = e.timeStamp
+      this.$content.toggleEditMode()
+    },
+
+    toggleEditMode () {
+      // console.log(`toggleEditMode() in ContentLayoutEditor`)
       this.$content.toggleEditMode()
     },
 
@@ -464,9 +481,9 @@ export default {
     let self = this
 
 
-    console.log(`------------------------------`)
-    console.log(`contentId=`, this.crowdhoundAnchor)
-    console.log(`layout=`, this.layout)
+    console.log(`ContentLayoutEditor()`)
+    console.log(`  contentId=`, this.crowdhoundAnchor)
+    console.log(`  layout=`, this.layout)
 
     if (this.contentId) {
 
