@@ -1,4 +1,4 @@
-import FileSaver from 'file-saver'
+import { saveAs } from 'file-saver'
 
 export default {
   computed: {
@@ -53,7 +53,7 @@ export default {
         filename += '-' + this.$content.store.state.contentId.substring(1)
       }
       filename += `-${this.element.type}-${this.element.id}.txt`
-      FileSaver.saveAs(blob, filename);
+      saveAs(blob, filename);
     },
 
     // Create a nicely packaged payload.
