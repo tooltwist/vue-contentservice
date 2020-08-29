@@ -56,6 +56,7 @@ import ContentVimeo from './widgets/ContentVimeo.vue'
 import ContentVimeoProps from './widgets/ContentVimeoProps.vue'
 
 import EditBarIcons from './EditBarIcons.vue'
+import PropertyBarIcons from './PropertyBarIcons.vue'
 
 
 import ContentAdminBlogList from './ContentAdminBlogList.vue'
@@ -186,6 +187,7 @@ function install (Vue, options) {
   Vue.component('content-admin-blog-details', ContentAdminBlogDetails)
 
   Vue.component('edit-bar-icons', EditBarIcons)
+  Vue.component('property-bar-icons', PropertyBarIcons)
 
   // Register the layout element types
   // _content.registerLayoutType(Vue, 'section', 'content-section', ContentSection, ContentSectionProps)
