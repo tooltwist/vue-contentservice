@@ -8,68 +8,68 @@ import VueDragDrop from 'vue-drag-drop';
 import Clipboard from 'v-clipboard'
 
 // Our main class
-//import { ContentService }  from '../lib/ContentService.js'
-import ContentService  from '../lib/ContentService.js'
+//import { ContentService }  from './lib/ContentService.js'
+import ContentService  from './lib/ContentService.js'
 
 // Editing-related stuff.
-import CrowdhoundMinimal from './CrowdhoundMinimal.vue'
-import ContentContent from './ContentContent.vue'
-import ContentLayoutEditor from './ContentLayoutEditor.vue'
-import ContentToolbox from './ContentToolbox.vue'
-import ContentPane from './ContentPane.vue'
+import CrowdhoundMinimal from './components/CrowdhoundMinimal.vue'
+import ContentContent from './components/ContentContent.vue'
+import ContentLayoutEditor from './components/ContentLayoutEditor.vue'
+import ContentToolbox from './components/ContentToolbox.vue'
+import ContentPane from './components/ContentPane.vue'
 
-import ContentElement from './ContentElement.vue'
-import ContentElementProps from './ContentElementProps.vue'
-import ContentPropertiesHeader from './ContentPropertiesHeader.vue'
-import ContentChildren from './ContentChildren.vue'
-import ContentContentProps from './ContentContentProps.vue'
+import ContentElement from './components/ContentElement.vue'
+import ContentElementProps from './components/ContentElementProps.vue'
+import ContentPropertiesHeader from './components/ContentPropertiesHeader.vue'
+import ContentChildren from './components/ContentChildren.vue'
+import ContentContentProps from './components/ContentContentProps.vue'
 
 // Widgets
-import ContentLayout from './widgets/ContentLayout.vue'
-import ContentLayoutProps from './widgets/ContentLayoutProps.vue'
-import ContentText from './widgets/ContentText.vue'
-import ContentTextProps from './widgets/ContentTextProps.vue'
-import ContentFroala from './widgets/ContentFroala.vue'
-import ContentFroalaProps from './widgets/ContentFroalaProps.vue'
-import ContentField from './widgets/ContentField.vue'
-import ContentFieldProps from './widgets/ContentFieldProps.vue'
-import ContentForm from './widgets/ContentForm.vue'
-import ContentFormProps from './widgets/ContentFormProps.vue'
-import ContentSection from './widgets/ContentSection.vue'
-import ContentSectionProps from './widgets/ContentSectionProps.vue'
-import ContentContainer from './widgets/ContentContainer.vue'
-import ContentContainerProps from './widgets/ContentContainerProps.vue'
-import ContentFixedPositionContainer from './widgets/ContentFixedPositionContainer.vue'
-import ContentFixedPositionContainerProps from './widgets/ContentFixedPositionContainerProps.vue'
-import ContentColumns from './widgets/ContentColumns.vue'
-import ContentColumnsProps from './widgets/ContentColumnsProps.vue'
-import PanelWithoutProperties from './widgets/PanelWithoutProperties.vue'
-import PanelWithoutPropertiesProps from './widgets/PanelWithoutPropertiesProps.vue'
+import ContentLayout from './components/widgets/ContentLayout.vue'
+import ContentLayoutProps from './components/widgets/ContentLayoutProps.vue'
+import ContentText from './components/widgets/ContentText.vue'
+import ContentTextProps from './components/widgets/ContentTextProps.vue'
+import ContentFroala from './components/widgets/ContentFroala.vue'
+import ContentFroalaProps from './components/widgets/ContentFroalaProps.vue'
+import ContentField from './components/widgets/ContentField.vue'
+import ContentFieldProps from './components/widgets/ContentFieldProps.vue'
+import ContentForm from './components/widgets/ContentForm.vue'
+import ContentFormProps from './components/widgets/ContentFormProps.vue'
+import ContentSection from './components/widgets/ContentSection.vue'
+import ContentSectionProps from './components/widgets/ContentSectionProps.vue'
+import ContentContainer from './components/widgets/ContentContainer.vue'
+import ContentContainerProps from './components/widgets/ContentContainerProps.vue'
+import ContentFixedPositionContainer from './components/widgets/ContentFixedPositionContainer.vue'
+import ContentFixedPositionContainerProps from './components/widgets/ContentFixedPositionContainerProps.vue'
+import ContentColumns from './components/widgets/ContentColumns.vue'
+import ContentColumnsProps from './components/widgets/ContentColumnsProps.vue'
+import PanelWithoutProperties from './components/widgets/PanelWithoutProperties.vue'
+import PanelWithoutPropertiesProps from './components/widgets/PanelWithoutPropertiesProps.vue'
 
-import ContentCard from './widgets/ContentCardProps.vue'
-import ContentCardProps from './widgets/ContentCardProps.vue'
+import ContentCard from './components/widgets/ContentCardProps.vue'
+import ContentCardProps from './components/widgets/ContentCardProps.vue'
 
 // Video widgets
-import ContentYoutube from './widgets/ContentYoutube.vue'
-import ContentYoutubeProps from './widgets/ContentYoutubeProps.vue'
-import ContentVimeo from './widgets/ContentVimeo.vue'
-import ContentVimeoProps from './widgets/ContentVimeoProps.vue'
+import ContentYoutube from './components/widgets/ContentYoutube.vue'
+import ContentYoutubeProps from './components/widgets/ContentYoutubeProps.vue'
+import ContentVimeo from './components/widgets/ContentVimeo.vue'
+import ContentVimeoProps from './components/widgets/ContentVimeoProps.vue'
 
-import EditBarIcons from './EditBarIcons.vue'
-import PropertyBarIcons from './PropertyBarIcons.vue'
+import EditBarIcons from './components/EditBarIcons.vue'
+import PropertyBarIcons from './components/PropertyBarIcons.vue'
 
 
-import ContentAdminBlogList from './ContentAdminBlogList.vue'
-import ContentAdminBlogDetails from './ContentAdminBlogDetails.vue'
+import ContentAdminBlogList from './components/ContentAdminBlogList.vue'
+import ContentAdminBlogDetails from './components/ContentAdminBlogDetails.vue'
 
 // Property Types
-import StringProperty from './propertyTypes/StringProperty.vue'
+import StringProperty from './components/propertyTypes/StringProperty.vue'
 
 
-// import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from '../lib/hierarchy'
+// import { sanitizeLayout, safeJson, layoutRoot, layoutChanged } from './components/lib/hierarchy'
 
 // Our store
-import ContentLayoutStore from '../store/contentLayoutStore.js'
+import ContentLayoutStore from './store/contentLayoutStore.js'
 
 // Install font-awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -77,13 +77,13 @@ let faLibrary = library
 import { faCut, faCopy, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-// require('../assets/css/editor-icons.scss')
-// require('../assets/css/content-variables.scss')
-// require('../assets/css/vue-contentservice.scss')
+// require('./assets/css/editor-icons.scss')
+// require('./assets/css/content-variables.scss')
+// require('./assets/css/vue-contentservice.scss')
 
-import mySCSS from '../assets/css/vue-contentservice.scss'
+import mySCSS from './assets/css/vue-contentservice.scss'
 // import Bulma from 'bulma'
-//import EditorIcons from '../assets/css/editor-icons.scss'
+//import EditorIcons from './assets/css/editor-icons.scss'
 
 
 let _Vue = null

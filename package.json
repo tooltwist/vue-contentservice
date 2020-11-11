@@ -8,7 +8,7 @@
     "test": "vue-cli-service build",
     "e2e": "vue-cli-service e2e",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --formats commonjs --name vue-contentservice ./src/components/index.js",
+    "build-bundle": "vue-cli-service build --target lib --formats commonjs --name vue-contentservice ./src/index.js",
     "e2e:open": "vue-cli-service e2e:open",
     "patch-release": "npm version patch && npm publish --registry=https://registry.npmjs.org/ --access public && git push --follow-tags",
     "p1": "npm version patch",
@@ -16,7 +16,7 @@
     "p3": "git push --follow-tags",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit",
-    "inspect": "vue-cli-service inspect ./src/components/index.js"
+    "inspect": "vue-cli-service inspect ./src/index.js"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-beta.47",

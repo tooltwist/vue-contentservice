@@ -10,8 +10,8 @@
   //  1. When we have a left pane, this will be the second gutter. When there is
   //    no left pane it will be the first gutter.
   //
-  //  2. The /deep/ is the sccs equivalent of >>>, so with Vue's scoping
-  //    resolves to something like
+  //  2. The >>> operator (previously /deep/) is used to create style rules that
+  //    apply to elements inside of child components.
   //
   //        #my-triple-pane.c-not-editing-layout[0x277261] .gutter
   //        See https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors
@@ -30,19 +30,19 @@
     &.c-has-left-pane {
 
 
-      & /deep/ .gutter-horizontal {
+      & >>> .gutter-horizontal {
         height: 100%;
       }
 
       // Siblings of first
-      & /deep/ .gutter-horizontal ~ .gutter-horizontal {
+      & >>> .gutter-horizontal ~ .gutter-horizontal {
         height: 0px;
       }
     }
 
     // Not editing, no a left pane
     &.c-no-left-pane {
-      & /deep/ .gutter-horizontal {
+      & >>> .gutter-horizontal {
         height: 0px;
       }
     }

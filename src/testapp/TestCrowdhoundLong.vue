@@ -133,11 +133,11 @@ $below-triple-pane-size: 80;
 // This magic gives the pane a fixed size while editing. Without
 // this the rsize bars will not be set.
 //
-.my-triple-pane /deep/ .c-editing-layout {
+.my-triple-pane >>> .c-editing-layout {
   height: calc(100vh - #{$above-triple-pane-size + $below-triple-pane-size}px);
 }
 
-.my-triple-pane /deep/ .c-editing-layout {
+.my-triple-pane >>> .c-editing-layout {
   border: solid 1px $border-color;
 }
 
