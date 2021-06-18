@@ -1,0 +1,2003 @@
+swagger: '2.0'
+info:
+  description: >
+    Authservice.io provides Authentication and Authorisation services for web
+    based applications. It can also maintain user profile information,
+    relationship between users, and assist with communicating with users by
+    email and SMS.
+
+    \
+
+    This documentation describes the LEVEL 1 interface to Authservice.io.
+
+    \
+
+    Level 1 - low level API
+
+    Level 2 - Client library (e.g. Javascript, Java, Golang)
+
+    Level 3 - UI Components (e.g. Angular and React)
+  version: 2.0.0
+  title: Authservice
+  contact:
+    email: support@authservice.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: 'localhost:9090'
+basePath: /
+schemes:
+  - http
+  - https
+securityDefinitions:
+  JWT:
+    description: JWT returned by login
+    type: apiKey
+    name: Authorization
+    in: header
+tags:
+  - name: Authentication
+    description: Login with username/password or email/password.
+  - name: User Details
+    description: Users and Groups of users.
+  - name: Properties
+    description: 'Properties attached to users, and other entities.'
+  - name: Relationships
+    description: 'Relationships between entities (users, groups etc).'
+  - name: Communication
+    description: Communicate with users by email or sms
+  - name: Admin
+    description: Administration functions
+  - name: Untested and Undocumented
+    description: These still need to be checked
+paths:
+  /v2/healthcheck:
+    get:
+      security:
+        - JWT: []
+      tags:
+        - Admin
+      summary: Check the status of the API server
+      operationId: Route_healthcheck
+      description: >
+        This call is used to check that the server is running correctly.
+
+
+        If the server is running correctly, a status of "green" is returned with
+        status 200.
+
+        \
+
+        Note that if there is a problem with the database or cache, this call
+
+        will still return 200 for the status, but the content of the reply will
+
+        change. This is necessary to prevent the load balancer from thinking
+
+        the server is dead, and restarting the server, making it impossible to
+
+        diagnose the problem.
+
+        \
+
+        Any monitoring software should check that the status is "green".
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Server is operational
+          schema:
+            $ref: '#/definitions/healthcheckOk'
+        '406':
+          description: Server is running but there is a problem
+          schema:
+            $ref: '#/definitions/healthcheckFail'
+  '/v2/{apikey}/email/login':
+    post:
+      tags:
+        - Authentication
+      summary: Login with username/email and password
+      operationId: login
+      description: >
+        Login using email address and password.
+
+        \
+
+        If your account is configured with the **loginWithUsername** parameter
+        set then a username may be provided in the `email` parameter.
+
+        \
+
+        Login is not normally allowed until the registration process has been
+        completed by the user clicking on the link in a verification email. The
+        exception is if **allowLoginWithUnverifiedEmail** is set in your account
+        configuration, in which case the user will get logged in, but the JWT
+        returned after login will contain an `email_status` of _unverified_.
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Login credentials
+          required: true
+          schema:
+            $ref: '#/definitions/LoginParams'
+      responses:
+        '200':
+          description: Successful login
+          schema:
+            $ref: '#/definitions/LoginSuccess'
+        '401':
+          description: 'Invalid apikey, username/email or password'
+          schema:
+            $ref: '#/definitions/LoginFailure'
+  '/v2/{apikey}/email/register':
+    put:
+      tags:
+        - Authentication
+      summary: Register a new user
+      operationId: register
+      description: >
+        Register a new user with Authservice by providing email address and
+        password, and an optional username.
+
+        \
+
+        The **loginUsingUsername** parameter in your Authservice configuration
+        specifies that the user may login using their username. In this case the
+        username passed to this API must be unique. A user interfade can check
+        this using `/v2/{apikey/username-availability/{username}`.
+
+        \
+
+        The new user is added to the database and a verification email sent to
+        the email address. When the user clicks on the link in the email,
+        /v2/email/confirm is called. Note that that route is not an API call -
+        it marks the user as verified, then redirects to the resumeURL defined
+        when this API was called.
+
+        \
+
+        Other user details may optionally be provided. Some applications like to
+        register asking the least amount possible, and then ask for the details
+        after the email link has been clicked. Other applications like to ask
+        for the details up front, so a more personalised email can be sent to
+        the user.
+
+        \
+
+        If allowLoginWithUnverifiedEmail is defined in the account
+        configuration, this call returns a JWT as if the user has just logged
+        in. The user will also be able to login, even though the email address
+        has not yet been verified. The details within the JWT will contain
+        email_status as EMAIL_STATUS_UNVERIFIED.
+
+        \
+
+        Attempts to register an email address that has been verified will return
+        as error, and registering an email address that was previously
+        registered but not yet verified will result in a new email being sent to
+        the user.
+
+        \
+
+        Emails are sent using a Mailchimp template, defined in the account
+        configuration.
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - in: body
+          name: body
+          description: Registration parameters
+          required: true
+          schema:
+            $ref: '#/definitions/RegistrationParams'
+      responses:
+        '200':
+          description: >
+            The user has been added to the database, and a verification email
+            sent to the email address.
+          schema:
+            $ref: '#/definitions/LoginSuccess'
+        '400':
+          description: Invalid apikey
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid apikey
+        '401':
+          description: Email address is already registered
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: nouser
+              message:
+                type: string
+                example: Another account is already using this Email address
+        '406':
+          description: The username is already in use by another user
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Username already used
+        '502':
+          description: >
+            Problem sending verification email.
+
+            \
+
+            There is not currently a retry mechanism, however the user record
+            has been created, and the user can re-register or use forgotten
+            password to complete the verification process. The temporary
+            workaround it to display a useful error message to the user.
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Unable to send verification email
+  '/v2/{apikey}/username-availability/{username}':
+    get:
+      security:
+        - JWT: []
+      tags:
+        - Authentication
+      summary: Check whether a username is available
+      operationId: usernameAvailability
+      description: >
+        This call is used prior to the registration API from the user interface,
+        to see if a username has already been taken. A username that has been
+        registered but not yet verified via the email link is considered to be
+        still available, to allow a second registration attempt if the email
+        goes missing.
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - name: username
+          in: path
+          description: Username we are hoping will be available
+          required: true
+          type: string
+          default: philcal2
+      responses:
+        '200':
+          description: The status field will contain 'available' or 'already used'
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: available
+  '/v2/oauth2/initiate/{apikey}/{authority}':
+    get:
+      tags:
+        - Authentication
+      summary: 'Login to Facebook, Google, Github, etc'
+      operationId: oauth2Login
+      description: >
+        This is the first stage of OAuth2 authentication, which is quite a
+        complicated process.
+
+
+        Note that this is a regular web access, not an API call.
+
+
+        Calling this endpoint is sufficient to login - you don't need to
+        understand this process - but for those who are interested here are the
+        steps performed.
+
+
+        1. The Authservice server is called with this URL to start the OAuth2
+        login.
+
+        1. The server returns a 302 redirect to the browser, sending it to the
+        login page for the OAuth2 provider (Facebook, Google, Github, etc). The
+        redirect also includes query parameters telling the provider how to
+        redirect back to this server when it's done.
+
+        1. The OAuth2 provider does whatever it needs to do to login. This
+        normally involves asking the user for their username and password, and
+        the first time asking whether the user wishes to give your application
+        access permissions.
+
+        1. The OAuth2 provider sends the browser a 302 redirect back to this
+        Authservice server at `/v2/oauth2/callback/{apikey}/{authority}/`, and
+        includes a token if the login was sucessful.
+
+        1. If the login failed, Authservice sends the browser a 203 redirect to
+        the `fail` page.
+
+        1. If the login suceeded, the Authservice server uses the token to
+        communicate behind the scenes with the OAuth2 provider, to double check
+        the login and to get the user details. (This step prevents hackers from
+        spoofing the redirects).
+
+        1. Once the login is confirmed, a user record is either created or
+        updated using the details from the OAuth2 provider.
+
+        1. The Authservice server returns the browser a 302 to the `success`
+        page, including an AUTHSERVICE_JWT parameter containing the user's
+        credentials.
+
+        1. The user is now logged in, and in most cases the client library will
+        save the JWT in a cookie so it can be used throughout the site.
+
+
+        ### Using a bounce page
+
+        The above steps arrive back at the application with a JWT defined in the
+        URL. This can be ugly, but can also cause complications if the back
+        button is later used to return to the same page. To remedy this a
+        _bounce page_ can be provided by the application, that stores the JWT in
+        it's cookie and then redirects to the final application page.
+
+        \
+
+        The following is an example application page ***/my-bounce.html*** - you
+        may need to write it according to your client library.
+
+
+        <code>
+          &lt;html>
+              &lt;script src="bower_components/pastac-login/dist/authservice.js" type="text/javascript"></script>
+              &lt;script>Authservice.bounce();&lt;/script>
+          &lt;/html>
+        </code>
+
+
+        \
+
+        You should use the bounce page as your `success` page, however the
+        bounce page needs where to bounce to, and this is typically done by
+        passing it a `resume` parameter (confusing, isn't it?). To simply this,
+        your Authservcie client library should contain a utility function to
+        work out the success parameter to pass to this initiation call.
+
+        \
+
+        `var success = Authservice.bounceURL('http://host/my-bounce.html',
+        finalPageUrl);`
+
+
+        \
+
+        In this case, `finalPageUrl` is the page in your application where the
+        login finally ends up.
+
+        ### One final note
+
+        Do not try to call this API in the Swagger editor using the **Try it
+        out** button, as the 302 redirect will always result in an error. You
+        can however use the provided `curl` command to call the server.
+
+        \
+
+        _Why does this API have an unconventional url? Because it isn't actually
+        an API call._
+      produces:
+        - text/html
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - name: authority
+          in: path
+          description: |
+            OAuth2 provider [facebook|google|github]
+          required: true
+          type: string
+          default: facebook
+        - name: success
+          in: query
+          description: URL to jump to upon successful login
+          required: true
+          type: string
+          default: 'http://localhost:3030/index.html'
+        - name: fail
+          in: query
+          description: URL to jump to upon login failure
+          required: true
+          type: string
+          default: 'http://localhost:3030/error.html'
+      responses:
+        '302':
+          description: Redirect to the OAuth2 provider
+        '400':
+          description: Invalid apikey
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid apikey
+        '404':
+          description: User could not be found
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid apikey
+  '/v1/{apikey}/logout':
+    get:
+      tags:
+        - Untested and Undocumented
+      summary: check the status of the API server
+      operationId: searchInventory3p
+      description: |
+        Log out a user.
+        Note that a JWT (JSON Web Token) for the user may still be being used
+        somewhere. For important operations the application should verify
+        that a JWT is still valid.
+
+        BROKEN
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v2/{apikey}/user/{userId}':
+    get:
+      tags:
+        - User Details
+      summary: Get details of a single user
+      operationId: getUser
+      description: |
+        Select details of a user.
+        \
+        The `userId` parameter may be a comma separated list of user IDs.
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - name: userId
+          in: path
+          description: Id of the required user
+          required: true
+          type: string
+          default: '974, 950'
+      responses:
+        '200':
+          description: User details
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserDetails'
+        '400':
+          description: The APIKEY is not correct
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid apikey
+  '/v2/{apikey}/user':
+    post:
+      tags:
+        - User Details
+      summary: Update User details
+      operationId: updateUser
+      description: >
+        This API allows a user's details to be updated, according to the
+        parameters passed in the body of the request, subject to a few rules.
+
+          1. Only the user themself, or an administrator, can update a user's details.
+          1. Only the provided fields get updated.
+          1. If the configuration for the APIKEY specifies **loggedInUserMayChangePassword** then the user's password can be changed if the user is logged in.
+          1. If `loggedInUserMayChangePassword` is _not_ set, then the request will need to supply either `old_password` or `email_token`. The email token is passed as a url parameter to pages after clicking on the link of *registration* and *forgot password* emails.
+          
+        Upon sucessful update, a new JWT is returned to the user, containing the
+        updated user details and this tokan should be used for subsequent
+        request requiring authentication.
+          
+      security:
+        - JWT: []
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - in: body
+          name: body
+          description: Login credentials
+          required: true
+          schema:
+            $ref: '#/definitions/UserUpdateParams'
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LoginSuccess'
+        '401':
+          description: |
+            Missing user credentials (header 'Authorization')
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Missing credentials
+        '403':
+          description: |
+            Invalid credentials in the http header. These must be of the form
+            `Authorization: Bearer LCJmdWx......SmdlZ4X0gF0`
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid Authorization Header
+        '404':
+          description: |
+            Corrupt credentials, unknown user, or expired JSON web tokan
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid Authorization Header
+  '/v1/{apikey}/getAssociates/{userId}':
+    get:
+      tags:
+        - Untested and Undocumented
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: getAssociates
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - name: userId
+          in: path
+          description: ID of pet to update
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v1/{apikey}/getAssociates/{userId}/{associateType}':
+    get:
+      tags:
+        - Obsolete
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: getAssociatesByType
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      deprecated: true
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - name: userId
+          in: path
+          description: ID of pet to update
+          required: true
+          type: integer
+          format: int64
+        - name: associateType
+          in: path
+          description: ID of pet to update
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v2/{apikey}/sendmail':
+    post:
+      tags:
+        - Communication
+      summary: Send email to one or more users
+      operationId: sendMail
+      description: >
+        Sends email using templates defined in Mailchimp. We use Mailchimp
+        because is provides effective features for avoiding spam filters and
+        junk email boxes. It also provides monitoring of email opens.
+
+        \
+
+        The minimum parameters to send an email are `template`, `to_email`, and
+        `from_email`.
+
+        \
+
+        The `params` section may contain any parameters you choose, and these
+        will be passed through faithfully to the Mailchimp template, where they
+        can be accessed using the syntax `*|parameter-name|*`.
+
+
+        ### Configuring Mailchimp
+
+        You will need to open a Mailchimp account (entry level is free) and your
+        mailchimp apikey should to be entered into configuration screen
+        associated with your apikey.
+
+        \
+
+        To prevent spamming, the `from_email` email address - which is used as
+        the return email address - must be from an authenticated DNS domain.
+        Instructions to authenticate your email deomain can be found at these
+        urls.
+
+        \
+
+        http://kb.mailchimp.com/accounts/email-authentication/about-email-authentication
+
+        http://kb.mailchimp.com/accounts/email-authentication/set-up-custom-domain-authentication-dkim-and-spf
+
+        https://www.namecheap.com/support/knowledgebase/article.aspx/9845/2208/how-to-connect-a-domain-to-mailchimp
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/SendmailParams'
+      responses:
+        '200':
+          description: The email was sent sucessfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SendmailSuccess'
+        '400':
+          description: The APIKEY is not correct
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid apikey
+        '401':
+          description: Unauthorized - may be an invalid 'from_email'
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Error instantiating Mandril client
+        '417':
+          description: ExpectationFailed - Error sending the email
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: No such template \"specialPromo\"
+        '502':
+          description: Error sending the email
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SendmailInvalid'
+  '/v1/{apikey}/getXUser/get/{userId}':
+    get:
+      tags:
+        - Obsolete
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: getXUser
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      deprecated: true
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - name: userId
+          in: path
+          description: user ID
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v1/{apikey}/getXGroup/get/{groupId}':
+    get:
+      tags:
+        - Untested and Undocumented
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: getXGroup
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - name: groupId
+          in: path
+          description: ID of pet to update
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v1/{apikey}/getXGroupMembers/get/{groupId}':
+    get:
+      tags:
+        - Untested and Undocumented
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: getXGroupMembers
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - name: groupId
+          in: path
+          description: ID of pet to update
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v1/{apikey}/getXUserAssociates/get/{groupId}':
+    get:
+      tags:
+        - Untested and Undocumented
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: getXUserAssociates
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - name: groupId
+          in: path
+          description: ID of pet to update
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v1/{apikey}/getXUserAffiliates/{userId}':
+    get:
+      tags:
+        - Untested and Undocumented
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: getXUserAffiliates
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - name: userId
+          in: path
+          description: ID of pet to update
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v2/{apikey}/email/forgot':
+    post:
+      tags:
+        - Authentication
+      summary: Forgotten password.
+      operationId: forgottenPassword
+      description: >
+        This API call starts the forgotten password process.
+
+        1. This API is called with `email` and `resume` - the page in your
+        website where the user should be redirected to update their password.
+
+        1. The user is sent an email containing a link.
+
+        1. The link returns to Authservice, containing an `email_token` and also
+        details of where to resume on the website.
+
+        1. Authservice verifies the token, then redirects the browser to the
+        _resume_ application page with the JWT for the now logged in user, and
+        also the email token.
+
+
+        Note that the response from this API does not give any indication of
+        whether the email address is valid or not. This prevents it from being
+        used by hackers to try to determine valid email addresses.
+
+
+        ### The resume page
+
+        The `resume` parameter must be a full url that matches one of the
+        prefixes defined by the **valid_app_domains** specified in your
+        Authservice config.
+
+        \
+
+        The resume page should ask the user for their new password and update it
+        using a call to `POST /v2/{apikey}/user`. If you do not have
+        **loggedInUserMayChangePassword** set in your Authservice configuration,
+        you will need to also provide the email token to that API call.
+
+        \
+
+        You may wish to use a bounce page so the JWT does not remain in the URL.
+        This prevents users logging in again using the browser history. See the
+        /v2/oauth2/initiate API for a discussion on how this is done.
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/ForgotEmailParams'
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: ok
+        '400':
+          description: The APIKEY is not correct
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid apikey
+        '401':
+          description: >
+            The resume parameter is not prefixed with a domain specified in the
+            valid_app_domains parameter in your Authservice configuration.
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid resume parameter
+  '/v1/{apikey}/changePassword':
+    get:
+      tags:
+        - Obsolete
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: changePassword
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+      deprecated: true
+  '/v2/{apikey}/entities':
+    get:
+      tags:
+        - User Details
+      summary: Select a list of entities
+      operationId: getEntities
+      description: >
+        Select entity details. Users are a type of entity that is able to log
+        in, but there may be others as well. The entity types are defined by
+        your account configuration, and may include such things as companies,
+        groups, etc.
+
+        \
+
+        The `offset` and `limit` query parameters can be used to restrict the
+        number of records returned and to provide pagination.
+
+        \
+
+        If no parameters are provided, and error will be returned instead of
+        trying to select all records.
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - in: query
+          name: filter
+          description: filter by name
+          required: false
+          type: string
+        - in: query
+          name: ids
+          description: select specific IDs
+          required: false
+          type: string
+        - in: query
+          name: selectAll
+          description: Required to select all records
+          type: boolean
+          default: false
+        - in: query
+          name: offset
+          description: offset of first record (used for pagination)
+          type: integer
+          format: int32
+          minimum: 0
+          default: 0
+        - in: query
+          name: limit
+          description: maximum number of records
+          type: integer
+          format: int32
+          minimum: 0
+          default: 0
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v1/{apikey}/addRelationship':
+    put:
+      tags:
+        - Untested and Undocumented
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: addRelationship
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v1/{apikey}/removeRelationship':
+    delete:
+      tags:
+        - Untested and Undocumented
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: removeRelationship
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+  '/v2/{apikey}/getRelationshipTypes':
+    get:
+      tags:
+        - Admin
+      operationId: getRelationshipTypes
+      description: >
+        Returns the defined types of relationships between entities.
+        Relationships may be between entities of the same type, for example
+        _user_ A and _user_ B are friends. Other relationships have different
+        types of entities, for example _user_ A works for _company_ B.
+
+        \
+
+        Some relationships have a different role for each party (e.g. employer
+        and employee) while others are bidirectional (e.g. sisters). The
+        perspective fields explain how each end of the relationship might
+        describe the relationship. These descriptions can be used in the UI to
+        clarify a relationship.
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RelationshipType'
+        '400':
+          description: bad input parameter
+  '/v2/{apikey}/property':
+    put:
+      tags:
+        - Properties
+      summary: Set a property for a user or entity
+      operationId: setProperty
+      description: >
+        Save arbitrary information for a user / entity  *(users are one type of
+        entity)*
+
+        \
+
+        Properties are divided into "realms", which are application-defined
+        groupings of properties. These realms are arbitrary, and contain
+        anything that might be of use to the application. Examples might be
+        "favorite-sports" or "types of coffee" or "fruit eaten this week".
+
+        \
+
+        Note that `realm`, `name` and `sequence` do NOT form a unique key, so
+        multiple properties with the same realm/name/sequence can be saved. The
+        sequence field is useful if you wish to place some sort order on
+        properties.
+
+        \
+
+        Each property has a unique `id` that can be used to update or delete the
+        property.
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SetPropertyParams'
+      responses:
+        '200':
+          description: Property has been set
+          schema:
+            type: object
+            properties:
+              property_id:
+                type: integer
+                example: 95772
+        '400':
+          description: Invalid apikey
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid apikey
+        '404':
+          description: Unknown user / entity
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid entity_id
+    delete:
+      tags:
+        - Properties
+      summary: Delete a property of a user / entity
+      operationId: deleteProperty
+      description: >
+        Delete a previously set property.
+
+        \
+
+        This call intentionally asks for redundant information, to prevent
+        accidental or
+
+        intentional deletion of the wrong property records.
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeletePropertyParams'
+      responses:
+        '200':
+          description: The property was removed
+          schema:
+            type: object
+            properties:
+              deleted:
+                type: string
+                example: true
+        '400':
+          description: Invalid apikey
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid apikey
+        '404':
+          description: The property did not exist
+          schema:
+            type: object
+            properties:
+              deleted:
+                type: string
+                example: false
+  '/v2/{apikey}/properties/{entity_id}':
+    get:
+      tags:
+        - Properties
+      summary: Select properties for a user / entity
+      operationId: getProperties
+      description: >
+        Select the properties for a user / entity.
+
+        \
+
+        Note that a user ID is actually an `entity_id`. *(Users are a type of
+        entity)*
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: string
+          default: drinkcircle
+        - name: entity_id
+          in: path
+          description: ID of user or entity
+          required: true
+          type: integer
+          default: 955
+        - in: query
+          name: realm
+          description: Sub-category
+          required: false
+          type: string
+          default: user.profile
+        - in: query
+          name: name
+          description: Name of the property
+          required: false
+          type: string
+          default: favorite-sports
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Property'
+        '400':
+          description: Invalid apikey
+          schema:
+            type: object
+            properties:
+              Error:
+                type: string
+                example: Invalid apikey
+  '/v1/{apikey}/getIdentityWithAuthtoken':
+    get:
+      tags:
+        - Obsolete
+      summary: Initiate the OAuth2 authentication process zzz
+      operationId: getIdentityWithAuthtoken
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - name: apikey
+          in: path
+          description: Your APIKEY
+          required: true
+          type: integer
+          format: int64
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotDefinedYet'
+        '400':
+          description: bad input parameter
+      deprecated: true
+definitions:
+  healthcheckOk:
+    type: object
+    properties:
+      status:
+        type: string
+        example: green
+      database:
+        type: object
+        properties:
+          status:
+            type: string
+            example: green
+      cache:
+        type: object
+        properties:
+          status:
+            type: string
+            example: green
+  healthcheckFail:
+    type: object
+    properties:
+      status:
+        type: string
+        example: orange
+      database:
+        type: object
+        properties:
+          status:
+            type: string
+            example: red
+          message:
+            type: string
+            example: Database access error
+      cache:
+        type: object
+        properties:
+          status:
+            type: string
+            example: red
+          message:
+            type: string
+            example: Cache connection error
+  LoginParams:
+    type: object
+    properties:
+      email:
+        type: string
+        example: philcal@mac.com
+      password:
+        type: string
+        example: M0use123
+  LoginSuccess:
+    type: object
+    properties:
+      jwt:
+        type: string
+        example: a2C......X9yZ
+      status:
+        type: string
+        example: ok
+  LoginFailure:
+    type: object
+    properties:
+      status:
+        type: string
+        example: nouser
+      message:
+        type: string
+        example: Incorrect username / password
+  RegistrationParams:
+    type: object
+    required:
+      - email
+    properties:
+      email:
+        type: string
+        format: email
+        example: philcal@mac.com
+      password:
+        type: string
+        example: abc123
+      username:
+        type: string
+        example: philcal
+      first_name:
+        type: string
+        example: Fred
+      middle_name:
+        type: string
+        example: Walruss
+      last_name:
+        type: string
+        example: Smith
+      resume:
+        type: string
+        example: >-
+          http://localhost:3030/bower_components/pastac-login/test/test-profile.html
+  ForgotEmailParams:
+    type: object
+    required:
+      - email
+      - resume
+    properties:
+      email:
+        type: string
+        format: email
+        example: philcal@mac.com
+      resume:
+        type: string
+        example: >-
+          http://localhost:3030/bower_components/pastac-login/test/test-profile.html
+  UserDetails:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 954
+      authority:
+        type: string
+        example: email
+      entity_type:
+        type: string
+        example: user
+      external_id:
+        type: string
+        example: mrbean
+      email:
+        type: string
+        example: philcal@mac.com
+      email_status:
+        type: string
+        example: unverified
+      username:
+        type: string
+        example: harry
+      status:
+        type: string
+        example: active
+      first_name:
+        type: string
+        example: Fred
+      middle_name:
+        type: string
+        example: Walruss
+      last_name:
+        type: string
+        example: Smith
+      full_name:
+        type: string
+        example: Fred Smith
+      gender:
+        type: string
+        example: ''
+      languages:
+        type: string
+        example: ''
+      media_page:
+        type: string
+        example: ''
+      avatar:
+        type: string
+        example: ''
+      locale:
+        type: string
+        example: ''
+      location:
+        type: string
+        example: ''
+      timezone:
+        type: string
+        example: ''
+      is_admin:
+        type: string
+        example: false
+      privileges:
+        type: string
+        example: ''
+  UserUpdateParams:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+        example: 954
+        description: |
+          This value identifies the user record to be updated
+      first_name:
+        type: string
+        example: Freddy
+      middle_name:
+        type: string
+        example: Walruss
+      last_name:
+        type: string
+        example: Smith
+      full_name:
+        type: string
+        example: Fred Smith
+      gender:
+        type: string
+        example: male
+      languages:
+        type: string
+        example: ''
+      media_page:
+        type: string
+        example: ''
+      avatar:
+        type: string
+        example: ''
+      locale:
+        type: string
+        example: ''
+      location:
+        type: string
+        example: ''
+      timezone:
+        type: string
+        example: ''
+      is_admin:
+        type: string
+        description: |
+          This value can only be changed by an administrator
+        example: false
+      privileges:
+        type: string
+        example: ''
+        description: |
+          This value can only be changed by an administrator
+  SendmailParams:
+    type: object
+    required:
+      - template
+      - to_email
+      - from_email
+      - subject
+    properties:
+      template:
+        type: string
+        description: Name of the template in Mailchimp
+        example: specialPromo
+      to_email:
+        type: string
+        description: Recipient of the email
+        example: philip.callender@tooltwist.com
+      from_email:
+        type: string
+        description: Email address of the sender
+        example: do-not-reply@crowdhound.io
+      from_name:
+        type: string
+        description: The sender's name
+        example: Julia Jones
+      subject:
+        type: string
+        description: Subject
+        example: Your free eCookbook from ACME
+      bcc:
+        type: string
+        description: People to blind copy into the email
+        example: claude.reynes@acme.com
+      params:
+        type: object
+        properties:
+          user_defined_parameter_1:
+            type: string
+          user_defined_parameter_2:
+            type: string
+  SendmailSuccess:
+    type: object
+    properties:
+      email:
+        type: string
+        description: The email recipient
+        example: fred@snurgs.com
+      status:
+        type: string
+        description: Status
+        example: sent
+      _id:
+        type: string
+        description: Mailchimp ID of the sent email
+        example: 9553d0da38383838ad256d9999996d70
+      reject_reason:
+        type: string
+        description: 'Description of the error, if there was one'
+        example: ''
+  SendmailInvalid:
+    type: object
+    properties:
+      email:
+        type: string
+        description: The email recipient
+        example: fred@snurgs.com
+      status:
+        type: string
+        description: Status
+        example: invalid
+      _id:
+        type: string
+        description: Mailchimp ID of the sent email
+        example: 9553d0da38383838ad256d9999996d70
+      reject_reason:
+        type: string
+        description: 'Description of the error, if there was one'
+        example: ''
+  SetPropertyParams:
+    type: object
+    required:
+      - realm
+      - entity_id
+      - name
+      - value
+    properties:
+      realm:
+        type: string
+        description: A sub-grouping of properties
+        example: user.profile
+      entity_id:
+        type: string
+        description: Id of user or entity
+        example: 955
+      name:
+        type: string
+        description: A sub-grouping of properties
+        example: favorite-sports
+      sequence:
+        type: integer
+        description: Sort order
+        example: 0
+      value:
+        type: string
+        example: golf
+  GetPropertyParams:
+    type: object
+    required:
+      - realm
+      - entity_id
+      - name
+      - value
+    properties:
+      realm:
+        type: string
+        description: A sub-grouping of properties
+        example: user.profile
+      entity_id:
+        type: string
+        description: Id of user or entity
+        example: 955
+      name:
+        type: string
+        description: A sub-grouping of properties
+        example: favorite-sports
+      sequence:
+        type: integer
+        description: Sort order
+        example: 0
+      value:
+        type: string
+        example: golf
+  Property:
+    type: object
+    properties:
+      realm:
+        type: string
+        description: A sub-grouping of properties
+        example: user.profile
+      property_id:
+        type: integer
+        example: 17366
+      entity_id:
+        type: string
+        description: Id of user or entity
+        example: 955
+      name:
+        type: string
+        description: A sub-grouping of properties
+        example: favorite-sports
+      sequence:
+        type: integer
+        description: Sort order
+        example: 0
+      value:
+        type: string
+        example: golf
+  DeletePropertyParams:
+    type: object
+    properties:
+      realm:
+        type: string
+        example: user.profile
+      property_id:
+        type: integer
+        example: 17366
+      entity_id:
+        type: integer
+        description: Id of user or entity
+        example: 955
+  RelationshipType:
+    type: object
+    properties:
+      tenant:
+        type: string
+        example: drinkcircle
+      relationship_type:
+        type: string
+        example: employee
+      perspective_1_of_2:
+        type: string
+        example: isEmployedBy
+      perspective_2_of_1:
+        type: string
+        example: employs
+      entity_type_1:
+        type: string
+        example: user
+      entity_type_2:
+        type: string
+        example: company
+      bidirectional:
+        type: boolean
+        example: false
+  NotDefinedYet:
+    type: object
+    properties:
+      something:
+        type: string
+        example: user.profile

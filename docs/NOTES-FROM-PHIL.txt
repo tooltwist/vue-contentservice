@@ -1,0 +1,35 @@
+
+
+We generate documentation using:
+
+1. VuePress (https://vuepress.vuejs.org/guide)
+VuePress is the official Vue documentation tool, replacing Hexo.
+VuePress is similar to Nuxt where server side generation is used to create a static, Single Page Application.
+Being Vue based, the application's Vue components can be used in the documentation.
+After generation the static HTML files can be deployed on any regular web server (e.g. S3 bucket with Cloudfront).
+Video with Evan Yue: https://www.youtube.com/watch?v=lIv1ItUzktc
+
+
+2. StyleGuidist (https://vue-styleguidist.github.io/docs/Documenting.html)
+StyleGuidist generates component documentation by parsing comments in our *.vue component files.
+
+3. The StyleGuidist comments are inserted into the Vuepress documentation. See https://vue-styleguidist.github.io/Examples.html#docgen for an example.
+Video: https://www.youtube.com/watch?v=ryyAiUYvfY8
+
+
+EDITING THE DOCUMENTATION
+
+$ yarn docs:dev
+
+Open the browser to show a live reload of the documentation.
+
+Change files and the browser page is automatically uploaded.
+
+$ yarn docs:Builds
+
+Generates static website into `docs/.vuepress/dist/`.
+
+$ yarn docs:publish
+
+Builds the documentation and uploads it to github pages
+using the script `deploy-documentation.sh`.

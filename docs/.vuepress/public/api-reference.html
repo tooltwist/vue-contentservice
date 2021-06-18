@@ -1,0 +1,2531 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Authservice</title>
+    <style type="text/css">
+      body {
+	font-family: Trebuchet MS, sans-serif;
+	font-size: 15px;
+	color: #444;
+	margin-right: 24px;
+}
+
+h1	{
+	font-size: 25px;
+}
+h2	{
+	font-size: 20px;
+}
+h3	{
+	font-size: 16px;
+	font-weight: bold;
+}
+hr	{
+	height: 1px;
+	border: 0;
+	color: #ddd;
+	background-color: #ddd;
+}
+
+.app-desc {
+  clear: both;
+  margin-left: 20px;
+}
+.param-name {
+  width: 100%;
+}
+.license-info {
+  margin-left: 20px;
+}
+
+.license-url {
+  margin-left: 20px;
+}
+
+.model {
+  margin: 0 0 0px 20px;
+}
+
+.method {
+  margin-left: 20px;
+}
+
+.method-notes	{
+	margin: 10px 0 20px 0;
+	font-size: 90%;
+	color: #555;
+}
+
+pre {
+  padding: 10px;
+  margin-bottom: 2px;
+}
+
+.http-method {
+ text-transform: uppercase;
+}
+
+pre.get {
+  background-color: #0f6ab4;
+}
+
+pre.post {
+  background-color: #10a54a;
+}
+
+pre.put {
+  background-color: #c5862b;
+}
+
+pre.delete {
+  background-color: #a41e22;
+}
+
+.huge	{
+	color: #fff;
+}
+
+pre.example {
+  background-color: #f3f3f3;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+code {
+  white-space: pre;
+}
+
+.nickname {
+  font-weight: bold;
+}
+
+.method-path {
+  font-size: 1.5em;
+  background-color: #0f6ab4;
+}
+
+.up {
+  float:right;
+}
+
+.parameter {
+  width: 500px;
+}
+
+.param {
+  width: 500px;
+  padding: 10px 0 0 20px;
+  font-weight: bold;
+}
+
+.param-desc {
+  width: 700px;
+  padding: 0 0 0 20px;
+  color: #777;
+}
+
+.param-type {
+  font-style: italic;
+}
+
+.param-enum-header {
+width: 700px;
+padding: 0 0 0 60px;
+color: #777;
+font-weight: bold;
+}
+
+.param-enum {
+width: 700px;
+padding: 0 0 0 80px;
+color: #777;
+font-style: italic;
+}
+
+.field-label {
+  padding: 0;
+  margin: 0;
+  clear: both;
+}
+
+.field-items	{
+	padding: 0 0 15px 0;
+	margin-bottom: 15px;
+}
+
+.return-type {
+  clear: both;
+  padding-bottom: 10px;
+}
+
+.param-header {
+  font-weight: bold;
+}
+
+.method-tags {
+  text-align: right;
+}
+
+.method-tag {
+  background: none repeat scroll 0% 0% #24A600;
+  border-radius: 3px;
+  padding: 2px 10px;
+  margin: 2px;
+  color: #FFF;
+  display: inline-block;
+  text-decoration: none;
+}
+
+    </style>
+  </head>
+  <body>
+  <h1>Authservice</h1>
+    <div class="app-desc">Authservice.io provides Authentication and Authorisation services for web based applications. It can also maintain user profile information, relationship between users, and assist with communicating with users by email and SMS.
+<br />
+This documentation describes the LEVEL 1 interface to Authservice.io.
+<br />
+Level 1 - low level API
+Level 2 - Client library (e.g. Javascript, Java, Golang)
+Level 3 - UI Components (e.g. Angular and React)</div>
+    <div class="app-desc">More information: <a href=""></a></div>
+    <div class="app-desc">Contact Info: <a href="support@authservice.com">support@authservice.com</a></div>
+    <div class="app-desc">Version: 2.0.0</div>
+    <div class="app-desc">BasePath:/</div>
+    <div class="license-info">Apache 2.0</div>
+    <div class="license-url">http://www.apache.org/licenses/LICENSE-2.0.html</div>
+  <h2>Access</h2>
+    <ol>
+      <li>APIKey KeyParamName:Authorization KeyInQuery:false KeyInHeader:true</li>
+    </ol>
+
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+
+  <h3>Table of Contents </h3>
+  <div class="method-summary"></div>
+  <h4><a href="#Admin">Admin</a></h4>
+  <ul>
+  <li><a href="#getRelationshipTypes"><code><span class="http-method">get</span> /v2/{apikey}/getRelationshipTypes</code></a></li>
+  <li><a href="#routeHealthcheck"><code><span class="http-method">get</span> /v2/healthcheck</code></a></li>
+  </ul>
+  <h4><a href="#Authentication">Authentication</a></h4>
+  <ul>
+  <li><a href="#forgottenPassword"><code><span class="http-method">post</span> /v2/{apikey}/email/forgot</code></a></li>
+  <li><a href="#login"><code><span class="http-method">post</span> /v2/{apikey}/email/login</code></a></li>
+  <li><a href="#oauth2Login"><code><span class="http-method">get</span> /v2/oauth2/initiate/{apikey}/{authority}</code></a></li>
+  <li><a href="#register"><code><span class="http-method">put</span> /v2/{apikey}/email/register</code></a></li>
+  <li><a href="#usernameAvailability"><code><span class="http-method">get</span> /v2/{apikey}/username-availability/{username}</code></a></li>
+  </ul>
+  <h4><a href="#Communication">Communication</a></h4>
+  <ul>
+  <li><a href="#sendMail"><code><span class="http-method">post</span> /v2/{apikey}/sendmail</code></a></li>
+  </ul>
+  <h4><a href="#Obsolete">Obsolete</a></h4>
+  <ul>
+  <li><a href="#changePassword"><code><span class="http-method">get</span> /v1/{apikey}/changePassword</code></a></li>
+  <li><a href="#getAssociatesByType"><code><span class="http-method">get</span> /v1/{apikey}/getAssociates/{userId}/{associateType}</code></a></li>
+  <li><a href="#getIdentityWithAuthtoken"><code><span class="http-method">get</span> /v1/{apikey}/getIdentityWithAuthtoken</code></a></li>
+  <li><a href="#getXUser"><code><span class="http-method">get</span> /v1/{apikey}/getXUser/get/{userId}</code></a></li>
+  </ul>
+  <h4><a href="#Properties">Properties</a></h4>
+  <ul>
+  <li><a href="#deleteProperty"><code><span class="http-method">delete</span> /v2/{apikey}/property</code></a></li>
+  <li><a href="#getProperties"><code><span class="http-method">get</span> /v2/{apikey}/properties/{entity_id}</code></a></li>
+  <li><a href="#setProperty"><code><span class="http-method">put</span> /v2/{apikey}/property</code></a></li>
+  </ul>
+  <h4><a href="#UntestedAndUndocumented">UntestedAndUndocumented</a></h4>
+  <ul>
+  <li><a href="#addRelationship"><code><span class="http-method">put</span> /v1/{apikey}/addRelationship</code></a></li>
+  <li><a href="#getAssociates"><code><span class="http-method">get</span> /v1/{apikey}/getAssociates/{userId}</code></a></li>
+  <li><a href="#getXGroup"><code><span class="http-method">get</span> /v1/{apikey}/getXGroup/get/{groupId}</code></a></li>
+  <li><a href="#getXGroupMembers"><code><span class="http-method">get</span> /v1/{apikey}/getXGroupMembers/get/{groupId}</code></a></li>
+  <li><a href="#getXUserAffiliates"><code><span class="http-method">get</span> /v1/{apikey}/getXUserAffiliates/{userId}</code></a></li>
+  <li><a href="#getXUserAssociates"><code><span class="http-method">get</span> /v1/{apikey}/getXUserAssociates/get/{groupId}</code></a></li>
+  <li><a href="#removeRelationship"><code><span class="http-method">delete</span> /v1/{apikey}/removeRelationship</code></a></li>
+  <li><a href="#searchInventory3p"><code><span class="http-method">get</span> /v1/{apikey}/logout</code></a></li>
+  </ul>
+  <h4><a href="#UserDetails">UserDetails</a></h4>
+  <ul>
+  <li><a href="#getEntities"><code><span class="http-method">get</span> /v2/{apikey}/entities</code></a></li>
+  <li><a href="#getUser"><code><span class="http-method">get</span> /v2/{apikey}/user/{userId}</code></a></li>
+  <li><a href="#updateUser"><code><span class="http-method">post</span> /v2/{apikey}/user</code></a></li>
+  </ul>
+
+  <h1><a name="Admin">Admin</a></h1>
+  <div class="method"><a name="getRelationshipTypes"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v2/{apikey}/getRelationshipTypes</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getRelationshipTypes</span>)</div>
+    <div class="method-notes">Returns the defined types of relationships between entities. Relationships may be between entities of the same type, for example <em>user</em> A and <em>user</em> B are friends. Other relationships have different types of entities, for example <em>user</em> A works for <em>company</em> B.
+<br />
+Some relationships have a different role for each party (e.g. employer and employee) while others are bidirectional (e.g. sisters). The perspective fields explain how each end of the relationship might describe the relationship. These descriptions can be used in the UI to clarify a relationship.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_7">inline_response_200_7</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "bidirectional" : false,
+  "perspective_1_of_2" : "isEmployedBy",
+  "relationship_type" : "employee",
+  "perspective_2_of_1" : "employs",
+  "tenant" : "drinkcircle",
+  "entity_type_2" : "company",
+  "entity_type_1" : "user"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="routeHealthcheck"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v2/healthcheck</code></pre></div>
+    <div class="method-summary">Check the status of the API server (<span class="nickname">routeHealthcheck</span>)</div>
+    <div class="method-notes"><p>This call is used to check that the server is running correctly.</p>
+<p>If the server is running correctly, a status of &quot;green&quot; is returned with status 200.
+<br />
+Note that if there is a problem with the database or cache, this call
+will still return 200 for the status, but the content of the reply will
+change. This is necessary to prevent the load balancer from thinking
+the server is dead, and restarting the server, making it impossible to
+diagnose the problem.
+<br />
+Any monitoring software should check that the status is &quot;green&quot;.</p>
+</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200">inline_response_200</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "database" : {
+    "status" : "green"
+  },
+  "cache" : "",
+  "status" : "green"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Server is operational
+        <a href="#inline_response_200">inline_response_200</a>
+    <h4 class="field-label">406</h4>
+    Server is running but there is a problem
+        <a href="#inline_response_406">inline_response_406</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Authentication">Authentication</a></h1>
+  <div class="method"><a name="forgottenPassword"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /v2/{apikey}/email/forgot</code></pre></div>
+    <div class="method-summary">Forgotten password. (<span class="nickname">forgottenPassword</span>)</div>
+    <div class="method-notes"><p>This API call starts the forgotten password process.</p>
+<ol>
+<li>This API is called with <code>email</code> and <code>resume</code> - the page in your website where the user should be redirected to update their password.</li>
+<li>The user is sent an email containing a link.</li>
+<li>The link returns to Authservice, containing an <code>email_token</code> and also details of where to resume on the website.</li>
+<li>Authservice verifies the token, then redirects the browser to the <em>resume</em> application page with the JWT for the now logged in user, and also the email token.</li>
+</ol>
+<p>Note that the response from this API does not give any indication of whether the email address is valid or not. This prevents it from being used by hackers to try to determine valid email addresses.</p>
+<h3>The resume page</h3>
+<p>The <code>resume</code> parameter must be a full url that matches one of the prefixes defined by the <strong>valid_app_domains</strong> specified in your Authservice config.
+<br />
+The resume page should ask the user for their new password and update it using a call to <code>POST /v2/{apikey}/user</code>. If you do not have <strong>loggedInUserMayChangePassword</strong> set in your Authservice configuration, you will need to also provide the email token to that API call.
+<br />
+You may wish to use a bounce page so the JWT does not remain in the URL. This prevents users logging in again using the browser history. See the /v2/oauth2/initiate API for a discussion on how this is done.</p>
+</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#body_4">body_4</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200_6">inline_response_200_6</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "status" : "ok"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        <a href="#inline_response_200_6">inline_response_200_6</a>
+    <h4 class="field-label">400</h4>
+    The APIKEY is not correct
+        <a href="#inline_response_400">inline_response_400</a>
+    <h4 class="field-label">401</h4>
+    The resume parameter is not prefixed with a domain specified in the valid_app_domains parameter in your Authservice configuration.
+        <a href="#inline_response_401_4">inline_response_401_4</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="login"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /v2/{apikey}/email/login</code></pre></div>
+    <div class="method-summary">Login with username/email and password (<span class="nickname">login</span>)</div>
+    <div class="method-notes">Login using email address and password.
+<br />
+If your account is configured with the <strong>loginWithUsername</strong> parameter set then a username may be provided in the <code>email</code> parameter.
+<br />
+Login is not normally allowed until the registration process has been completed by the user clicking on the link in a verification email. The exception is if <strong>allowLoginWithUnverifiedEmail</strong> is set in your account configuration, in which case the user will get logged in, but the JWT returned after login will contain an <code>email_status</code> of <em>unverified</em>.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#body">body</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Login credentials </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200_1">inline_response_200_1</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "jwt" : "a2C......X9yZ",
+  "status" : "ok"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Successful login
+        <a href="#inline_response_200_1">inline_response_200_1</a>
+    <h4 class="field-label">401</h4>
+    Invalid apikey, username/email or password
+        <a href="#inline_response_401">inline_response_401</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="oauth2Login"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v2/oauth2/initiate/{apikey}/{authority}</code></pre></div>
+    <div class="method-summary">Login to Facebook, Google, Github, etc (<span class="nickname">oauth2Login</span>)</div>
+    <div class="method-notes"><p>This is the first stage of OAuth2 authentication, which is quite a complicated process.</p>
+<p>Note that this is a regular web access, not an API call.</p>
+<p>Calling this endpoint is sufficient to login - you don't need to understand this process - but for those who are interested here are the steps performed.</p>
+<ol>
+<li>The Authservice server is called with this URL to start the OAuth2 login.</li>
+<li>The server returns a 302 redirect to the browser, sending it to the login page for the OAuth2 provider (Facebook, Google, Github, etc). The redirect also includes query parameters telling the provider how to redirect back to this server when it's done.</li>
+<li>The OAuth2 provider does whatever it needs to do to login. This normally involves asking the user for their username and password, and the first time asking whether the user wishes to give your application access permissions.</li>
+<li>The OAuth2 provider sends the browser a 302 redirect back to this Authservice server at <code>/v2/oauth2/callback/{apikey}/{authority}/</code>, and includes a token if the login was sucessful.</li>
+<li>If the login failed, Authservice sends the browser a 203 redirect to the <code>fail</code> page.</li>
+<li>If the login suceeded, the Authservice server uses the token to communicate behind the scenes with the OAuth2 provider, to double check the login and to get the user details. (This step prevents hackers from spoofing the redirects).</li>
+<li>Once the login is confirmed, a user record is either created or updated using the details from the OAuth2 provider.</li>
+<li>The Authservice server returns the browser a 302 to the <code>success</code> page, including an AUTHSERVICE_JWT parameter containing the user's credentials.</li>
+<li>The user is now logged in, and in most cases the client library will save the JWT in a cookie so it can be used throughout the site.</li>
+</ol>
+<h3>Using a bounce page</h3>
+<p>The above steps arrive back at the application with a JWT defined in the URL. This can be ugly, but can also cause complications if the back button is later used to return to the same page. To remedy this a <em>bounce page</em> can be provided by the application, that stores the JWT in it's cookie and then redirects to the final application page.
+<br />
+The following is an example application page <strong><em>/my-bounce.html</em></strong> - you may need to write it according to your client library.</p>
+<code>
+  &lt;html>
+      &lt;script src="bower_components/pastac-login/dist/authservice.js" type="text/javascript"></script>
+      &lt;script>Authservice.bounce();&lt;/script>
+  &lt;/html>
+</code>
+<p><br />
+You should use the bounce page as your <code>success</code> page, however the bounce page needs where to bounce to, and this is typically done by passing it a <code>resume</code> parameter (confusing, isn't it?). To simply this, your Authservcie client library should contain a utility function to work out the success parameter to pass to this initiation call.
+<br />
+<code>var success = Authservice.bounceURL('http://host/my-bounce.html', finalPageUrl);</code></p>
+<p><br />
+In this case, <code>finalPageUrl</code> is the page in your application where the login finally ends up.</p>
+<h3>One final note</h3>
+<p>Do not try to call this API in the Swagger editor using the <strong>Try it out</strong> button, as the 302 redirect will always result in an error. You can however use the provided <code>curl</code> command to call the server.
+<br />
+<em>Why does this API have an unconventional url? Because it isn't actually an API call.</em></p>
+</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div><div class="param">authority (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; OAuth2 provider [facebook|google|github] </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">success (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; URL to jump to upon successful login default: http://localhost:3030/index.html </div><div class="param">fail (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; URL to jump to upon login failure default: http://localhost:3030/error.html </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>text/html</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">302</h4>
+    Redirect to the OAuth2 provider
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid apikey
+        <a href="#inline_response_400">inline_response_400</a>
+    <h4 class="field-label">404</h4>
+    User could not be found
+        <a href="#inline_response_400">inline_response_400</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="register"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /v2/{apikey}/email/register</code></pre></div>
+    <div class="method-summary">Register a new user (<span class="nickname">register</span>)</div>
+    <div class="method-notes">Register a new user with Authservice by providing email address and password, and an optional username.
+<br />
+The <strong>loginUsingUsername</strong> parameter in your Authservice configuration specifies that the user may login using their username. In this case the username passed to this API must be unique. A user interfade can check this using <code>/v2/{apikey/username-availability/{username}</code>.
+<br />
+The new user is added to the database and a verification email sent to the email address. When the user clicks on the link in the email, /v2/email/confirm is called. Note that that route is not an API call - it marks the user as verified, then redirects to the resumeURL defined when this API was called.
+<br />
+Other user details may optionally be provided. Some applications like to register asking the least amount possible, and then ask for the details after the email link has been clicked. Other applications like to ask for the details up front, so a more personalised email can be sent to the user.
+<br />
+If allowLoginWithUnverifiedEmail is defined in the account configuration, this call returns a JWT as if the user has just logged in. The user will also be able to login, even though the email address has not yet been verified. The details within the JWT will contain email_status as &quot;unverified&quot;.
+<br />
+Attempts to register an email address that has been verified will return as error, and registering an email address that was previously registered but not yet verified will result in a new email being sent to the user.
+<br />
+Emails are sent using a Mailchimp template, defined in the account configuration.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#body_1">body_1</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Registration parameters </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200_1">inline_response_200_1</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "jwt" : "a2C......X9yZ",
+  "status" : "ok"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    The user has been added to the database, and a verification email sent to the email address.
+        <a href="#inline_response_200_1">inline_response_200_1</a>
+    <h4 class="field-label">400</h4>
+    Invalid apikey
+        <a href="#inline_response_400">inline_response_400</a>
+    <h4 class="field-label">401</h4>
+    Email address is already registered
+        <a href="#inline_response_401_1">inline_response_401_1</a>
+    <h4 class="field-label">406</h4>
+    The username is already in use by another user
+        <a href="#inline_response_406_1">inline_response_406_1</a>
+    <h4 class="field-label">502</h4>
+    Problem sending verification email.
+<br />
+There is not currently a retry mechanism, however the user record has been created, and the user can re-register or use forgotten password to complete the verification process. The temporary workaround it to display a useful error message to the user.
+        <a href="#inline_response_502">inline_response_502</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="usernameAvailability"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v2/{apikey}/username-availability/{username}</code></pre></div>
+    <div class="method-summary">Check whether a username is available (<span class="nickname">usernameAvailability</span>)</div>
+    <div class="method-notes">This call is used prior to the registration API from the user interface, to see if a username has already been taken.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div><div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Username we are hoping will be available </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200_2">inline_response_200_2</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "status" : "available"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    The status field will contain 'available' or 'already used'
+        <a href="#inline_response_200_2">inline_response_200_2</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Communication">Communication</a></h1>
+  <div class="method"><a name="sendMail"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /v2/{apikey}/sendmail</code></pre></div>
+    <div class="method-summary">Send email to one or more users (<span class="nickname">sendMail</span>)</div>
+    <div class="method-notes"><p>Sends email using templates defined in Mailchimp. We use Mailchimp because is provides effective features for avoiding spam filters and junk email boxes. It also provides monitoring of email opens.
+<br />
+The minimum parameters to send an email are <code>template</code>, <code>to_email</code>, and <code>from_email</code>.
+<br />
+The <code>params</code> section may contain any parameters you choose, and these will be passed through faithfully to the Mailchimp template, where they can be accessed using the syntax <code>*|parameter-name|*</code>.</p>
+<h3>Configuring Mailchimp</h3>
+<p>You will need to open a Mailchimp account (entry level is free) and your mailchimp apikey should to be entered into configuration screen associated with your apikey.
+<br />
+To prevent spamming, the <code>from_email</code> email address - which is used as the return email address - must be from an authenticated DNS domain. Instructions to authenticate your email deomain can be found at these urls.
+<br />
+http://kb.mailchimp.com/accounts/email-authentication/about-email-authentication
+http://kb.mailchimp.com/accounts/email-authentication/set-up-custom-domain-authentication-dkim-and-spf
+https://www.namecheap.com/support/knowledgebase/article.aspx/9845/2208/how-to-connect-a-domain-to-mailchimp</p>
+</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#body_3">body_3</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_5">inline_response_200_5</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "_id" : "9553d0da38383838ad256d9999996d70",
+  "reject_reason" : "",
+  "email" : "fred@snurgs.com",
+  "status" : "sent"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    The email was sent sucessfully
+        
+    <h4 class="field-label">400</h4>
+    The APIKEY is not correct
+        <a href="#inline_response_400">inline_response_400</a>
+    <h4 class="field-label">401</h4>
+    Unauthorized - may be an invalid 'from_email'
+        <a href="#inline_response_401_3">inline_response_401_3</a>
+    <h4 class="field-label">417</h4>
+    ExpectationFailed - Error sending the email
+        <a href="#inline_response_417">inline_response_417</a>
+    <h4 class="field-label">502</h4>
+    Error sending the email
+        
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Obsolete">Obsolete</a></h1>
+  <div class="method"><a name="changePassword"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/changePassword</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">changePassword</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAssociatesByType"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/getAssociates/{userId}/{associateType}</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">getAssociatesByType</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div><div class="param">userId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of pet to update format: int64</div><div class="param">associateType (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of pet to update format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getIdentityWithAuthtoken"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/getIdentityWithAuthtoken</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">getIdentityWithAuthtoken</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getXUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/getXUser/get/{userId}</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">getXUser</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div><div class="param">userId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; user ID format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Properties">Properties</a></h1>
+  <div class="method"><a name="deleteProperty"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /v2/{apikey}/property</code></pre></div>
+    <div class="method-summary">Delete a property of a user / entity (<span class="nickname">deleteProperty</span>)</div>
+    <div class="method-notes">Delete a previously set property.
+<br />
+This call intentionally asks for redundant information, to prevent accidental or
+intentional deletion of the wrong property records.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#body_6">body_6</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200_9">inline_response_200_9</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "deleted" : "true"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    The property was removed
+        <a href="#inline_response_200_9">inline_response_200_9</a>
+    <h4 class="field-label">400</h4>
+    Invalid apikey
+        <a href="#inline_response_400">inline_response_400</a>
+    <h4 class="field-label">404</h4>
+    The property did not exist
+        <a href="#inline_response_404_1">inline_response_404_1</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getProperties"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v2/{apikey}/properties/{entity_id}</code></pre></div>
+    <div class="method-summary">Select properties for a user / entity (<span class="nickname">getProperties</span>)</div>
+    <div class="method-notes">Select the properties for a user / entity.
+<br />
+Note that a user ID is actually an <code>entity_id</code>. <em>(Users are a type of entity)</em></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div><div class="param">entity_id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of user or entity </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">realm (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Sub-category default: user.profile </div><div class="param">name (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Name of the property default: favorite-sports </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_10">inline_response_200_10</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "sequence" : 0,
+  "name" : "favorite-sports",
+  "realm" : "user.profile",
+  "entity_id" : "955",
+  "value" : "golf",
+  "property_id" : 17366
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    Invalid apikey
+        <a href="#inline_response_400">inline_response_400</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="setProperty"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /v2/{apikey}/property</code></pre></div>
+    <div class="method-summary">Set a property for a user or entity (<span class="nickname">setProperty</span>)</div>
+    <div class="method-notes">Save arbitrary information for a user / entity  <em>(users are one type of entity)</em>
+<br />
+Properties are divided into &quot;realms&quot;, which are application-defined groupings of properties. These realms are arbitrary, and contain anything that might be of use to the application. Examples might be &quot;favorite-sports&quot; or &quot;types of coffee&quot; or &quot;fruit eaten this week&quot;.
+<br />
+Note that <code>realm</code>, <code>name</code> and <code>sequence</code> do NOT form a unique key, so multiple properties with the same realm/name/sequence can be saved. The sequence field is useful if you wish to place some sort order on properties.
+<br />
+Each property has a unique <code>id</code> that can be used to update or delete the property.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#body_5">body_5</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200_8">inline_response_200_8</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "property_id" : 95772
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Property has been set
+        <a href="#inline_response_200_8">inline_response_200_8</a>
+    <h4 class="field-label">400</h4>
+    Invalid apikey
+        <a href="#inline_response_400">inline_response_400</a>
+    <h4 class="field-label">404</h4>
+    Unknown user / entity
+        <a href="#inline_response_404">inline_response_404</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="UntestedAndUndocumented">UntestedAndUndocumented</a></h1>
+  <div class="method"><a name="addRelationship"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /v1/{apikey}/addRelationship</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">addRelationship</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAssociates"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/getAssociates/{userId}</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">getAssociates</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div><div class="param">userId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of pet to update format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getXGroup"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/getXGroup/get/{groupId}</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">getXGroup</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div><div class="param">groupId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of pet to update format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getXGroupMembers"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/getXGroupMembers/get/{groupId}</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">getXGroupMembers</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div><div class="param">groupId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of pet to update format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getXUserAffiliates"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/getXUserAffiliates/{userId}</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">getXUserAffiliates</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div><div class="param">userId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of pet to update format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getXUserAssociates"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/getXUserAssociates/get/{groupId}</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">getXUserAssociates</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div><div class="param">groupId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of pet to update format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="removeRelationship"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /v1/{apikey}/removeRelationship</code></pre></div>
+    <div class="method-summary">Initiate the OAuth2 authentication process zzz (<span class="nickname">removeRelationship</span>)</div>
+    <div class="method-notes">By passing in the appropriate options, you can search for
+available inventory in the system</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY format: int64</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">searchString (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; pass an optional search string for looking up inventory </div><div class="param">skip (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip for pagination format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records to return format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="searchInventory3p"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v1/{apikey}/logout</code></pre></div>
+    <div class="method-summary">check the status of the API server (<span class="nickname">searchInventory3p</span>)</div>
+    <div class="method-notes"><p>Log out a user.
+Note that a JWT (JSON Web Token) for the user may still be being used
+somewhere. For important operations the application should verify
+that a JWT is still valid.</p>
+<p>BROKEN</p>
+</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="UserDetails">UserDetails</a></h1>
+  <div class="method"><a name="getEntities"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v2/{apikey}/entities</code></pre></div>
+    <div class="method-summary">Select a list of entities (<span class="nickname">getEntities</span>)</div>
+    <div class="method-notes">Select entity details. Users are a type of entity that is able to log in, but there may be others as well. The entity types are defined by your account configuration, and may include such things as companies, groups, etc.
+<br />
+The <code>offset</code> and <code>limit</code> query parameters can be used to restrict the number of records returned and to provide pagination.
+<br />
+If no parameters are provided, and error will be returned instead of trying to select all records.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">filter (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; filter by name </div><div class="param">ids (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; select specific IDs </div><div class="param">selectAll (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Required to select all records default: false </div><div class="param">offset (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; offset of first record (used for pagination) default: 0 format: int32</div><div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; maximum number of records default: 0 format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_3">inline_response_200_3</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "something" : "user.profile"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">400</h4>
+    bad input parameter
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /v2/{apikey}/user/{userId}</code></pre></div>
+    <div class="method-summary">Get details of a single user (<span class="nickname">getUser</span>)</div>
+    <div class="method-notes">Select details of a user.
+<br />
+The <code>userId</code> parameter may be a comma separated list of user IDs.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div><div class="param">userId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Id of the required user </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_4">inline_response_200_4</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "privileges" : "",
+  "gender" : "",
+  "languages" : "",
+  "timezone" : "",
+  "last_name" : "Smith",
+  "external_id" : "mrbean",
+  "avatar" : "",
+  "middle_name" : "Walruss",
+  "locale" : "",
+  "email_status" : EMAIL_STATUS_UNVERIFIED,
+  "is_admin" : "false",
+  "entity_type" : "user",
+  "full_name" : "Fred Smith",
+  "authority" : "email",
+  "media_page" : "",
+  "location" : "",
+  "id" : "954",
+  "first_name" : "Fred",
+  "email" : "philcal@mac.com",
+  "username" : "harry",
+  "status" : USER_STATUS_ACTIVE
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    User details
+        
+    <h4 class="field-label">400</h4>
+    The APIKEY is not correct
+        <a href="#inline_response_400">inline_response_400</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /v2/{apikey}/user</code></pre></div>
+    <div class="method-summary">Update User details (<span class="nickname">updateUser</span>)</div>
+    <div class="method-notes"><p>This API allows a user's details to be updated, according to the parameters passed in the body of the request, subject to a few rules.</p>
+<ol>
+<li>Only the user themself, or an administrator, can update a user's details.</li>
+<li>Only the provided fields get updated.</li>
+<li>If the configuration for the APIKEY specifies <strong>loggedInUserMayChangePassword</strong> then the user's password can be changed if the user is logged in.</li>
+<li>If <code>loggedInUserMayChangePassword</code> is <em>not</em> set, then the request will need to supply either <code>old_password</code> or <code>email_token</code>. The email token is passed as a url parameter to pages after clicking on the link of <em>registration</em> and <em>forgot password</em> emails.</li>
+</ol>
+<p>Upon sucessful update, a new JWT is returned to the user, containing the updated user details and this tokan should be used for subsequent request requiring authentication.</p>
+</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">apikey (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Your APIKEY </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#body_2">body_2</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Login credentials </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#inline_response_200_1">inline_response_200_1</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "jwt" : "a2C......X9yZ",
+  "status" : "ok"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    search results matching criteria
+        
+    <h4 class="field-label">401</h4>
+    Missing user credentials (header 'Authorization')
+        <a href="#inline_response_401_2">inline_response_401_2</a>
+    <h4 class="field-label">403</h4>
+    Invalid credentials in the http header. These must be of the form
+<code>Authorization: Bearer LCJmdWx......SmdlZ4X0gF0</code>
+        <a href="#inline_response_403">inline_response_403</a>
+    <h4 class="field-label">404</h4>
+    Corrupt credentials, unknown user, or expired JSON web tokan
+        <a href="#inline_response_403">inline_response_403</a>
+  </div> <!-- method -->
+  <hr/>
+
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#DeletePropertyParams"><code>DeletePropertyParams</code> - </a></li>
+    <li><a href="#ForgotEmailParams"><code>ForgotEmailParams</code> - </a></li>
+    <li><a href="#GetPropertyParams"><code>GetPropertyParams</code> - </a></li>
+    <li><a href="#LoginFailure"><code>LoginFailure</code> - </a></li>
+    <li><a href="#LoginParams"><code>LoginParams</code> - </a></li>
+    <li><a href="#LoginSuccess"><code>LoginSuccess</code> - </a></li>
+    <li><a href="#NotDefinedYet"><code>NotDefinedYet</code> - </a></li>
+    <li><a href="#Property"><code>Property</code> - </a></li>
+    <li><a href="#RegistrationParams"><code>RegistrationParams</code> - </a></li>
+    <li><a href="#RelationshipType"><code>RelationshipType</code> - </a></li>
+    <li><a href="#SendmailInvalid"><code>SendmailInvalid</code> - </a></li>
+    <li><a href="#SendmailParams"><code>SendmailParams</code> - </a></li>
+    <li><a href="#SendmailSuccess"><code>SendmailSuccess</code> - </a></li>
+    <li><a href="#SetPropertyParams"><code>SetPropertyParams</code> - </a></li>
+    <li><a href="#UserDetails"><code>UserDetails</code> - </a></li>
+    <li><a href="#UserUpdateParams"><code>UserUpdateParams</code> - </a></li>
+    <li><a href="#body"><code>body</code> - </a></li>
+    <li><a href="#body_1"><code>body_1</code> - </a></li>
+    <li><a href="#body_2"><code>body_2</code> - </a></li>
+    <li><a href="#body_3"><code>body_3</code> - </a></li>
+    <li><a href="#body_4"><code>body_4</code> - </a></li>
+    <li><a href="#body_5"><code>body_5</code> - </a></li>
+    <li><a href="#body_6"><code>body_6</code> - </a></li>
+    <li><a href="#healthcheckFail"><code>healthcheckFail</code> - </a></li>
+    <li><a href="#healthcheckOk"><code>healthcheckOk</code> - </a></li>
+    <li><a href="#inline_response_200"><code>inline_response_200</code> - </a></li>
+    <li><a href="#inline_response_200_1"><code>inline_response_200_1</code> - </a></li>
+    <li><a href="#inline_response_200_10"><code>inline_response_200_10</code> - </a></li>
+    <li><a href="#inline_response_200_2"><code>inline_response_200_2</code> - </a></li>
+    <li><a href="#inline_response_200_3"><code>inline_response_200_3</code> - </a></li>
+    <li><a href="#inline_response_200_4"><code>inline_response_200_4</code> - </a></li>
+    <li><a href="#inline_response_200_5"><code>inline_response_200_5</code> - </a></li>
+    <li><a href="#inline_response_200_6"><code>inline_response_200_6</code> - </a></li>
+    <li><a href="#inline_response_200_7"><code>inline_response_200_7</code> - </a></li>
+    <li><a href="#inline_response_200_8"><code>inline_response_200_8</code> - </a></li>
+    <li><a href="#inline_response_200_9"><code>inline_response_200_9</code> - </a></li>
+    <li><a href="#inline_response_200_database"><code>inline_response_200_database</code> - </a></li>
+    <li><a href="#inline_response_400"><code>inline_response_400</code> - </a></li>
+    <li><a href="#inline_response_401"><code>inline_response_401</code> - </a></li>
+    <li><a href="#inline_response_401_1"><code>inline_response_401_1</code> - </a></li>
+    <li><a href="#inline_response_401_2"><code>inline_response_401_2</code> - </a></li>
+    <li><a href="#inline_response_401_3"><code>inline_response_401_3</code> - </a></li>
+    <li><a href="#inline_response_401_4"><code>inline_response_401_4</code> - </a></li>
+    <li><a href="#inline_response_403"><code>inline_response_403</code> - </a></li>
+    <li><a href="#inline_response_404"><code>inline_response_404</code> - </a></li>
+    <li><a href="#inline_response_404_1"><code>inline_response_404_1</code> - </a></li>
+    <li><a href="#inline_response_406"><code>inline_response_406</code> - </a></li>
+    <li><a href="#inline_response_406_1"><code>inline_response_406_1</code> - </a></li>
+    <li><a href="#inline_response_406_cache"><code>inline_response_406_cache</code> - </a></li>
+    <li><a href="#inline_response_406_database"><code>inline_response_406_database</code> - </a></li>
+    <li><a href="#inline_response_417"><code>inline_response_417</code> - </a></li>
+    <li><a href="#inline_response_502"><code>inline_response_502</code> - </a></li>
+    <li><a href="#inline_response_502_1"><code>inline_response_502_1</code> - </a></li>
+    <li><a href="#v2apikeysendmail_params"><code>v2apikeysendmail_params</code> - </a></li>
+  </ol>
+
+  <div class="model">
+    <h3><a name="DeletePropertyParams"><code>DeletePropertyParams</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">realm (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">property_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">entity_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Id of user or entity </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ForgotEmailParams"><code>ForgotEmailParams</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">resume </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="GetPropertyParams"><code>GetPropertyParams</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">realm </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">entity_id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of user or entity </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">sequence (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Sort order </div>
+<div class="param">value </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="LoginFailure"><code>LoginFailure</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="LoginParams"><code>LoginParams</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">password (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="LoginSuccess"><code>LoginSuccess</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">jwt (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NotDefinedYet"><code>NotDefinedYet</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">something (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Property"><code>Property</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">realm (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">property_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">entity_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of user or entity </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">sequence (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Sort order </div>
+<div class="param">value (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegistrationParams"><code>RegistrationParams</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">password (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">first_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">middle_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">last_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">resume (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RelationshipType"><code>RelationshipType</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">tenant (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">relationship_type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">perspective_1_of_2 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">perspective_2_of_1 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">entity_type_1 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">entity_type_2 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">bidirectional (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="SendmailInvalid"><code>SendmailInvalid</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The email recipient </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Status </div>
+<div class="param">_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Mailchimp ID of the sent email </div>
+<div class="param">reject_reason (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Description of the error, if there was one </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="SendmailParams"><code>SendmailParams</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">template </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Name of the template in Mailchimp </div>
+<div class="param">to_email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Recipient of the email </div>
+<div class="param">from_email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Email address of the sender </div>
+<div class="param">from_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The sender's name </div>
+<div class="param">subject </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Subject </div>
+<div class="param">bcc (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> People to blind copy into the email </div>
+<div class="param">params (optional)</div><div class="param-desc"><span class="param-type"><a href="#v2apikeysendmail_params">v2apikeysendmail_params</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="SendmailSuccess"><code>SendmailSuccess</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The email recipient </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Status </div>
+<div class="param">_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Mailchimp ID of the sent email </div>
+<div class="param">reject_reason (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Description of the error, if there was one </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="SetPropertyParams"><code>SetPropertyParams</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">realm </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">entity_id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of user or entity </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">sequence (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Sort order </div>
+<div class="param">value </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UserDetails"><code>UserDetails</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">authority (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">entity_type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">external_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email_status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">first_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">middle_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">last_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">full_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">gender (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">languages (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">media_page (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">avatar (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">locale (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">location (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">timezone (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">is_admin (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">privileges (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UserUpdateParams"><code>UserUpdateParams</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> This value identifies the user record to be updated </div>
+<div class="param">first_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">middle_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">last_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">full_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">gender (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">languages (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">media_page (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">avatar (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">locale (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">location (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">timezone (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">is_admin (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> This value can only be changed by an administrator </div>
+<div class="param">privileges (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> This value can only be changed by an administrator </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="body"><code>body</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">password (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="body_1"><code>body_1</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">password (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">first_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">middle_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">last_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">resume (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="body_2"><code>body_2</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> This value identifies the user record to be updated </div>
+<div class="param">first_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">middle_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">last_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">full_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">gender (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">languages (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">media_page (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">avatar (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">locale (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">location (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">timezone (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">is_admin (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> This value can only be changed by an administrator </div>
+<div class="param">privileges (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> This value can only be changed by an administrator </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="body_3"><code>body_3</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">template </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Name of the template in Mailchimp </div>
+<div class="param">to_email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Recipient of the email </div>
+<div class="param">from_email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Email address of the sender </div>
+<div class="param">from_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The sender's name </div>
+<div class="param">subject </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Subject </div>
+<div class="param">bcc (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> People to blind copy into the email </div>
+<div class="param">params (optional)</div><div class="param-desc"><span class="param-type"><a href="#v2apikeysendmail_params">v2apikeysendmail_params</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="body_4"><code>body_4</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">resume </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="body_5"><code>body_5</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">realm </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">entity_id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of user or entity </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">sequence (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Sort order </div>
+<div class="param">value </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="body_6"><code>body_6</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">realm (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">property_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">entity_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Id of user or entity </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="healthcheckFail"><code>healthcheckFail</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">database (optional)</div><div class="param-desc"><span class="param-type"><a href="#inline_response_406_database">inline_response_406_database</a></span>  </div>
+<div class="param">cache (optional)</div><div class="param-desc"><span class="param-type"><a href="#inline_response_406_cache">inline_response_406_cache</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="healthcheckOk"><code>healthcheckOk</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">database (optional)</div><div class="param-desc"><span class="param-type"><a href="#inline_response_200_database">inline_response_200_database</a></span>  </div>
+<div class="param">cache (optional)</div><div class="param-desc"><span class="param-type"><a href="#inline_response_200_database">inline_response_200_database</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200"><code>inline_response_200</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">database (optional)</div><div class="param-desc"><span class="param-type"><a href="#inline_response_200_database">inline_response_200_database</a></span>  </div>
+<div class="param">cache (optional)</div><div class="param-desc"><span class="param-type"><a href="#inline_response_200_database">inline_response_200_database</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_1"><code>inline_response_200_1</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">jwt (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_10"><code>inline_response_200_10</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">realm (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">property_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">entity_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of user or entity </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A sub-grouping of properties </div>
+<div class="param">sequence (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Sort order </div>
+<div class="param">value (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_2"><code>inline_response_200_2</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_3"><code>inline_response_200_3</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">something (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_4"><code>inline_response_200_4</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">authority (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">entity_type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">external_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email_status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">first_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">middle_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">last_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">full_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">gender (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">languages (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">media_page (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">avatar (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">locale (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">location (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">timezone (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">is_admin (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">privileges (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_5"><code>inline_response_200_5</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The email recipient </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Status </div>
+<div class="param">_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Mailchimp ID of the sent email </div>
+<div class="param">reject_reason (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Description of the error, if there was one </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_6"><code>inline_response_200_6</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_7"><code>inline_response_200_7</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">tenant (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">relationship_type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">perspective_1_of_2 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">perspective_2_of_1 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">entity_type_1 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">entity_type_2 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">bidirectional (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_8"><code>inline_response_200_8</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">property_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_9"><code>inline_response_200_9</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">deleted (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_database"><code>inline_response_200_database</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_400"><code>inline_response_400</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">Error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_401"><code>inline_response_401</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_401_1"><code>inline_response_401_1</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_401_2"><code>inline_response_401_2</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">Error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_401_3"><code>inline_response_401_3</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">Error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_401_4"><code>inline_response_401_4</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">Error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_403"><code>inline_response_403</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">Error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_404"><code>inline_response_404</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">Error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_404_1"><code>inline_response_404_1</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">deleted (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_406"><code>inline_response_406</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">database (optional)</div><div class="param-desc"><span class="param-type"><a href="#inline_response_406_database">inline_response_406_database</a></span>  </div>
+<div class="param">cache (optional)</div><div class="param-desc"><span class="param-type"><a href="#inline_response_406_cache">inline_response_406_cache</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_406_1"><code>inline_response_406_1</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">Error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_406_cache"><code>inline_response_406_cache</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_406_database"><code>inline_response_406_database</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_417"><code>inline_response_417</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">Error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_502"><code>inline_response_502</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_502_1"><code>inline_response_502_1</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The email recipient </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Status </div>
+<div class="param">_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Mailchimp ID of the sent email </div>
+<div class="param">reject_reason (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Description of the error, if there was one </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="v2apikeysendmail_params"><code>v2apikeysendmail_params</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">user_defined_parameter_1 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">user_defined_parameter_2 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  </body>
+</html>

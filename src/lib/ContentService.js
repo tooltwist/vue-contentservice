@@ -31,6 +31,8 @@ class Contentservice {
   // }
 
   constructor (options) {
+    console.log('** initializing vue-contentservice')
+    console.log(options)
 
     if (!options) {
       console.error(`Contentservice was passed null options, so will be disabled.`)
@@ -40,8 +42,8 @@ class Contentservice {
     this.disabled = false
 
     // console.log('&&& Contentservice constructor', options)
-    this.protocol = options.protocol ? options.protocol : 'https'
-    this.host = options.host ? options.host : 'api.contentservice.io'
+    // this.protocol = options.protocol ? options.protocol : 'https'
+    this.host = options.host ? options.host : 'tooltwist.io'
     if (options.port) {
       this.port = options.port
     } else if (this.protocol == 'http') {
@@ -49,8 +51,42 @@ class Contentservice {
     } else {
       this.port = 443
     }
-    this.version = options.version ? options.version : '2.0'
+    this.version = options.version ? options.version : '5.0'
     this.apikey = options.apikey
+
+    // Check the UrlPrefix only has a trailing slash
+    this.urlPrefix = 'contentservice'
+    if (typeof (options.urlPrefix) !== 'undefined') {
+      if (options.debug) console.log(`- will use options.urlPrefix`)
+      this.urlPrefix = options.urlPrefix
+    }
+    while (this.urlPrefix.startsWith('/')) {
+      this.urlPrefix = this.urlPrefix.substring(1)
+    }
+    while (this.urlPrefix.endsWith('/')) {
+      this.urlPrefix = this.urlPrefix.substring(0, this.urlPrefix.length - 1)
+    }
+    if (this.urlPrefix) {
+      this.urlPrefix += '/'
+    }
+    // console.log(`UrlPrefix: ${this.urlPrefix}`)
+
+    // Determine what protocol to use
+    this.protocol = 'http'
+    if (options.protocol && (options.protocol === 'http' || options.protocol === 'https')) {
+      this.protocol = options.protocol
+    } else {
+      // See if we can determine the protocol from the port
+      if (this.port === 80) {
+        this.protocol = 'http'
+      } else if (this.port === 443) {
+        this.protocol = 'https'
+      } else {
+        // Non-standard port, probably during development
+      }
+    }
+    console.log(`YARP CS 3: ${this.endpoint()}`)
+    if (options.debug) console.log(`- endpoint: ${this.endpoint()}`)
 
     this.knownElementTypes = [ ]
 
@@ -93,10 +129,14 @@ class Contentservice {
   }
 
   endpoint () {
-    const endpoint = `${this.protocol}://${this.host}:${this.port}/api/${this.version}/${this.apikey}`
-    if (onceOnly++ === 0) {
-      console.log(`endpoint(): ${endpoint}`)
+    let portStuff = ''
+    if (this.protocol === 'http' && this.port !== 80) {
+      portStuff = `:${this.port}`
+    } else if (this.protocol === 'https' && this.port !== 443) {
+      portStuff = `:${this.port}`
     }
+    const endpoint = `${this.protocol}://${this.host}${portStuff}/${this.urlPrefix}${this.version}/${this.apikey}`
+    // console.log(`endpoint=${endpoint}`);
     return endpoint
   }
 
@@ -354,6 +394,9 @@ class Contentservice {
 	 *		select(vm, params)
 	 */
   select(vm, param1, param2) {
+    // console.log(`ContentService.js select()`)
+    // console.log(`param1=`, param1)
+    // console.log(`param2=`, param2)
 
     return new Promise((resolve, reject) => {
 
@@ -437,7 +480,7 @@ class Contentservice {
         method: 'get',
         url,
         headers: {
-          // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
+          'Authorization': 'Bearer ' + vm.$loginservice.jwt,
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -466,6 +509,9 @@ class Contentservice {
           axiosError(vm, url, params, e)
           reject(e)
         })
+        // .then(() => {
+        //   console.log(`YARP AFTER AXIOS`)
+        // })
     })// new promise
 
   } //- select()
@@ -481,6 +527,9 @@ class Contentservice {
 
     console.log(`ContentService.js:update()`, element)
     console.log(`element.description.length=`, element.description.length)
+
+console.log(`YARP YARP NO UPDATE YET`)
+return
 
     return new Promise((resolve, reject) => {
 
@@ -519,3 +568,4 @@ class Contentservice {
 }
 
 export default Contentservice
+

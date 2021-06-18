@@ -16,7 +16,10 @@
     "p3": "git push --follow-tags",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit",
-    "inspect": "vue-cli-service inspect ./src/index.js"
+    "inspect": "vue-cli-service inspect ./src/index.js",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "docs:publish": "./deploy-documentation.sh"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-beta.47",
@@ -67,7 +70,10 @@
     "randomatic": ">=3.0.0",
     "sass-loader": "^7.1.0",
     "vue-cli-plugin-webpack-bundle-analyzer": "^1.2.0",
+    "vue-docgen-api": "^4.36.1",
+    "vue-docgen-cli": "^4.36.1",
     "vue-template-compiler": "^2.5.17",
+    "vuepress": "^1.8.2",
     "webpack-node-externals": "^1.7.2"
   },
   "eslintConfig": {
