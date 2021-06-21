@@ -633,7 +633,7 @@ function loadLayoutFromAnchor (commit, vm, contentId, editable) {
   let elementType = 'layout'
   // console.error(`>>> contentId is ${contentId}.`)
 
-  vm.$content.select(this, fullAnchor, elementType)
+  vm.$content.select(vm, fullAnchor, elementType)
     //- this.$content.select(this, params)
     .then(result => {
       // Use the elements
