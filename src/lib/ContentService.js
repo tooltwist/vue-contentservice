@@ -528,9 +528,6 @@ class Contentservice {
     console.log(`ContentService.js:update()`, element)
     console.log(`element.description.length=`, element.description.length)
 
-console.log(`YARP YARP NO UPDATE YET`)
-return
-
     return new Promise((resolve, reject) => {
 
       if (this.options.debug) {
@@ -546,7 +543,7 @@ return
         method: 'put',
         url,
         headers: {
-          // 'Authorization': 'Bearer ' + this.$contentservice.jwt,
+          'Authorization': 'Bearer ' + vm.$loginservice.jwt,
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
